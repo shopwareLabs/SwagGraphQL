@@ -1,0 +1,2909 @@
+scalar Date
+
+scalar Json
+
+type Mutation {
+  upsert_seo_url(tenantId: ID, id: ID, versionId: ID, salesChannelId: ID, name: String, foreignKey: ID, foreignKeyVersionId: ID, pathInfo: String, seoPathInfo: String, isCanonical: Boolean, isModified: Boolean, createdAt: Date, updatedAt: Date, salesChannel: input_sales_channel, url: String): seo_url
+  upsert_version(tenantId: ID, id: ID, name: String, createdAt: Date, updatedAt: Date, commits: [input_version_commit]): version
+  upsert_version_commit(tenantId: ID, id: ID, versionId: ID, userId: ID, integrationId: ID, autoIncrement: Int, isMerge: Boolean, message: String, createdAt: Date, data: [input_version_commit_data], version: input_version): version_commit
+  upsert_version_commit_data(tenantId: ID, id: ID, versionCommitId: ID, commit: input_version_commit, userId: ID, integrationId: ID, autoIncrement: Int, entityName: String, entityId: Json, action: String, payload: Json, createdAt: Date): version_commit_data
+  upsert_plugin(tenantId: ID, versionId: ID, id: ID, name: String, label: String, active: Boolean, version: String, capabilityUpdate: Boolean, capabilityInstall: Boolean, capabilityEnable: Boolean, capabilitySecureUninstall: Boolean, description: String, descriptionLong: String, createdAt: Date, updatedAt: Date, installationDate: Date, updateDate: Date, refreshDate: Date, author: String, copyright: String, license: String, support: String, changes: String, link: String, storeVersion: String, storeDate: Date, updateSource: String, updateVersion: String, paymentMethods: [input_payment_method]): plugin
+  upsert_sales_channel(tenantId: ID, id: ID, typeId: ID, languageId: ID, currencyId: ID, currencyVersionId: ID, paymentMethodId: ID, paymentMethodVersionId: ID, shippingMethodId: ID, shippingMethodVersionId: ID, countryId: ID, countryVersionId: ID, type: input_sales_channel_type, name: String, accessKey: String, configuration: Json, active: Boolean, taxCalculationType: String, createdAt: Date, updatedAt: Date, catalogs: [input_catalog], currencies: [input_currency], languages: [input_language], countries: [input_country], paymentMethods: [input_payment_method], shippingMethods: [input_shipping_method], language: input_language, currency: input_currency, paymentMethod: input_payment_method, shippingMethod: input_shipping_method, country: input_country, orders: [input_order], customers: [input_customer], seoUrls: [input_seo_url]): sales_channel
+  upsert_sales_channel_type(id: ID, tenantId: ID, coverUrl: String, iconName: String, screenshotUrls: Json, name: String, manufacturer: String, description: String, descriptionLong: String, createdAt: Date, updatedAt: Date, salesChannels: [input_sales_channel]): sales_channel_type
+  upsert_country(tenantId: ID, id: ID, versionId: ID, name: String, iso: String, position: Int, shippingFree: Boolean, taxFree: Boolean, taxfreeForVatId: Boolean, taxfreeVatidChecked: Boolean, active: Boolean, iso3: String, displayStateInRegistration: Boolean, forceStateInRegistration: Boolean, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [input_sales_channel], states: [input_country_state], customerAddresses: [input_customer_address], orderAddresses: [input_order_address], salesChannels: [input_sales_channel]): country
+  upsert_country_state(tenantId: ID, id: ID, versionId: ID, countryId: ID, countryVersionId: ID, shortCode: String, name: String, position: Int, active: Boolean, createdAt: Date, updatedAt: Date, country: input_country, customerAddresses: [input_customer_address], orderAddresses: [input_order_address]): country_state
+  upsert_currency(tenantId: ID, id: ID, versionId: ID, factor: Float, symbol: String, shortName: String, name: String, isDefault: Boolean, placedInFront: Boolean, position: Int, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [input_sales_channel], orders: [input_order], productPriceRules: [input_product_price_rule], salesChannels: [input_sales_channel]): currency
+  upsert_locale(tenantId: ID, id: ID, code: String, name: String, territory: String, createdAt: Date, updatedAt: Date, languages: [input_language], users: [input_user]): locale
+  upsert_listing_facet(tenantId: ID, id: ID, versionId: ID, uniqueKey: String, payload: String, name: String, active: Boolean, displayInCategories: Boolean, deletable: Boolean, position: Int, createdAt: Date, updatedAt: Date): listing_facet
+  upsert_listing_sorting(tenantId: ID, versionId: ID, id: ID, payload: Json, label: String, uniqueKey: String, active: Boolean, displayInCategories: Boolean, position: Int, createdAt: Date, updatedAt: Date): listing_sorting
+  upsert_snippet(tenantId: ID, id: ID, languageId: ID, translationKey: String, value: String, createdAt: Date, updatedAt: Date, language: input_language): snippet
+  upsert_tax(tenantId: ID, id: ID, versionId: ID, taxRate: Float, name: String, createdAt: Date, updatedAt: Date, products: [input_product], productServices: [input_product_service]): tax
+  upsert_unit(tenantId: ID, id: ID, versionId: ID, shortCode: String, name: String, createdAt: Date, updatedAt: Date, products: [input_product]): unit
+  upsert_user(tenantId: ID, id: ID, localeId: ID, username: String, name: String, email: String, lastLogin: Date, active: Boolean, failedLogins: Int, lockedUntil: Date, createdAt: Date, updatedAt: Date, locale: input_locale, media: [input_media], accessKeys: [input_user_access_key]): user
+  upsert_user_access_key(tenantId: ID, id: ID, userId: ID, accessKey: String, writeAccess: Boolean, createdAt: Date, lastUsageAt: Date, user: input_user): user_access_key
+  upsert_language(tenantId: ID, id: ID, parentId: ID, localeId: ID, name: String, createdAt: Date, updatedAt: Date, parent: input_language, locale: input_locale, children: [input_language], salesChannelDefaultAssignments: [input_sales_channel], snippets: [input_snippet], salesChannels: [input_sales_channel]): language
+  upsert_integration(tenantId: ID, id: ID, label: String, accessKey: String, writeAccess: Boolean, lastUsageAt: Date, createdAt: Date, updatedAt: Date): integration
+  upsert_catalog(tenantId: ID, id: ID, name: String, createdAt: Date, updatedAt: Date, categories: [input_category], media: [input_media], products: [input_product], productManufacturers: [input_product_manufacturer], productMedia: [input_product_media], salesChannels: [input_sales_channel]): catalog
+  upsert_category(tenantId: ID, id: ID, versionId: ID, catalogId: ID, parentId: ID, parentVersionId: ID, mediaId: ID, mediaVersionId: ID, autoIncrement: Int, path: String, position: Int, level: Int, template: String, active: Boolean, isBlog: Boolean, external: String, hideFilter: Boolean, hideTop: Boolean, productBoxLayout: String, hideSortings: Boolean, sortingIds: String, facetIds: String, childCount: Int, createdAt: Date, updatedAt: Date, name: String, pathNames: String, metaKeywords: String, metaTitle: String, metaDescription: String, cmsHeadline: String, cmsDescription: String, parent: input_category, media: input_media, children: [input_category], products: [input_product], catalog: input_catalog, nestedProducts: [input_product], canonicalUrl: input_seo_url): category
+  upsert_media(tenantId: ID, id: ID, versionId: ID, catalogId: ID, userId: ID, mimeType: String, fileExtension: String, fileSize: Int, metaData: Json, createdAt: Date, updatedAt: Date, description: String, name: String, url: String, user: input_user, categories: [input_category], productManufacturers: [input_product_manufacturer], productMedia: [input_product_media], catalog: input_catalog, thumbnails: [input_media_thumbnail], hasFile: Boolean): media
+  upsert_media_thumbnail(tenantId: ID, versionId: ID, id: ID, mediaId: ID, mediaVersionId: ID, createdAt: Date, updatedAt: Date, width: Int, height: Int, highDpi: Boolean, url: String, media: input_media): media_thumbnail
+  upsert_product(tenantId: ID, id: ID, versionId: ID, catalogId: ID, parentId: ID, parentVersionId: ID, autoIncrement: Int, active: Boolean, stock: Int, createdAt: Date, updatedAt: Date, manufacturerId: ID, productManufacturerVersionId: ID, unitId: ID, unitVersionId: ID, taxId: ID, taxVersionId: ID, coverId: ID, productMediaVersionId: ID, price: Json, listingPrices: Json, supplierNumber: String, ean: String, isCloseout: Boolean, minStock: Int, purchaseSteps: Int, maxPurchase: Int, minPurchase: Int, purchaseUnit: Float, referenceUnit: Float, shippingFree: Boolean, purchasePrice: Float, pseudoSales: Int, markAsTopseller: Boolean, sales: Int, position: Int, weight: Float, width: Float, height: Float, length: Float, template: String, allowNotification: Boolean, releaseDate: Date, categoryTree: Json, datasheetIds: Json, variationIds: Json, minDeliveryTime: Int, maxDeliveryTime: Int, restockTime: Int, additionalText: String, name: String, keywords: String, description: String, descriptionLong: String, metaTitle: String, packUnit: String, parent: input_product, children: [input_product], tax: input_tax, manufacturer: input_product_manufacturer, unit: input_unit, cover: input_product_media, media: [input_product_media], priceRules: [input_product_price_rule], services: [input_product_service], datasheet: [input_configuration_group_option], categories: [input_category], categoriesRo: [input_category], searchKeywords: [input_search_document], configurators: [input_product_configurator], variations: [input_configuration_group_option], catalog: input_catalog, canonicalUrl: input_seo_url): product
+  upsert_product_configurator(tenantId: ID, id: ID, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, configurationGroupOptionVersionId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: input_product, option: input_configuration_group_option): product_configurator
+  upsert_product_price_rule(tenantId: ID, id: ID, versionId: ID, productId: ID, productVersionId: ID, currencyId: ID, currencyVersionId: ID, ruleId: ID, price: Json, quantityStart: Int, quantityEnd: Int, createdAt: Date, updatedAt: Date, product: input_product, currency: input_currency, rule: input_rule): product_price_rule
+  upsert_product_manufacturer(tenantId: ID, id: ID, versionId: ID, catalogId: ID, mediaId: ID, mediaVersionId: ID, link: String, updatedAt: Date, createdAt: Date, name: String, description: String, metaTitle: String, metaDescription: String, metaKeywords: String, media: input_media, products: [input_product], catalog: input_catalog): product_manufacturer
+  upsert_product_media(tenantId: ID, id: ID, versionId: ID, catalogId: ID, productId: ID, productVersionId: ID, mediaId: ID, mediaVersionId: ID, position: Int, createdAt: Date, updatedAt: Date, product: input_product, media: input_media, catalog: input_catalog): product_media
+  upsert_search_document(tenantId: ID, id: ID, versionId: ID, languageId: ID, entityId: ID, entity: String, keyword: String, ranking: Float, language: input_language): search_document
+  upsert_product_service(tenantId: ID, id: ID, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, configurationGroupOptionVersionId: ID, taxId: ID, taxVersionId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: input_product, option: input_configuration_group_option, tax: input_tax): product_service
+  upsert_rule(tenantId: ID, id: ID, name: String, priority: Int, payload: Json, createdAt: Date, updatedAt: Date, discountSurcharges: [input_discount_surcharge], productPriceRules: [input_product_price_rule]): rule
+  upsert_configuration_group(tenantId: ID, id: ID, versionId: ID, name: String, position: Int, filterable: Boolean, comparable: Boolean, createdAt: Date, updatedAt: Date, options: [input_configuration_group_option]): configuration_group
+  upsert_configuration_group_option(tenantId: ID, id: ID, versionId: ID, groupId: ID, configurationGroupVersionId: ID, name: String, colorHexCode: String, mediaId: ID, mediaVersionId: ID, createdAt: Date, updatedAt: Date, group: input_configuration_group, productConfigurators: [input_product_configurator], productServices: [input_product_service], productDatasheets: [input_product], productVariations: [input_product]): configuration_group_option
+  upsert_customer(tenantId: ID, id: ID, versionId: ID, groupId: ID, customerGroupVersionId: ID, defaultPaymentMethodId: ID, defaultPaymentMethodVersionId: ID, salesChannelId: ID, lastPaymentMethodId: ID, lastPaymentMethodVersionId: ID, defaultBillingAddressId: ID, defaultShippingAddressId: ID, autoIncrement: Int, customerNumber: String, salutation: String, firstName: String, lastName: String, email: String, title: String, encoder: String, active: Boolean, guest: Boolean, confirmationKey: String, firstLogin: Date, lastLogin: Date, sessionId: String, newsletter: Boolean, validation: String, affiliate: Boolean, referer: String, internalComment: String, failedLogins: Int, lockedUntil: Date, birthday: Date, createdAt: Date, updatedAt: Date, group: input_customer_group, defaultPaymentMethod: input_payment_method, salesChannel: input_sales_channel, lastPaymentMethod: input_payment_method, defaultBillingAddress: input_customer_address, defaultShippingAddress: input_customer_address, addresses: [input_customer_address], orderCustomers: [input_order_customer], searchKeywords: [input_search_document]): customer
+  upsert_customer_address(tenantId: ID, id: ID, versionId: ID, customerId: ID, customerVersionId: ID, countryId: ID, countryVersionId: ID, countryStateId: ID, countryStateVersionId: ID, salutation: String, firstName: String, lastName: String, zipcode: String, city: String, company: String, street: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, createdAt: Date, updatedAt: Date, customer: input_customer, country: input_country, countryState: input_country_state): customer_address
+  upsert_customer_group(tenantId: ID, id: ID, versionId: ID, name: String, displayGross: Boolean, inputGross: Boolean, hasGlobalDiscount: Boolean, percentageGlobalDiscount: Float, minimumOrderAmount: Float, minimumOrderAmountSurcharge: Float, createdAt: Date, updatedAt: Date, customers: [input_customer], discounts: [input_customer_group_discount]): customer_group
+  upsert_customer_group_discount(tenantId: ID, id: ID, versionId: ID, customerGroupId: ID, customerGroupVersionId: ID, percentageDiscount: Float, minimumCartAmount: Float, createdAt: Date, updatedAt: Date, customerGroup: input_customer_group): customer_group_discount
+  upsert_order(tenantId: ID, id: ID, versionId: ID, autoIncrement: Int, orderCustomerId: ID, orderCustomerVersionId: ID, stateId: ID, orderStateVersionId: ID, paymentMethodId: ID, paymentMethodVersionId: ID, currencyId: ID, currencyVersionId: ID, salesChannelId: ID, billingAddressId: ID, billingAddressVersionId: ID, date: Date, amountTotal: Float, positionPrice: Float, shippingTotal: Float, currencyFactor: Float, isNet: Boolean, isTaxFree: Boolean, deepLinkCode: String, createdAt: Date, updatedAt: Date, orderCustomer: input_order_customer, state: input_order_state, paymentMethod: input_payment_method, currency: input_currency, salesChannel: input_sales_channel, billingAddress: input_order_address, deliveries: [input_order_delivery], lineItems: [input_order_line_item], transactions: [input_order_transaction], searchKeywords: [input_search_document]): order
+  upsert_order_address(tenantId: ID, id: ID, versionId: ID, countryId: ID, countryVersionId: ID, countryStateId: ID, countryStateVersionId: ID, salutation: String, firstName: String, lastName: String, street: String, zipcode: String, city: String, company: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, createdAt: Date, updatedAt: Date, country: input_country, countryState: input_country_state, orders: [input_order], orderDeliveries: [input_order_delivery]): order_address
+  upsert_order_customer(tenantId: ID, id: ID, versionId: ID, customerId: ID, customerVersionId: ID, email: String, firstName: String, lastName: String, salutation: String, title: String, customerNumber: String, createdAt: Date, updatedAt: Date, customer: input_customer, orders: [input_order]): order_customer
+  upsert_order_delivery(tenantId: ID, id: ID, versionId: ID, orderId: ID, orderVersionId: ID, shippingOrderAddressId: ID, shippingOrderAddressVersionId: ID, orderStateId: ID, orderStateVersionId: ID, shippingMethodId: ID, shippingMethodVersionId: ID, shippingDateEarliest: Date, shippingDateLatest: Date, trackingCode: String, createdAt: Date, updatedAt: Date, order: input_order, shippingOrderAddress: input_order_address, orderState: input_order_state, shippingMethod: input_shipping_method, positions: [input_order_delivery_position]): order_delivery
+  upsert_order_delivery_position(tenantId: ID, id: ID, versionId: ID, orderDeliveryId: ID, orderDeliveryVersionId: ID, orderLineItemId: ID, orderLineItemVersionId: ID, unitPrice: Float, totalPrice: Float, quantity: Float, createdAt: Date, updatedAt: Date, orderDelivery: input_order_delivery, orderLineItem: input_order_line_item): order_delivery_position
+  upsert_order_line_item(tenantId: ID, id: ID, versionId: ID, orderId: ID, orderVersionId: ID, identifier: String, quantity: Int, label: String, unitPrice: Float, totalPrice: Float, description: String, parentId: ID, type: String, createdAt: Date, updatedAt: Date, order: input_order, orderDeliveryPositions: [input_order_delivery_position]): order_line_item
+  upsert_order_state(tenantId: ID, id: ID, versionId: ID, description: String, position: Int, hasMail: Boolean, createdAt: Date, updatedAt: Date, orders: [input_order], orderDeliveries: [input_order_delivery]): order_state
+  upsert_order_transaction(tenantId: ID, id: ID, versionId: ID, orderId: ID, orderVersionId: ID, paymentMethodId: ID, paymentMethodVersionId: ID, orderTransactionStateId: ID, orderTransactionStateVersionId: ID, amount: Json, details: Json, createdAt: Date, updatedAt: Date, order: input_order, paymentMethod: input_payment_method, orderTransactionState: input_order_transaction_state): order_transaction
+  upsert_order_transaction_state(tenantId: ID, versionId: ID, id: ID, position: Int, hasMail: Boolean, description: String, createdAt: Date, updatedAt: Date, orderTransactions: [input_order_transaction]): order_transaction_state
+  upsert_payment_method(id: ID, tenantId: ID, versionId: ID, pluginId: ID, technicalName: String, name: String, additionalDescription: String, template: String, class: String, table: String, hide: Boolean, percentageSurcharge: Float, absoluteSurcharge: Float, surchargeString: String, position: Int, active: Boolean, allowEsd: Boolean, usedIframe: String, hideProspect: Boolean, action: String, source: Int, mobileInactive: Boolean, riskRules: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [input_sales_channel], plugin: input_plugin, customers: [input_customer], orders: [input_order], orderTransactions: [input_order_transaction], salesChannels: [input_sales_channel]): payment_method
+  upsert_shipping_method(tenantId: ID, id: ID, versionId: ID, type: Int, bindShippingfree: Boolean, bindLaststock: Boolean, name: String, active: Boolean, position: Int, calculation: Int, surchargeCalculation: Int, taxCalculation: Int, minDeliveryTime: Int, maxDeliveryTime: Int, shippingFree: Float, bindTimeFrom: Int, bindTimeTo: Int, bindInstock: Boolean, bindWeekdayFrom: Int, bindWeekdayTo: Int, bindWeightFrom: Float, bindWeightTo: Float, bindPriceFrom: Float, bindPriceTo: Float, bindSql: String, statusLink: String, calculationSql: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [input_sales_channel], description: String, comment: String, orderDeliveries: [input_order_delivery], prices: [input_shipping_method_price], salesChannels: [input_sales_channel]): shipping_method
+  upsert_shipping_method_price(tenantId: ID, id: ID, versionId: ID, shippingMethodId: ID, shippingMethodVersionId: ID, quantityFrom: Float, price: Float, factor: Float, createdAt: Date, updatedAt: Date, shippingMethod: input_shipping_method): shipping_method_price
+  upsert_discount_surcharge(tenantId: ID, id: ID, name: String, ruleId: ID, filterRule: Json, type: String, amount: Float, createdAt: Date, updatedAt: Date, rule: input_rule): discount_surcharge
+  upsert_named(id: ID, tenantId: ID, versionId: ID, name: String, optionalGroupId: ID, optionalGroup: input_named_optional_group): named
+  upsert_named_optional_group(id: ID, versionId: ID, tenantId: ID, name: String, nameds: [input_named]): named_optional_group
+}
+
+type Query {
+  seo_url(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): seo_url_connection
+  version(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): version_connection
+  version_commit(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): version_commit_connection
+  version_commit_data(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): version_commit_data_connection
+  plugin(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): plugin_connection
+  sales_channel(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): sales_channel_connection
+  sales_channel_type(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): sales_channel_type_connection
+  country(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): country_connection
+  country_state(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): country_state_connection
+  currency(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): currency_connection
+  locale(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): locale_connection
+  listing_facet(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): listing_facet_connection
+  listing_sorting(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): listing_sorting_connection
+  snippet(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): snippet_connection
+  tax(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): tax_connection
+  unit(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): unit_connection
+  user(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): user_connection
+  user_access_key(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): user_access_key_connection
+  language(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): language_connection
+  integration(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): integration_connection
+  catalog(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): catalog_connection
+  category(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): category_connection
+  media(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): media_connection
+  media_thumbnail(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): media_thumbnail_connection
+  product(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_connection
+  product_configurator(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_configurator_connection
+  product_price_rule(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_price_rule_connection
+  product_manufacturer(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_manufacturer_connection
+  product_media(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_media_connection
+  search_document(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): search_document_connection
+  product_service(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_service_connection
+  rule(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): rule_connection
+  configuration_group(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): configuration_group_connection
+  configuration_group_option(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): configuration_group_option_connection
+  customer(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_connection
+  customer_address(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_address_connection
+  customer_group(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_group_connection
+  customer_group_discount(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_group_discount_connection
+  order(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_connection
+  order_address(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_address_connection
+  order_customer(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_customer_connection
+  order_delivery(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_delivery_connection
+  order_delivery_position(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_delivery_position_connection
+  order_line_item(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_line_item_connection
+  order_state(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_state_connection
+  order_transaction(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_transaction_connection
+  order_transaction_state(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_transaction_state_connection
+  payment_method(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): payment_method_connection
+  shipping_method(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): shipping_method_connection
+  shipping_method_price(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): shipping_method_price_connection
+  discount_surcharge(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): discount_surcharge_connection
+  named(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): named_connection
+  named_optional_group(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): named_optional_group_connection
+}
+
+input aggregation {
+  type: aggregationTypes!
+  name: String!
+  field: String!
+}
+
+type aggregationResult {
+  type: String
+  result: Float
+}
+
+type aggregationResults {
+  name: String
+  results: [aggregationResult]
+}
+
+enum aggregationTypes {
+  avg
+  cardinality
+  count
+  max
+  min
+  stats
+  sum
+  value_count
+}
+
+type catalog {
+  tenantId: ID!
+  id: ID!
+  name: String
+  createdAt: Date!
+  updatedAt: Date!
+  categories: category_connection
+  media: media_connection
+  products: product_connection
+  productManufacturers: product_manufacturer_connection
+  productMedia: product_media_connection
+  salesChannels: sales_channel_connection
+}
+
+type catalog_connection {
+  total: Int
+  edges: [catalog_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type catalog_edge {
+  node: catalog
+  cursor: ID
+}
+
+type category {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  catalogId: ID!
+  parentId: ID
+  parentVersionId: ID!
+  mediaId: ID
+  mediaVersionId: ID!
+  autoIncrement: Int
+  path: String
+  position: Int
+  level: Int
+  template: String
+  active: Boolean
+  isBlog: Boolean
+  external: String
+  hideFilter: Boolean
+  hideTop: Boolean
+  productBoxLayout: String
+  hideSortings: Boolean
+  sortingIds: String
+  facetIds: String
+  childCount: Int
+  createdAt: Date!
+  updatedAt: Date!
+  name: String
+  pathNames: String
+  metaKeywords: String
+  metaTitle: String
+  metaDescription: String
+  cmsHeadline: String
+  cmsDescription: String
+  parent: category
+  media: media
+  children: category_connection
+  products: product_connection
+  catalog: catalog
+  nestedProducts: product_connection
+  canonicalUrl: seo_url
+}
+
+type category_connection {
+  total: Int
+  edges: [category_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type category_edge {
+  node: category
+  cursor: ID
+}
+
+type configuration_group {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  name: String
+  position: Int
+  filterable: Boolean
+  comparable: Boolean
+  createdAt: Date!
+  updatedAt: Date!
+  options: configuration_group_option_connection
+}
+
+type configuration_group_connection {
+  total: Int
+  edges: [configuration_group_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type configuration_group_edge {
+  node: configuration_group
+  cursor: ID
+}
+
+type configuration_group_option {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  groupId: ID!
+  configurationGroupVersionId: ID!
+  name: String
+  colorHexCode: String
+  mediaId: ID
+  mediaVersionId: ID!
+  createdAt: Date!
+  updatedAt: Date!
+  group: configuration_group
+  productConfigurators: product_configurator_connection
+  productServices: product_service_connection
+  productDatasheets: product_connection
+  productVariations: product_connection
+}
+
+type configuration_group_option_connection {
+  total: Int
+  edges: [configuration_group_option_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type configuration_group_option_edge {
+  node: configuration_group_option
+  cursor: ID
+}
+
+type country {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  name: String
+  iso: String
+  position: Int
+  shippingFree: Boolean
+  taxFree: Boolean
+  taxfreeForVatId: Boolean
+  taxfreeVatidChecked: Boolean
+  active: Boolean
+  iso3: String
+  displayStateInRegistration: Boolean
+  forceStateInRegistration: Boolean
+  createdAt: Date!
+  updatedAt: Date!
+  salesChannelDefaultAssignments: sales_channel_connection
+  states: country_state_connection
+  customerAddresses: customer_address_connection
+  orderAddresses: order_address_connection
+  salesChannels: sales_channel_connection
+}
+
+type country_connection {
+  total: Int
+  edges: [country_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type country_edge {
+  node: country
+  cursor: ID
+}
+
+type country_state {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  countryId: ID!
+  countryVersionId: ID!
+  shortCode: String!
+  name: String
+  position: Int
+  active: Boolean
+  createdAt: Date!
+  updatedAt: Date!
+  country: country
+  customerAddresses: customer_address_connection
+  orderAddresses: order_address_connection
+}
+
+type country_state_connection {
+  total: Int
+  edges: [country_state_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type country_state_edge {
+  node: country_state
+  cursor: ID
+}
+
+type currency {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  factor: Float!
+  symbol: String!
+  shortName: String
+  name: String
+  isDefault: Boolean
+  placedInFront: Boolean
+  position: Int
+  createdAt: Date!
+  updatedAt: Date!
+  salesChannelDefaultAssignments: sales_channel_connection
+  orders: order_connection
+  productPriceRules: product_price_rule_connection
+  salesChannels: sales_channel_connection
+}
+
+type currency_connection {
+  total: Int
+  edges: [currency_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type currency_edge {
+  node: currency
+  cursor: ID
+}
+
+type customer {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  groupId: ID!
+  customerGroupVersionId: ID!
+  defaultPaymentMethodId: ID!
+  defaultPaymentMethodVersionId: ID!
+  salesChannelId: ID!
+  lastPaymentMethodId: ID
+  lastPaymentMethodVersionId: ID!
+  defaultBillingAddressId: ID!
+  defaultShippingAddressId: ID!
+  autoIncrement: Int
+  customerNumber: String!
+  salutation: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  title: String
+  encoder: String
+  active: Boolean
+  guest: Boolean
+  confirmationKey: String
+  firstLogin: Date
+  lastLogin: Date
+  sessionId: String
+  newsletter: Boolean
+  validation: String
+  affiliate: Boolean
+  referer: String
+  internalComment: String
+  failedLogins: Int
+  lockedUntil: Date
+  birthday: Date
+  createdAt: Date!
+  updatedAt: Date!
+  group: customer_group
+  defaultPaymentMethod: payment_method
+  salesChannel: sales_channel
+  lastPaymentMethod: payment_method
+  defaultBillingAddress: customer_address
+  defaultShippingAddress: customer_address
+  addresses: customer_address_connection
+  orderCustomers: order_customer_connection
+  searchKeywords: search_document_connection
+}
+
+type customer_address {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  customerId: ID!
+  customerVersionId: ID!
+  countryId: ID!
+  countryVersionId: ID!
+  countryStateId: ID
+  countryStateVersionId: ID!
+  salutation: String
+  firstName: String!
+  lastName: String!
+  zipcode: String!
+  city: String!
+  company: String
+  street: String!
+  department: String
+  title: String
+  vatId: String
+  phoneNumber: String
+  additionalAddressLine1: String
+  additionalAddressLine2: String
+  createdAt: Date!
+  updatedAt: Date!
+  customer: customer
+  country: country
+  countryState: country_state
+}
+
+type customer_address_connection {
+  total: Int
+  edges: [customer_address_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type customer_address_edge {
+  node: customer_address
+  cursor: ID
+}
+
+type customer_connection {
+  total: Int
+  edges: [customer_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type customer_edge {
+  node: customer
+  cursor: ID
+}
+
+type customer_group {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  name: String
+  displayGross: Boolean
+  inputGross: Boolean
+  hasGlobalDiscount: Boolean
+  percentageGlobalDiscount: Float
+  minimumOrderAmount: Float
+  minimumOrderAmountSurcharge: Float
+  createdAt: Date!
+  updatedAt: Date!
+  customers: customer_connection
+  discounts: customer_group_discount_connection
+}
+
+type customer_group_connection {
+  total: Int
+  edges: [customer_group_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type customer_group_discount {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  customerGroupId: ID!
+  customerGroupVersionId: ID!
+  percentageDiscount: Float!
+  minimumCartAmount: Float!
+  createdAt: Date!
+  updatedAt: Date!
+  customerGroup: customer_group
+}
+
+type customer_group_discount_connection {
+  total: Int
+  edges: [customer_group_discount_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type customer_group_discount_edge {
+  node: customer_group_discount
+  cursor: ID
+}
+
+type customer_group_edge {
+  node: customer_group
+  cursor: ID
+}
+
+type discount_surcharge {
+  tenantId: ID!
+  id: ID!
+  name: String
+  ruleId: ID!
+  filterRule: Json!
+  type: String!
+  amount: Float!
+  createdAt: Date!
+  updatedAt: Date!
+  rule: rule
+}
+
+type discount_surcharge_connection {
+  total: Int
+  edges: [discount_surcharge_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type discount_surcharge_edge {
+  node: discount_surcharge
+  cursor: ID
+}
+
+input input_catalog {
+  tenantId: ID
+  id: ID
+  name: String
+  createdAt: Date
+  updatedAt: Date
+  categories: [input_category]
+  media: [input_media]
+  products: [input_product]
+  productManufacturers: [input_product_manufacturer]
+  productMedia: [input_product_media]
+  salesChannels: [input_sales_channel]
+}
+
+input input_category {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  catalogId: ID
+  parentId: ID
+  parentVersionId: ID
+  mediaId: ID
+  mediaVersionId: ID
+  autoIncrement: Int
+  path: String
+  position: Int
+  level: Int
+  template: String
+  active: Boolean
+  isBlog: Boolean
+  external: String
+  hideFilter: Boolean
+  hideTop: Boolean
+  productBoxLayout: String
+  hideSortings: Boolean
+  sortingIds: String
+  facetIds: String
+  childCount: Int
+  createdAt: Date
+  updatedAt: Date
+  name: String
+  pathNames: String
+  metaKeywords: String
+  metaTitle: String
+  metaDescription: String
+  cmsHeadline: String
+  cmsDescription: String
+  parent: input_category
+  media: input_media
+  children: [input_category]
+  products: [input_product]
+  catalog: input_catalog
+  nestedProducts: [input_product]
+  canonicalUrl: input_seo_url
+}
+
+input input_configuration_group {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  name: String
+  position: Int
+  filterable: Boolean
+  comparable: Boolean
+  createdAt: Date
+  updatedAt: Date
+  options: [input_configuration_group_option]
+}
+
+input input_configuration_group_option {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  groupId: ID
+  configurationGroupVersionId: ID
+  name: String
+  colorHexCode: String
+  mediaId: ID
+  mediaVersionId: ID
+  createdAt: Date
+  updatedAt: Date
+  group: input_configuration_group
+  productConfigurators: [input_product_configurator]
+  productServices: [input_product_service]
+  productDatasheets: [input_product]
+  productVariations: [input_product]
+}
+
+input input_country {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  name: String
+  iso: String
+  position: Int
+  shippingFree: Boolean
+  taxFree: Boolean
+  taxfreeForVatId: Boolean
+  taxfreeVatidChecked: Boolean
+  active: Boolean
+  iso3: String
+  displayStateInRegistration: Boolean
+  forceStateInRegistration: Boolean
+  createdAt: Date
+  updatedAt: Date
+  salesChannelDefaultAssignments: [input_sales_channel]
+  states: [input_country_state]
+  customerAddresses: [input_customer_address]
+  orderAddresses: [input_order_address]
+  salesChannels: [input_sales_channel]
+}
+
+input input_country_state {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  countryId: ID
+  countryVersionId: ID
+  shortCode: String
+  name: String
+  position: Int
+  active: Boolean
+  createdAt: Date
+  updatedAt: Date
+  country: input_country
+  customerAddresses: [input_customer_address]
+  orderAddresses: [input_order_address]
+}
+
+input input_currency {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  factor: Float
+  symbol: String
+  shortName: String
+  name: String
+  isDefault: Boolean
+  placedInFront: Boolean
+  position: Int
+  createdAt: Date
+  updatedAt: Date
+  salesChannelDefaultAssignments: [input_sales_channel]
+  orders: [input_order]
+  productPriceRules: [input_product_price_rule]
+  salesChannels: [input_sales_channel]
+}
+
+input input_customer {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  groupId: ID
+  customerGroupVersionId: ID
+  defaultPaymentMethodId: ID
+  defaultPaymentMethodVersionId: ID
+  salesChannelId: ID
+  lastPaymentMethodId: ID
+  lastPaymentMethodVersionId: ID
+  defaultBillingAddressId: ID
+  defaultShippingAddressId: ID
+  autoIncrement: Int
+  customerNumber: String
+  salutation: String
+  firstName: String
+  lastName: String
+  email: String
+  title: String
+  encoder: String
+  active: Boolean
+  guest: Boolean
+  confirmationKey: String
+  firstLogin: Date
+  lastLogin: Date
+  sessionId: String
+  newsletter: Boolean
+  validation: String
+  affiliate: Boolean
+  referer: String
+  internalComment: String
+  failedLogins: Int
+  lockedUntil: Date
+  birthday: Date
+  createdAt: Date
+  updatedAt: Date
+  group: input_customer_group
+  defaultPaymentMethod: input_payment_method
+  salesChannel: input_sales_channel
+  lastPaymentMethod: input_payment_method
+  defaultBillingAddress: input_customer_address
+  defaultShippingAddress: input_customer_address
+  addresses: [input_customer_address]
+  orderCustomers: [input_order_customer]
+  searchKeywords: [input_search_document]
+}
+
+input input_customer_address {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  customerId: ID
+  customerVersionId: ID
+  countryId: ID
+  countryVersionId: ID
+  countryStateId: ID
+  countryStateVersionId: ID
+  salutation: String
+  firstName: String
+  lastName: String
+  zipcode: String
+  city: String
+  company: String
+  street: String
+  department: String
+  title: String
+  vatId: String
+  phoneNumber: String
+  additionalAddressLine1: String
+  additionalAddressLine2: String
+  createdAt: Date
+  updatedAt: Date
+  customer: input_customer
+  country: input_country
+  countryState: input_country_state
+}
+
+input input_customer_group {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  name: String
+  displayGross: Boolean
+  inputGross: Boolean
+  hasGlobalDiscount: Boolean
+  percentageGlobalDiscount: Float
+  minimumOrderAmount: Float
+  minimumOrderAmountSurcharge: Float
+  createdAt: Date
+  updatedAt: Date
+  customers: [input_customer]
+  discounts: [input_customer_group_discount]
+}
+
+input input_customer_group_discount {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  customerGroupId: ID
+  customerGroupVersionId: ID
+  percentageDiscount: Float
+  minimumCartAmount: Float
+  createdAt: Date
+  updatedAt: Date
+  customerGroup: input_customer_group
+}
+
+input input_discount_surcharge {
+  tenantId: ID
+  id: ID
+  name: String
+  ruleId: ID
+  filterRule: Json
+  type: String
+  amount: Float
+  createdAt: Date
+  updatedAt: Date
+  rule: input_rule
+}
+
+input input_language {
+  tenantId: ID
+  id: ID
+  parentId: ID
+  localeId: ID
+  name: String
+  createdAt: Date
+  updatedAt: Date
+  parent: input_language
+  locale: input_locale
+  children: [input_language]
+  salesChannelDefaultAssignments: [input_sales_channel]
+  snippets: [input_snippet]
+  salesChannels: [input_sales_channel]
+}
+
+input input_locale {
+  tenantId: ID
+  id: ID
+  code: String
+  name: String
+  territory: String
+  createdAt: Date
+  updatedAt: Date
+  languages: [input_language]
+  users: [input_user]
+}
+
+input input_media {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  catalogId: ID
+  userId: ID
+  mimeType: String
+  fileExtension: String
+  fileSize: Int
+  metaData: Json
+  createdAt: Date
+  updatedAt: Date
+  description: String
+  name: String
+  url: String
+  user: input_user
+  categories: [input_category]
+  productManufacturers: [input_product_manufacturer]
+  productMedia: [input_product_media]
+  catalog: input_catalog
+  thumbnails: [input_media_thumbnail]
+  hasFile: Boolean
+}
+
+input input_media_thumbnail {
+  tenantId: ID
+  versionId: ID
+  id: ID
+  mediaId: ID
+  mediaVersionId: ID
+  createdAt: Date
+  updatedAt: Date
+  width: Int
+  height: Int
+  highDpi: Boolean
+  url: String
+  media: input_media
+}
+
+input input_named {
+  id: ID
+  tenantId: ID
+  versionId: ID
+  name: String
+  optionalGroupId: ID
+  optionalGroup: input_named_optional_group
+}
+
+input input_named_optional_group {
+  id: ID
+  versionId: ID
+  tenantId: ID
+  name: String
+  nameds: [input_named]
+}
+
+input input_order {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  autoIncrement: Int
+  orderCustomerId: ID
+  orderCustomerVersionId: ID
+  stateId: ID
+  orderStateVersionId: ID
+  paymentMethodId: ID
+  paymentMethodVersionId: ID
+  currencyId: ID
+  currencyVersionId: ID
+  salesChannelId: ID
+  billingAddressId: ID
+  billingAddressVersionId: ID
+  date: Date
+  amountTotal: Float
+  positionPrice: Float
+  shippingTotal: Float
+  currencyFactor: Float
+  isNet: Boolean
+  isTaxFree: Boolean
+  deepLinkCode: String
+  createdAt: Date
+  updatedAt: Date
+  orderCustomer: input_order_customer
+  state: input_order_state
+  paymentMethod: input_payment_method
+  currency: input_currency
+  salesChannel: input_sales_channel
+  billingAddress: input_order_address
+  deliveries: [input_order_delivery]
+  lineItems: [input_order_line_item]
+  transactions: [input_order_transaction]
+  searchKeywords: [input_search_document]
+}
+
+input input_order_address {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  countryId: ID
+  countryVersionId: ID
+  countryStateId: ID
+  countryStateVersionId: ID
+  salutation: String
+  firstName: String
+  lastName: String
+  street: String
+  zipcode: String
+  city: String
+  company: String
+  department: String
+  title: String
+  vatId: String
+  phoneNumber: String
+  additionalAddressLine1: String
+  additionalAddressLine2: String
+  createdAt: Date
+  updatedAt: Date
+  country: input_country
+  countryState: input_country_state
+  orders: [input_order]
+  orderDeliveries: [input_order_delivery]
+}
+
+input input_order_customer {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  customerId: ID
+  customerVersionId: ID
+  email: String
+  firstName: String
+  lastName: String
+  salutation: String
+  title: String
+  customerNumber: String
+  createdAt: Date
+  updatedAt: Date
+  customer: input_customer
+  orders: [input_order]
+}
+
+input input_order_delivery {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  orderId: ID
+  orderVersionId: ID
+  shippingOrderAddressId: ID
+  shippingOrderAddressVersionId: ID
+  orderStateId: ID
+  orderStateVersionId: ID
+  shippingMethodId: ID
+  shippingMethodVersionId: ID
+  shippingDateEarliest: Date
+  shippingDateLatest: Date
+  trackingCode: String
+  createdAt: Date
+  updatedAt: Date
+  order: input_order
+  shippingOrderAddress: input_order_address
+  orderState: input_order_state
+  shippingMethod: input_shipping_method
+  positions: [input_order_delivery_position]
+}
+
+input input_order_delivery_position {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  orderDeliveryId: ID
+  orderDeliveryVersionId: ID
+  orderLineItemId: ID
+  orderLineItemVersionId: ID
+  unitPrice: Float
+  totalPrice: Float
+  quantity: Float
+  createdAt: Date
+  updatedAt: Date
+  orderDelivery: input_order_delivery
+  orderLineItem: input_order_line_item
+}
+
+input input_order_line_item {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  orderId: ID
+  orderVersionId: ID
+  identifier: String
+  quantity: Int
+  label: String
+  unitPrice: Float
+  totalPrice: Float
+  description: String
+  parentId: ID
+  type: String
+  createdAt: Date
+  updatedAt: Date
+  order: input_order
+  orderDeliveryPositions: [input_order_delivery_position]
+}
+
+input input_order_state {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  description: String
+  position: Int
+  hasMail: Boolean
+  createdAt: Date
+  updatedAt: Date
+  orders: [input_order]
+  orderDeliveries: [input_order_delivery]
+}
+
+input input_order_transaction {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  orderId: ID
+  orderVersionId: ID
+  paymentMethodId: ID
+  paymentMethodVersionId: ID
+  orderTransactionStateId: ID
+  orderTransactionStateVersionId: ID
+  amount: Json
+  details: Json
+  createdAt: Date
+  updatedAt: Date
+  order: input_order
+  paymentMethod: input_payment_method
+  orderTransactionState: input_order_transaction_state
+}
+
+input input_order_transaction_state {
+  tenantId: ID
+  versionId: ID
+  id: ID
+  position: Int
+  hasMail: Boolean
+  description: String
+  createdAt: Date
+  updatedAt: Date
+  orderTransactions: [input_order_transaction]
+}
+
+input input_payment_method {
+  id: ID
+  tenantId: ID
+  versionId: ID
+  pluginId: ID
+  technicalName: String
+  name: String
+  additionalDescription: String
+  template: String
+  class: String
+  table: String
+  hide: Boolean
+  percentageSurcharge: Float
+  absoluteSurcharge: Float
+  surchargeString: String
+  position: Int
+  active: Boolean
+  allowEsd: Boolean
+  usedIframe: String
+  hideProspect: Boolean
+  action: String
+  source: Int
+  mobileInactive: Boolean
+  riskRules: String
+  createdAt: Date
+  updatedAt: Date
+  salesChannelDefaultAssignments: [input_sales_channel]
+  plugin: input_plugin
+  customers: [input_customer]
+  orders: [input_order]
+  orderTransactions: [input_order_transaction]
+  salesChannels: [input_sales_channel]
+}
+
+input input_plugin {
+  tenantId: ID
+  versionId: ID
+  id: ID
+  name: String
+  label: String
+  active: Boolean
+  version: String
+  capabilityUpdate: Boolean
+  capabilityInstall: Boolean
+  capabilityEnable: Boolean
+  capabilitySecureUninstall: Boolean
+  description: String
+  descriptionLong: String
+  createdAt: Date
+  updatedAt: Date
+  installationDate: Date
+  updateDate: Date
+  refreshDate: Date
+  author: String
+  copyright: String
+  license: String
+  support: String
+  changes: String
+  link: String
+  storeVersion: String
+  storeDate: Date
+  updateSource: String
+  updateVersion: String
+  paymentMethods: [input_payment_method]
+}
+
+input input_product {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  catalogId: ID
+  parentId: ID
+  parentVersionId: ID
+  autoIncrement: Int
+  active: Boolean
+  stock: Int
+  createdAt: Date
+  updatedAt: Date
+  manufacturerId: ID
+  productManufacturerVersionId: ID
+  unitId: ID
+  unitVersionId: ID
+  taxId: ID
+  taxVersionId: ID
+  coverId: ID
+  productMediaVersionId: ID
+  price: Json
+  listingPrices: Json
+  supplierNumber: String
+  ean: String
+  isCloseout: Boolean
+  minStock: Int
+  purchaseSteps: Int
+  maxPurchase: Int
+  minPurchase: Int
+  purchaseUnit: Float
+  referenceUnit: Float
+  shippingFree: Boolean
+  purchasePrice: Float
+  pseudoSales: Int
+  markAsTopseller: Boolean
+  sales: Int
+  position: Int
+  weight: Float
+  width: Float
+  height: Float
+  length: Float
+  template: String
+  allowNotification: Boolean
+  releaseDate: Date
+  categoryTree: Json
+  datasheetIds: Json
+  variationIds: Json
+  minDeliveryTime: Int
+  maxDeliveryTime: Int
+  restockTime: Int
+  additionalText: String
+  name: String
+  keywords: String
+  description: String
+  descriptionLong: String
+  metaTitle: String
+  packUnit: String
+  parent: input_product
+  children: [input_product]
+  tax: input_tax
+  manufacturer: input_product_manufacturer
+  unit: input_unit
+  cover: input_product_media
+  media: [input_product_media]
+  priceRules: [input_product_price_rule]
+  services: [input_product_service]
+  datasheet: [input_configuration_group_option]
+  categories: [input_category]
+  categoriesRo: [input_category]
+  searchKeywords: [input_search_document]
+  configurators: [input_product_configurator]
+  variations: [input_configuration_group_option]
+  catalog: input_catalog
+  canonicalUrl: input_seo_url
+}
+
+input input_product_configurator {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  productId: ID
+  productVersionId: ID
+  optionId: ID
+  configurationGroupOptionVersionId: ID
+  price: Json
+  prices: Json
+  createdAt: Date
+  updatedAt: Date
+  product: input_product
+  option: input_configuration_group_option
+}
+
+input input_product_manufacturer {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  catalogId: ID
+  mediaId: ID
+  mediaVersionId: ID
+  link: String
+  updatedAt: Date
+  createdAt: Date
+  name: String
+  description: String
+  metaTitle: String
+  metaDescription: String
+  metaKeywords: String
+  media: input_media
+  products: [input_product]
+  catalog: input_catalog
+}
+
+input input_product_media {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  catalogId: ID
+  productId: ID
+  productVersionId: ID
+  mediaId: ID
+  mediaVersionId: ID
+  position: Int
+  createdAt: Date
+  updatedAt: Date
+  product: input_product
+  media: input_media
+  catalog: input_catalog
+}
+
+input input_product_price_rule {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  productId: ID
+  productVersionId: ID
+  currencyId: ID
+  currencyVersionId: ID
+  ruleId: ID
+  price: Json
+  quantityStart: Int
+  quantityEnd: Int
+  createdAt: Date
+  updatedAt: Date
+  product: input_product
+  currency: input_currency
+  rule: input_rule
+}
+
+input input_product_service {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  productId: ID
+  productVersionId: ID
+  optionId: ID
+  configurationGroupOptionVersionId: ID
+  taxId: ID
+  taxVersionId: ID
+  price: Json
+  prices: Json
+  createdAt: Date
+  updatedAt: Date
+  product: input_product
+  option: input_configuration_group_option
+  tax: input_tax
+}
+
+input input_rule {
+  tenantId: ID
+  id: ID
+  name: String
+  priority: Int
+  payload: Json
+  createdAt: Date
+  updatedAt: Date
+  discountSurcharges: [input_discount_surcharge]
+  productPriceRules: [input_product_price_rule]
+}
+
+input input_sales_channel {
+  tenantId: ID
+  id: ID
+  typeId: ID
+  languageId: ID
+  currencyId: ID
+  currencyVersionId: ID
+  paymentMethodId: ID
+  paymentMethodVersionId: ID
+  shippingMethodId: ID
+  shippingMethodVersionId: ID
+  countryId: ID
+  countryVersionId: ID
+  type: input_sales_channel_type
+  name: String
+  accessKey: String
+  configuration: Json
+  active: Boolean
+  taxCalculationType: String
+  createdAt: Date
+  updatedAt: Date
+  catalogs: [input_catalog]
+  currencies: [input_currency]
+  languages: [input_language]
+  countries: [input_country]
+  paymentMethods: [input_payment_method]
+  shippingMethods: [input_shipping_method]
+  language: input_language
+  currency: input_currency
+  paymentMethod: input_payment_method
+  shippingMethod: input_shipping_method
+  country: input_country
+  orders: [input_order]
+  customers: [input_customer]
+  seoUrls: [input_seo_url]
+}
+
+input input_sales_channel_type {
+  id: ID
+  tenantId: ID
+  coverUrl: String
+  iconName: String
+  screenshotUrls: Json
+  name: String
+  manufacturer: String
+  description: String
+  descriptionLong: String
+  createdAt: Date
+  updatedAt: Date
+  salesChannels: [input_sales_channel]
+}
+
+input input_search_document {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  languageId: ID
+  entityId: ID
+  entity: String
+  keyword: String
+  ranking: Float
+  language: input_language
+}
+
+input input_seo_url {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  salesChannelId: ID
+  name: String
+  foreignKey: ID
+  foreignKeyVersionId: ID
+  pathInfo: String
+  seoPathInfo: String
+  isCanonical: Boolean
+  isModified: Boolean
+  createdAt: Date
+  updatedAt: Date
+  salesChannel: input_sales_channel
+  url: String
+}
+
+input input_shipping_method {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  type: Int
+  bindShippingfree: Boolean
+  bindLaststock: Boolean
+  name: String
+  active: Boolean
+  position: Int
+  calculation: Int
+  surchargeCalculation: Int
+  taxCalculation: Int
+  minDeliveryTime: Int
+  maxDeliveryTime: Int
+  shippingFree: Float
+  bindTimeFrom: Int
+  bindTimeTo: Int
+  bindInstock: Boolean
+  bindWeekdayFrom: Int
+  bindWeekdayTo: Int
+  bindWeightFrom: Float
+  bindWeightTo: Float
+  bindPriceFrom: Float
+  bindPriceTo: Float
+  bindSql: String
+  statusLink: String
+  calculationSql: String
+  createdAt: Date
+  updatedAt: Date
+  salesChannelDefaultAssignments: [input_sales_channel]
+  description: String
+  comment: String
+  orderDeliveries: [input_order_delivery]
+  prices: [input_shipping_method_price]
+  salesChannels: [input_sales_channel]
+}
+
+input input_shipping_method_price {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  shippingMethodId: ID
+  shippingMethodVersionId: ID
+  quantityFrom: Float
+  price: Float
+  factor: Float
+  createdAt: Date
+  updatedAt: Date
+  shippingMethod: input_shipping_method
+}
+
+input input_snippet {
+  tenantId: ID
+  id: ID
+  languageId: ID
+  translationKey: String
+  value: String
+  createdAt: Date
+  updatedAt: Date
+  language: input_language
+}
+
+input input_tax {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  taxRate: Float
+  name: String
+  createdAt: Date
+  updatedAt: Date
+  products: [input_product]
+  productServices: [input_product_service]
+}
+
+input input_unit {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  shortCode: String
+  name: String
+  createdAt: Date
+  updatedAt: Date
+  products: [input_product]
+}
+
+input input_user {
+  tenantId: ID
+  id: ID
+  localeId: ID
+  username: String
+  name: String
+  email: String
+  lastLogin: Date
+  active: Boolean
+  failedLogins: Int
+  lockedUntil: Date
+  createdAt: Date
+  updatedAt: Date
+  locale: input_locale
+  media: [input_media]
+  accessKeys: [input_user_access_key]
+}
+
+input input_user_access_key {
+  tenantId: ID
+  id: ID
+  userId: ID
+  accessKey: String
+  writeAccess: Boolean
+  createdAt: Date
+  lastUsageAt: Date
+  user: input_user
+}
+
+input input_version {
+  tenantId: ID
+  id: ID
+  name: String
+  createdAt: Date
+  updatedAt: Date
+  commits: [input_version_commit]
+}
+
+input input_version_commit {
+  tenantId: ID
+  id: ID
+  versionId: ID
+  userId: ID
+  integrationId: ID
+  autoIncrement: Int
+  isMerge: Boolean
+  message: String
+  createdAt: Date
+  data: [input_version_commit_data]
+  version: input_version
+}
+
+input input_version_commit_data {
+  tenantId: ID
+  id: ID
+  versionCommitId: ID
+  commit: input_version_commit
+  userId: ID
+  integrationId: ID
+  autoIncrement: Int
+  entityName: String
+  entityId: Json
+  action: String
+  payload: Json
+  createdAt: Date
+}
+
+type integration {
+  tenantId: ID!
+  id: ID!
+  label: String!
+  accessKey: String!
+  writeAccess: Boolean
+  lastUsageAt: Date
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type integration_connection {
+  total: Int
+  edges: [integration_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type integration_edge {
+  node: integration
+  cursor: ID
+}
+
+type language {
+  tenantId: ID!
+  id: ID!
+  parentId: ID
+  localeId: ID
+  name: String!
+  createdAt: Date!
+  updatedAt: Date!
+  parent: language
+  locale: locale
+  children: language_connection
+  salesChannelDefaultAssignments: sales_channel_connection
+  snippets: snippet_connection
+  salesChannels: sales_channel_connection
+}
+
+type language_connection {
+  total: Int
+  edges: [language_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type language_edge {
+  node: language
+  cursor: ID
+}
+
+type listing_facet {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  uniqueKey: String!
+  payload: String!
+  name: String
+  active: Boolean
+  displayInCategories: Boolean
+  deletable: Boolean
+  position: Int
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type listing_facet_connection {
+  total: Int
+  edges: [listing_facet_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type listing_facet_edge {
+  node: listing_facet
+  cursor: ID
+}
+
+type listing_sorting {
+  tenantId: ID!
+  versionId: ID!
+  id: ID!
+  payload: Json!
+  label: String
+  uniqueKey: String!
+  active: Boolean
+  displayInCategories: Boolean
+  position: Int
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type listing_sorting_connection {
+  total: Int
+  edges: [listing_sorting_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type listing_sorting_edge {
+  node: listing_sorting
+  cursor: ID
+}
+
+type locale {
+  tenantId: ID!
+  id: ID!
+  code: String!
+  name: String
+  territory: String
+  createdAt: Date!
+  updatedAt: Date!
+  languages: language_connection
+  users: user_connection
+}
+
+type locale_connection {
+  total: Int
+  edges: [locale_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type locale_edge {
+  node: locale
+  cursor: ID
+}
+
+type media {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  catalogId: ID!
+  userId: ID
+  mimeType: String
+  fileExtension: String
+  fileSize: Int
+  metaData: Json
+  createdAt: Date!
+  updatedAt: Date!
+  description: String
+  name: String
+  url: String
+  user: user
+  categories: category_connection
+  productManufacturers: product_manufacturer_connection
+  productMedia: product_media_connection
+  catalog: catalog
+  thumbnails: media_thumbnail_connection
+  hasFile: Boolean
+}
+
+type media_connection {
+  total: Int
+  edges: [media_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type media_edge {
+  node: media
+  cursor: ID
+}
+
+type media_thumbnail {
+  tenantId: ID!
+  versionId: ID!
+  id: ID!
+  mediaId: ID!
+  mediaVersionId: ID!
+  createdAt: Date!
+  updatedAt: Date!
+  width: Int!
+  height: Int!
+  highDpi: Boolean!
+  url: String
+  media: media
+}
+
+type media_thumbnail_connection {
+  total: Int
+  edges: [media_thumbnail_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type media_thumbnail_edge {
+  node: media_thumbnail
+  cursor: ID
+}
+
+type named {
+  id: ID!
+  tenantId: ID!
+  versionId: ID!
+  name: String!
+  optionalGroupId: ID
+  optionalGroup: named_optional_group
+}
+
+type named_connection {
+  total: Int
+  edges: [named_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type named_edge {
+  node: named
+  cursor: ID
+}
+
+type named_optional_group {
+  id: ID!
+  versionId: ID!
+  tenantId: ID!
+  name: String!
+  nameds: named_connection
+}
+
+type named_optional_group_connection {
+  total: Int
+  edges: [named_optional_group_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type named_optional_group_edge {
+  node: named_optional_group
+  cursor: ID
+}
+
+type order {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  autoIncrement: Int
+  orderCustomerId: ID!
+  orderCustomerVersionId: ID!
+  stateId: ID!
+  orderStateVersionId: ID!
+  paymentMethodId: ID!
+  paymentMethodVersionId: ID!
+  currencyId: ID!
+  currencyVersionId: ID!
+  salesChannelId: ID!
+  billingAddressId: ID!
+  billingAddressVersionId: ID!
+  date: Date!
+  amountTotal: Float!
+  positionPrice: Float!
+  shippingTotal: Float!
+  currencyFactor: Float!
+  isNet: Boolean!
+  isTaxFree: Boolean!
+  deepLinkCode: String
+  createdAt: Date!
+  updatedAt: Date!
+  orderCustomer: order_customer
+  state: order_state
+  paymentMethod: payment_method
+  currency: currency
+  salesChannel: sales_channel
+  billingAddress: order_address
+  deliveries: order_delivery_connection
+  lineItems: order_line_item_connection
+  transactions: order_transaction_connection
+  searchKeywords: search_document_connection
+}
+
+type order_address {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  countryId: ID!
+  countryVersionId: ID!
+  countryStateId: ID
+  countryStateVersionId: ID!
+  salutation: String
+  firstName: String!
+  lastName: String!
+  street: String!
+  zipcode: String!
+  city: String!
+  company: String
+  department: String
+  title: String
+  vatId: String
+  phoneNumber: String
+  additionalAddressLine1: String
+  additionalAddressLine2: String
+  createdAt: Date!
+  updatedAt: Date!
+  country: country
+  countryState: country_state
+  orders: order_connection
+  orderDeliveries: order_delivery_connection
+}
+
+type order_address_connection {
+  total: Int
+  edges: [order_address_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type order_address_edge {
+  node: order_address
+  cursor: ID
+}
+
+type order_connection {
+  total: Int
+  edges: [order_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type order_customer {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  customerId: ID
+  customerVersionId: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  salutation: String
+  title: String
+  customerNumber: String
+  createdAt: Date!
+  updatedAt: Date!
+  customer: customer
+  orders: order_connection
+}
+
+type order_customer_connection {
+  total: Int
+  edges: [order_customer_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type order_customer_edge {
+  node: order_customer
+  cursor: ID
+}
+
+type order_delivery {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  orderId: ID!
+  orderVersionId: ID!
+  shippingOrderAddressId: ID!
+  shippingOrderAddressVersionId: ID!
+  orderStateId: ID!
+  orderStateVersionId: ID!
+  shippingMethodId: ID!
+  shippingMethodVersionId: ID!
+  shippingDateEarliest: Date!
+  shippingDateLatest: Date!
+  trackingCode: String
+  createdAt: Date!
+  updatedAt: Date!
+  order: order
+  shippingOrderAddress: order_address
+  orderState: order_state
+  shippingMethod: shipping_method
+  positions: order_delivery_position_connection
+}
+
+type order_delivery_connection {
+  total: Int
+  edges: [order_delivery_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type order_delivery_edge {
+  node: order_delivery
+  cursor: ID
+}
+
+type order_delivery_position {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  orderDeliveryId: ID!
+  orderDeliveryVersionId: ID!
+  orderLineItemId: ID!
+  orderLineItemVersionId: ID!
+  unitPrice: Float!
+  totalPrice: Float!
+  quantity: Float!
+  createdAt: Date!
+  updatedAt: Date!
+  orderDelivery: order_delivery
+  orderLineItem: order_line_item
+}
+
+type order_delivery_position_connection {
+  total: Int
+  edges: [order_delivery_position_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type order_delivery_position_edge {
+  node: order_delivery_position
+  cursor: ID
+}
+
+type order_edge {
+  node: order
+  cursor: ID
+}
+
+type order_line_item {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  orderId: ID!
+  orderVersionId: ID!
+  identifier: String!
+  quantity: Int!
+  label: String!
+  unitPrice: Float!
+  totalPrice: Float!
+  description: String
+  parentId: ID
+  type: String
+  createdAt: Date!
+  updatedAt: Date!
+  order: order
+  orderDeliveryPositions: order_delivery_position_connection
+}
+
+type order_line_item_connection {
+  total: Int
+  edges: [order_line_item_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type order_line_item_edge {
+  node: order_line_item
+  cursor: ID
+}
+
+type order_state {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  description: String
+  position: Int
+  hasMail: Boolean
+  createdAt: Date!
+  updatedAt: Date!
+  orders: order_connection
+  orderDeliveries: order_delivery_connection
+}
+
+type order_state_connection {
+  total: Int
+  edges: [order_state_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type order_state_edge {
+  node: order_state
+  cursor: ID
+}
+
+type order_transaction {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  orderId: ID!
+  orderVersionId: ID!
+  paymentMethodId: ID!
+  paymentMethodVersionId: ID!
+  orderTransactionStateId: ID!
+  orderTransactionStateVersionId: ID!
+  amount: Json!
+  details: Json
+  createdAt: Date!
+  updatedAt: Date!
+  order: order
+  paymentMethod: payment_method
+  orderTransactionState: order_transaction_state
+}
+
+type order_transaction_connection {
+  total: Int
+  edges: [order_transaction_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type order_transaction_edge {
+  node: order_transaction
+  cursor: ID
+}
+
+type order_transaction_state {
+  tenantId: ID!
+  versionId: ID!
+  id: ID!
+  position: Int!
+  hasMail: Boolean!
+  description: String
+  createdAt: Date!
+  updatedAt: Date!
+  orderTransactions: order_transaction_connection
+}
+
+type order_transaction_state_connection {
+  total: Int
+  edges: [order_transaction_state_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type order_transaction_state_edge {
+  node: order_transaction_state
+  cursor: ID
+}
+
+type pageInfo {
+  endCursor: ID
+  hasNextPage: Boolean
+}
+
+input parameter {
+  operator: rangeOperator!
+  value: Float!
+}
+
+type payment_method {
+  id: ID!
+  tenantId: ID!
+  versionId: ID!
+  pluginId: ID
+  technicalName: String!
+  name: String
+  additionalDescription: String
+  template: String
+  class: String
+  table: String
+  hide: Boolean
+  percentageSurcharge: Float
+  absoluteSurcharge: Float
+  surchargeString: String
+  position: Int
+  active: Boolean
+  allowEsd: Boolean
+  usedIframe: String
+  hideProspect: Boolean
+  action: String
+  source: Int
+  mobileInactive: Boolean
+  riskRules: String
+  createdAt: Date!
+  updatedAt: Date!
+  salesChannelDefaultAssignments: sales_channel_connection
+  plugin: plugin
+  customers: customer_connection
+  orders: order_connection
+  orderTransactions: order_transaction_connection
+  salesChannels: sales_channel_connection
+}
+
+type payment_method_connection {
+  total: Int
+  edges: [payment_method_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type payment_method_edge {
+  node: payment_method
+  cursor: ID
+}
+
+type plugin {
+  tenantId: ID!
+  versionId: ID!
+  id: ID!
+  name: String!
+  label: String!
+  active: Boolean!
+  version: String!
+  capabilityUpdate: Boolean!
+  capabilityInstall: Boolean!
+  capabilityEnable: Boolean!
+  capabilitySecureUninstall: Boolean!
+  description: String
+  descriptionLong: String
+  createdAt: Date!
+  updatedAt: Date!
+  installationDate: Date
+  updateDate: Date
+  refreshDate: Date
+  author: String
+  copyright: String
+  license: String
+  support: String
+  changes: String
+  link: String
+  storeVersion: String
+  storeDate: Date
+  updateSource: String
+  updateVersion: String
+  paymentMethods: payment_method_connection
+}
+
+type plugin_connection {
+  total: Int
+  edges: [plugin_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type plugin_edge {
+  node: plugin
+  cursor: ID
+}
+
+type product {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  catalogId: ID!
+  parentId: ID
+  parentVersionId: ID!
+  autoIncrement: Int
+  active: Boolean
+  stock: Int
+  createdAt: Date!
+  updatedAt: Date!
+  manufacturerId: ID!
+  productManufacturerVersionId: ID!
+  unitId: ID
+  unitVersionId: ID!
+  taxId: ID!
+  taxVersionId: ID!
+  coverId: ID
+  productMediaVersionId: ID
+  price: Json!
+  listingPrices: Json
+  supplierNumber: String
+  ean: String
+  isCloseout: Boolean
+  minStock: Int
+  purchaseSteps: Int
+  maxPurchase: Int
+  minPurchase: Int
+  purchaseUnit: Float
+  referenceUnit: Float
+  shippingFree: Boolean
+  purchasePrice: Float
+  pseudoSales: Int
+  markAsTopseller: Boolean
+  sales: Int
+  position: Int
+  weight: Float
+  width: Float
+  height: Float
+  length: Float
+  template: String
+  allowNotification: Boolean
+  releaseDate: Date
+  categoryTree: Json
+  datasheetIds: Json
+  variationIds: Json
+  minDeliveryTime: Int
+  maxDeliveryTime: Int
+  restockTime: Int
+  additionalText: String
+  name: String
+  keywords: String
+  description: String
+  descriptionLong: String
+  metaTitle: String
+  packUnit: String
+  parent: product
+  children: product_connection
+  tax: tax
+  manufacturer: product_manufacturer
+  unit: unit
+  cover: product_media
+  media: product_media_connection
+  priceRules: product_price_rule_connection
+  services: product_service_connection
+  datasheet: configuration_group_option_connection
+  categories: category_connection
+  categoriesRo: category_connection
+  searchKeywords: search_document_connection
+  configurators: product_configurator_connection
+  variations: configuration_group_option_connection
+  catalog: catalog
+  canonicalUrl: seo_url
+}
+
+type product_configurator {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  productId: ID!
+  productVersionId: ID!
+  optionId: ID!
+  configurationGroupOptionVersionId: ID!
+  price: Json
+  prices: Json
+  createdAt: Date!
+  updatedAt: Date!
+  product: product
+  option: configuration_group_option
+}
+
+type product_configurator_connection {
+  total: Int
+  edges: [product_configurator_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type product_configurator_edge {
+  node: product_configurator
+  cursor: ID
+}
+
+type product_connection {
+  total: Int
+  edges: [product_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type product_edge {
+  node: product
+  cursor: ID
+}
+
+type product_manufacturer {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  catalogId: ID!
+  mediaId: ID
+  mediaVersionId: ID!
+  link: String
+  updatedAt: Date!
+  createdAt: Date!
+  name: String
+  description: String
+  metaTitle: String
+  metaDescription: String
+  metaKeywords: String
+  media: media
+  products: product_connection
+  catalog: catalog
+}
+
+type product_manufacturer_connection {
+  total: Int
+  edges: [product_manufacturer_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type product_manufacturer_edge {
+  node: product_manufacturer
+  cursor: ID
+}
+
+type product_media {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  catalogId: ID!
+  productId: ID!
+  productVersionId: ID!
+  mediaId: ID!
+  mediaVersionId: ID!
+  position: Int
+  createdAt: Date!
+  updatedAt: Date!
+  product: product
+  media: media
+  catalog: catalog
+}
+
+type product_media_connection {
+  total: Int
+  edges: [product_media_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type product_media_edge {
+  node: product_media
+  cursor: ID
+}
+
+type product_price_rule {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  productId: ID!
+  productVersionId: ID!
+  currencyId: ID!
+  currencyVersionId: ID!
+  ruleId: ID!
+  price: Json!
+  quantityStart: Int!
+  quantityEnd: Int
+  createdAt: Date!
+  updatedAt: Date!
+  product: product
+  currency: currency
+  rule: rule
+}
+
+type product_price_rule_connection {
+  total: Int
+  edges: [product_price_rule_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type product_price_rule_edge {
+  node: product_price_rule
+  cursor: ID
+}
+
+type product_service {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  productId: ID!
+  productVersionId: ID!
+  optionId: ID!
+  configurationGroupOptionVersionId: ID!
+  taxId: ID!
+  taxVersionId: ID!
+  price: Json
+  prices: Json
+  createdAt: Date!
+  updatedAt: Date!
+  product: product
+  option: configuration_group_option
+  tax: tax
+}
+
+type product_service_connection {
+  total: Int
+  edges: [product_service_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type product_service_edge {
+  node: product_service
+  cursor: ID
+}
+
+input query {
+  type: queryTypes!
+  operator: queryOperator
+  queries: [query]
+  field: String
+  value: String
+  parameters: [parameter]
+}
+
+enum queryOperator {
+  AND
+  OR
+}
+
+enum queryTypes {
+  equals
+  contains
+  equalsAny
+  multi
+  not
+  range
+}
+
+enum rangeOperator {
+  GTE
+  GT
+  LTE
+  LT
+}
+
+type rule {
+  tenantId: ID!
+  id: ID!
+  name: String!
+  priority: Int!
+  payload: Json!
+  createdAt: Date!
+  updatedAt: Date!
+  discountSurcharges: discount_surcharge_connection
+  productPriceRules: product_price_rule_connection
+}
+
+type rule_connection {
+  total: Int
+  edges: [rule_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type rule_edge {
+  node: rule
+  cursor: ID
+}
+
+type sales_channel {
+  tenantId: ID!
+  id: ID!
+  typeId: ID!
+  languageId: ID!
+  currencyId: ID!
+  currencyVersionId: ID!
+  paymentMethodId: ID!
+  paymentMethodVersionId: ID!
+  shippingMethodId: ID!
+  shippingMethodVersionId: ID!
+  countryId: ID!
+  countryVersionId: ID!
+  type: sales_channel_type
+  name: String
+  accessKey: String!
+  configuration: Json
+  active: Boolean
+  taxCalculationType: String
+  createdAt: Date!
+  updatedAt: Date!
+  catalogs: catalog_connection
+  currencies: currency_connection
+  languages: language_connection
+  countries: country_connection
+  paymentMethods: payment_method_connection
+  shippingMethods: shipping_method_connection
+  language: language
+  currency: currency
+  paymentMethod: payment_method
+  shippingMethod: shipping_method
+  country: country
+  orders: order_connection
+  customers: customer_connection
+  seoUrls: seo_url_connection
+}
+
+type sales_channel_connection {
+  total: Int
+  edges: [sales_channel_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type sales_channel_edge {
+  node: sales_channel
+  cursor: ID
+}
+
+type sales_channel_type {
+  id: ID!
+  tenantId: ID!
+  coverUrl: String
+  iconName: String
+  screenshotUrls: Json
+  name: String
+  manufacturer: String
+  description: String
+  descriptionLong: String
+  createdAt: Date!
+  updatedAt: Date!
+  salesChannels: sales_channel_connection
+}
+
+type sales_channel_type_connection {
+  total: Int
+  edges: [sales_channel_type_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type sales_channel_type_edge {
+  node: sales_channel_type
+  cursor: ID
+}
+
+type search_document {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  languageId: ID!
+  entityId: ID!
+  entity: String!
+  keyword: String!
+  ranking: Float!
+  language: language
+}
+
+type search_document_connection {
+  total: Int
+  edges: [search_document_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type search_document_edge {
+  node: search_document
+  cursor: ID
+}
+
+type seo_url {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  salesChannelId: ID!
+  name: String!
+  foreignKey: ID!
+  foreignKeyVersionId: ID!
+  pathInfo: String!
+  seoPathInfo: String!
+  isCanonical: Boolean
+  isModified: Boolean
+  createdAt: Date!
+  updatedAt: Date!
+  salesChannel: sales_channel
+  url: String
+}
+
+type seo_url_connection {
+  total: Int
+  edges: [seo_url_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type seo_url_edge {
+  node: seo_url
+  cursor: ID
+}
+
+type shipping_method {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  type: Int!
+  bindShippingfree: Boolean!
+  bindLaststock: Boolean
+  name: String
+  active: Boolean
+  position: Int
+  calculation: Int
+  surchargeCalculation: Int
+  taxCalculation: Int
+  minDeliveryTime: Int
+  maxDeliveryTime: Int
+  shippingFree: Float
+  bindTimeFrom: Int
+  bindTimeTo: Int
+  bindInstock: Boolean
+  bindWeekdayFrom: Int
+  bindWeekdayTo: Int
+  bindWeightFrom: Float
+  bindWeightTo: Float
+  bindPriceFrom: Float
+  bindPriceTo: Float
+  bindSql: String
+  statusLink: String
+  calculationSql: String
+  createdAt: Date!
+  updatedAt: Date!
+  salesChannelDefaultAssignments: sales_channel_connection
+  description: String
+  comment: String
+  orderDeliveries: order_delivery_connection
+  prices: shipping_method_price_connection
+  salesChannels: sales_channel_connection
+}
+
+type shipping_method_connection {
+  total: Int
+  edges: [shipping_method_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type shipping_method_edge {
+  node: shipping_method
+  cursor: ID
+}
+
+type shipping_method_price {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  shippingMethodId: ID!
+  shippingMethodVersionId: ID!
+  quantityFrom: Float!
+  price: Float!
+  factor: Float!
+  createdAt: Date!
+  updatedAt: Date!
+  shippingMethod: shipping_method
+}
+
+type shipping_method_price_connection {
+  total: Int
+  edges: [shipping_method_price_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type shipping_method_price_edge {
+  node: shipping_method_price
+  cursor: ID
+}
+
+type snippet {
+  tenantId: ID!
+  id: ID!
+  languageId: ID!
+  translationKey: String!
+  value: String!
+  createdAt: Date!
+  updatedAt: Date!
+  language: language
+}
+
+type snippet_connection {
+  total: Int
+  edges: [snippet_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type snippet_edge {
+  node: snippet
+  cursor: ID
+}
+
+enum sortDirection {
+  ASC
+  DESC
+}
+
+type tax {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  taxRate: Float!
+  name: String!
+  createdAt: Date!
+  updatedAt: Date!
+  products: product_connection
+  productServices: product_service_connection
+}
+
+type tax_connection {
+  total: Int
+  edges: [tax_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type tax_edge {
+  node: tax
+  cursor: ID
+}
+
+type unit {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  shortCode: String
+  name: String
+  createdAt: Date!
+  updatedAt: Date!
+  products: product_connection
+}
+
+type unit_connection {
+  total: Int
+  edges: [unit_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type unit_edge {
+  node: unit
+  cursor: ID
+}
+
+type user {
+  tenantId: ID!
+  id: ID!
+  localeId: ID!
+  username: String!
+  name: String!
+  email: String!
+  lastLogin: Date
+  active: Boolean
+  failedLogins: Int
+  lockedUntil: Date
+  createdAt: Date!
+  updatedAt: Date!
+  locale: locale
+  media: media_connection
+  accessKeys: user_access_key_connection
+}
+
+type user_access_key {
+  tenantId: ID!
+  id: ID!
+  userId: ID!
+  accessKey: String!
+  writeAccess: Boolean
+  createdAt: Date!
+  lastUsageAt: Date
+  user: user
+}
+
+type user_access_key_connection {
+  total: Int
+  edges: [user_access_key_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type user_access_key_edge {
+  node: user_access_key
+  cursor: ID
+}
+
+type user_connection {
+  total: Int
+  edges: [user_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type user_edge {
+  node: user
+  cursor: ID
+}
+
+type version {
+  tenantId: ID!
+  id: ID!
+  name: String!
+  createdAt: Date!
+  updatedAt: Date!
+  commits: version_commit_connection
+}
+
+type version_commit {
+  tenantId: ID!
+  id: ID!
+  versionId: ID!
+  userId: ID
+  integrationId: ID
+  autoIncrement: Int
+  isMerge: Boolean
+  message: String
+  createdAt: Date!
+  data: version_commit_data_connection
+  version: version
+}
+
+type version_commit_connection {
+  total: Int
+  edges: [version_commit_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type version_commit_data {
+  tenantId: ID!
+  id: ID!
+  versionCommitId: ID!
+  commit: version_commit
+  userId: ID
+  integrationId: ID
+  autoIncrement: Int
+  entityName: String!
+  entityId: Json!
+  action: String!
+  payload: Json!
+  createdAt: Date!
+}
+
+type version_commit_data_connection {
+  total: Int
+  edges: [version_commit_data_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type version_commit_data_edge {
+  node: version_commit_data
+  cursor: ID
+}
+
+type version_commit_edge {
+  node: version_commit
+  cursor: ID
+}
+
+type version_connection {
+  total: Int
+  edges: [version_edge]
+  pageInfo: pageInfo
+  aggregations: [aggregationResults]
+}
+
+type version_edge {
+  node: version
+  cursor: ID
+}

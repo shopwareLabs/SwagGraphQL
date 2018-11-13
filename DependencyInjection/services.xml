@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service class="SwagGraphQL\Api\ApiController" id="SwagGraphQL\Api\ApiController" public="true">
+            <argument type="service" id="swag_graphql.schema"></argument>
+            <argument type="service" id="SwagGraphQL\Resolver\QueryResolver"></argument>
+        </service>
+
+        <service class="SwagGraphQL\Schema\TypeRegistry" id="SwagGraphQL\Schema\TypeRegistry">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry"></argument>
+            <argument type="service" id="SwagGraphQL\Resolver\QueryResolver"></argument>
+        </service>
+        <service class="SwagGraphQL\Schema\SchemaFactory" id="SwagGraphQL\Schema\SchemaFactory"></service>
+        <service class="GraphQL\Type\Schema" id="swag_graphql.schema">
+            <factory class="SwagGraphQL\Schema\SchemaFactory" method="createSchema"></factory>
+            <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
+        </service>
+
+        <service class="SwagGraphQL\Resolver\QueryResolver" id="SwagGraphQL\Resolver\QueryResolver">
+            <argument type="service" id="service_container"></argument>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry"></argument>
+        </service>
+    </services>
+</container>
