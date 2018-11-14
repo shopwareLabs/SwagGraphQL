@@ -74,7 +74,6 @@ class QueryResolver
 
         if ($result instanceof EntityCollection) {
             // ToDo handle args in connections
-            $this->wrapConnectionType($result->getElements());
             return $this->wrapConnectionType($result->getElements());
         }
 

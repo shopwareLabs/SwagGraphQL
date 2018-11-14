@@ -201,6 +201,7 @@ class TypeRegistry
         $type = null;
         switch (true) {
             case $field instanceof IdField:
+            case $field instanceof FkField:
                 $type = Type::id();
                 break;
             case $field instanceof BoolField:
@@ -235,10 +236,9 @@ class TypeRegistry
                     $this->getConnectionTypeForDefinition($field->getReferenceClass()::getEntityName());
                 break;
             case $field instanceof ManyToOneAssociationField:
-                $type = $input ? $this->getInputForDefinition($field->getReferenceClass()::getEntityName()) : $this->getObjectForDefinition($field->getReferenceClass()::getEntityName());
-                break;
-            case $field instanceof FkField:
-                $type = Type::id();
+                $type = $input ?
+                    $this->getInputForDefinition($field->getReferenceClass()::getEntityName()) :
+                    $this->getObjectForDefinition($field->getReferenceClass()::getEntityName());
                 break;
             default:
                 // StructField, StructCollectionField, TranslationAssociationField are not exposed
