@@ -26,10 +26,20 @@ class CriteriaParser
     {
         if (isset($args['first'])) {
             $criteria->setLimit($args['first']);
+
+            if (isset($args['after'])) {
+                $criteria->setOffset((int)base64_decode($args['after']));
+            }
+
+            return;
         }
-        if (isset($args['after'])) {
-            $criteria->setOffset((int)base64_decode($args['after']));
+
+        if (isset($args['last']) && isset($args['before'])) {
+            $criteria->setLimit($args['last']);
+
+            $criteria->setOffset((int)base64_decode($args['before']) - $criteria->getLimit());
         }
+
     }
 
     private static function parseSorting(array $args, Criteria $criteria)

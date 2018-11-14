@@ -59,59 +59,59 @@ type Mutation {
 }
 
 type Query {
-  seo_url(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): seo_url_connection
-  version(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): version_connection
-  version_commit(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): version_commit_connection
-  version_commit_data(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): version_commit_data_connection
-  plugin(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): plugin_connection
-  sales_channel(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): sales_channel_connection
-  sales_channel_type(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): sales_channel_type_connection
-  country(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): country_connection
-  country_state(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): country_state_connection
-  currency(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): currency_connection
-  locale(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): locale_connection
-  listing_facet(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): listing_facet_connection
-  listing_sorting(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): listing_sorting_connection
-  snippet(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): snippet_connection
-  tax(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): tax_connection
-  unit(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): unit_connection
-  user(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): user_connection
-  user_access_key(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): user_access_key_connection
-  language(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): language_connection
-  integration(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): integration_connection
-  catalog(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): catalog_connection
-  category(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): category_connection
-  media(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): media_connection
-  media_thumbnail(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): media_thumbnail_connection
-  product(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_connection
-  product_configurator(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_configurator_connection
-  product_price_rule(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_price_rule_connection
-  product_manufacturer(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_manufacturer_connection
-  product_media(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_media_connection
-  search_document(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): search_document_connection
-  product_service(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_service_connection
-  rule(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): rule_connection
-  configuration_group(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): configuration_group_connection
-  configuration_group_option(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): configuration_group_option_connection
-  customer(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_connection
-  customer_address(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_address_connection
-  customer_group(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_group_connection
-  customer_group_discount(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_group_discount_connection
-  order(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_connection
-  order_address(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_address_connection
-  order_customer(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_customer_connection
-  order_delivery(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_delivery_connection
-  order_delivery_position(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_delivery_position_connection
-  order_line_item(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_line_item_connection
-  order_state(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_state_connection
-  order_transaction(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_transaction_connection
-  order_transaction_state(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_transaction_state_connection
-  payment_method(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): payment_method_connection
-  shipping_method(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): shipping_method_connection
-  shipping_method_price(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): shipping_method_price_connection
-  discount_surcharge(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): discount_surcharge_connection
-  named(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): named_connection
-  named_optional_group(first: Int, after: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): named_optional_group_connection
+  seo_url(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): seo_url_connection
+  version(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): version_connection
+  version_commit(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): version_commit_connection
+  version_commit_data(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): version_commit_data_connection
+  plugin(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): plugin_connection
+  sales_channel(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): sales_channel_connection
+  sales_channel_type(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): sales_channel_type_connection
+  country(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): country_connection
+  country_state(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): country_state_connection
+  currency(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): currency_connection
+  locale(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): locale_connection
+  listing_facet(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): listing_facet_connection
+  listing_sorting(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): listing_sorting_connection
+  snippet(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): snippet_connection
+  tax(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): tax_connection
+  unit(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): unit_connection
+  user(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): user_connection
+  user_access_key(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): user_access_key_connection
+  language(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): language_connection
+  integration(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): integration_connection
+  catalog(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): catalog_connection
+  category(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): category_connection
+  media(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): media_connection
+  media_thumbnail(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): media_thumbnail_connection
+  product(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_connection
+  product_configurator(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_configurator_connection
+  product_price_rule(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_price_rule_connection
+  product_manufacturer(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_manufacturer_connection
+  product_media(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_media_connection
+  search_document(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): search_document_connection
+  product_service(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): product_service_connection
+  rule(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): rule_connection
+  configuration_group(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): configuration_group_connection
+  configuration_group_option(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): configuration_group_option_connection
+  customer(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_connection
+  customer_address(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_address_connection
+  customer_group(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_group_connection
+  customer_group_discount(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): customer_group_discount_connection
+  order(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_connection
+  order_address(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_address_connection
+  order_customer(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_customer_connection
+  order_delivery(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_delivery_connection
+  order_delivery_position(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_delivery_position_connection
+  order_line_item(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_line_item_connection
+  order_state(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_state_connection
+  order_transaction(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_transaction_connection
+  order_transaction_state(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): order_transaction_state_connection
+  payment_method(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): payment_method_connection
+  shipping_method(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): shipping_method_connection
+  shipping_method_price(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): shipping_method_price_connection
+  discount_surcharge(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): discount_surcharge_connection
+  named(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): named_connection
+  named_optional_group(first: Int, last: Int, after: String, before: String, sortBy: String, sortDirection: sortDirection, query: query, aggregations: [aggregation]): named_optional_group_connection
 }
 
 input aggregation {
@@ -2109,7 +2109,9 @@ type order_transaction_state_edge {
 
 type pageInfo {
   endCursor: ID
+  startCursor: ID
   hasNextPage: Boolean
+  hasPreviousPage: Boolean
 }
 
 input parameter {

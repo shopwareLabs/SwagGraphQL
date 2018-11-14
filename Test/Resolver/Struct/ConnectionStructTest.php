@@ -58,5 +58,7 @@ class ConnectionStructTest extends TestCase
 
         static::assertTrue($connection->getPageInfo()->getHasNextPage());
         static::assertEquals(base64_encode('15'), $connection->getPageInfo()->getEndCursor());
+        static::assertTrue($connection->getPageInfo()->getHasPreviousPage());
+        static::assertEquals(base64_encode('6'), $connection->getPageInfo()->getStartCursor());
     }
 }

@@ -17,6 +17,8 @@ class PageInfoStructTest extends TestCase
         $pageInfo = PageInfoStruct::fromCriteria($criteria, 100);
 
         static::assertTrue($pageInfo->getHasNextPage());
+        static::assertTrue($pageInfo->getHasPreviousPage());
         static::assertEquals(base64_encode('15'), $pageInfo->getEndCursor());
+        static::assertEquals(base64_encode('6'), $pageInfo->getStartCursor());
     }
 }

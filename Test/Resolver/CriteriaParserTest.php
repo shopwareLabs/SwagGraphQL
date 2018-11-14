@@ -22,11 +22,25 @@ use SwagGraphQL\Resolver\CriteriaParser;
 
 class CriteriaParserTest extends TestCase
 {
-    public function testParsePagination()
+    public function testParsePaginationForward()
     {
         $criteria = CriteriaParser::buildCriteria([
             'first' => 5,
             'after' => base64_encode('10')
+        ],
+            ProductDefinition::class
+        );
+
+        static::assertEquals(Criteria::TOTAL_COUNT_MODE_EXACT, $criteria->getTotalCountMode());
+        static::assertEquals(5, $criteria->getLimit());
+        static::assertEquals(10, $criteria->getOffset());
+    }
+
+    public function testParsePaginationBackward()
+    {
+        $criteria = CriteriaParser::buildCriteria([
+            'last' => 5,
+            'before' => base64_encode('15')
         ],
             ProductDefinition::class
         );

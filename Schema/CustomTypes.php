@@ -162,13 +162,9 @@ class CustomTypes
                 'name' => 'pageInfo',
                 'fields' => [
                     'endCursor' => ['type' => Type::id()],
-//                'startCursor' => [
-//                    'type' => Type::id()
-//                ],
+                    'startCursor' => ['type' => Type::id()],
                     'hasNextPage' => ['type' => Type::boolean()],
-//                'hasPreviousPage' => [
-//                    'type' => Type::boolean()
-//                ]
+                    'hasPreviousPage' => ['type' => Type::boolean()]
                 ]
             ]);
         }

@@ -161,9 +161,9 @@ class TypeRegistry
     {
         return [
             'first' => ['type' => Type::int()],
-//            'last' => ['type' => Type::int()],
+            'last' => ['type' => Type::int()],
             'after' => ['type' => Type::string()],
-//            'before' => ['type' => Type::string()],
+            'before' => ['type' => Type::string()],
             'sortBy' => ['type' => Type::string()],
             'sortDirection' => ['type' => CustomTypes::sortDirection()],
             'query' => ['type' => CustomTypes::query()],
