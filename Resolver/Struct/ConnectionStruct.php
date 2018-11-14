@@ -3,7 +3,6 @@
 namespace SwagGraphQL\Resolver\Struct;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\AggregationResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Struct\Struct;
 

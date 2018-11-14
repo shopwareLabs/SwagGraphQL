@@ -2,7 +2,6 @@
 
 namespace SwagGraphQL\Resolver\Struct;
 
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\AggregationResult;
 use Shopware\Core\Framework\Struct\Struct;
 
 class AggregationResultStruct extends Struct

@@ -3,25 +3,11 @@
 namespace SwagGraphQL\Resolver;
 
 use GraphQL\Executor\Executor;
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\Exception\SearchRequestException;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\AggregationResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Parser\AggregationParser;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Parser\QueryStringParser;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagGraphQL\Resolver\Struct\AggregationStruct;
 use SwagGraphQL\Resolver\Struct\ConnectionStruct;
 use SwagGraphQL\Resolver\Struct\EdgeStruct;
 use SwagGraphQL\Resolver\Struct\PageInfoStruct;

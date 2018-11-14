@@ -1,8 +1,8 @@
 {
-  "name": "shopware/core",
+  "name": "shopware/swag-graphql",
   "type": "library",
   "minimum-stability": "dev",
-  "description": "Shopware platform is the core for all Shopware ecommerce products.",
+  "description": "A Simple Plugin that exposes an GraphQL-API for the Shopware 6 Core-API.",
   "keywords": ["shopware", "shop"],
   "homepage": "http://www.shopware.com",
   "license": [
