@@ -41,12 +41,12 @@ type Mutation {
   upsert_customer_address(tenantId: ID, id: ID, versionId: ID, customerId: ID, customerVersionId: ID, countryId: ID, countryVersionId: ID, countryStateId: ID, countryStateVersionId: ID, salutation: String, firstName: String, lastName: String, zipcode: String, city: String, company: String, street: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, createdAt: Date, updatedAt: Date, customer: input_customer, country: input_country, countryState: input_country_state): customer_address
   upsert_customer_group(tenantId: ID, id: ID, versionId: ID, name: String, displayGross: Boolean, inputGross: Boolean, hasGlobalDiscount: Boolean, percentageGlobalDiscount: Float, minimumOrderAmount: Float, minimumOrderAmountSurcharge: Float, createdAt: Date, updatedAt: Date, customers: [input_customer], discounts: [input_customer_group_discount]): customer_group
   upsert_customer_group_discount(tenantId: ID, id: ID, versionId: ID, customerGroupId: ID, customerGroupVersionId: ID, percentageDiscount: Float, minimumCartAmount: Float, createdAt: Date, updatedAt: Date, customerGroup: input_customer_group): customer_group_discount
-  upsert_order(tenantId: ID, id: ID, versionId: ID, autoIncrement: Int, orderCustomerId: ID, orderCustomerVersionId: ID, stateId: ID, orderStateVersionId: ID, paymentMethodId: ID, paymentMethodVersionId: ID, currencyId: ID, currencyVersionId: ID, salesChannelId: ID, billingAddressId: ID, billingAddressVersionId: ID, date: Date, amountTotal: Float, positionPrice: Float, shippingTotal: Float, currencyFactor: Float, isNet: Boolean, isTaxFree: Boolean, deepLinkCode: String, createdAt: Date, updatedAt: Date, orderCustomer: input_order_customer, state: input_order_state, paymentMethod: input_payment_method, currency: input_currency, salesChannel: input_sales_channel, billingAddress: input_order_address, deliveries: [input_order_delivery], lineItems: [input_order_line_item], transactions: [input_order_transaction], searchKeywords: [input_search_document]): order
+  upsert_order(tenantId: ID, id: ID, versionId: ID, autoIncrement: Int, orderCustomerId: ID, orderCustomerVersionId: ID, stateId: ID, orderStateVersionId: ID, paymentMethodId: ID, paymentMethodVersionId: ID, currencyId: ID, currencyVersionId: ID, salesChannelId: ID, billingAddressId: ID, billingAddressVersionId: ID, date: Date, amountTotal: Float, amountNet: Float, positionPrice: Float, shippingTotal: Float, currencyFactor: Float, isNet: Boolean, isTaxFree: Boolean, deepLinkCode: String, createdAt: Date, updatedAt: Date, orderCustomer: input_order_customer, state: input_order_state, paymentMethod: input_payment_method, currency: input_currency, salesChannel: input_sales_channel, billingAddress: input_order_address, deliveries: [input_order_delivery], lineItems: [input_order_line_item], transactions: [input_order_transaction], searchKeywords: [input_search_document]): order
   upsert_order_address(tenantId: ID, id: ID, versionId: ID, countryId: ID, countryVersionId: ID, countryStateId: ID, countryStateVersionId: ID, salutation: String, firstName: String, lastName: String, street: String, zipcode: String, city: String, company: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, createdAt: Date, updatedAt: Date, country: input_country, countryState: input_country_state, orders: [input_order], orderDeliveries: [input_order_delivery]): order_address
   upsert_order_customer(tenantId: ID, id: ID, versionId: ID, customerId: ID, customerVersionId: ID, email: String, firstName: String, lastName: String, salutation: String, title: String, customerNumber: String, createdAt: Date, updatedAt: Date, customer: input_customer, orders: [input_order]): order_customer
   upsert_order_delivery(tenantId: ID, id: ID, versionId: ID, orderId: ID, orderVersionId: ID, shippingOrderAddressId: ID, shippingOrderAddressVersionId: ID, orderStateId: ID, orderStateVersionId: ID, shippingMethodId: ID, shippingMethodVersionId: ID, shippingDateEarliest: Date, shippingDateLatest: Date, trackingCode: String, createdAt: Date, updatedAt: Date, order: input_order, shippingOrderAddress: input_order_address, orderState: input_order_state, shippingMethod: input_shipping_method, positions: [input_order_delivery_position]): order_delivery
   upsert_order_delivery_position(tenantId: ID, id: ID, versionId: ID, orderDeliveryId: ID, orderDeliveryVersionId: ID, orderLineItemId: ID, orderLineItemVersionId: ID, unitPrice: Float, totalPrice: Float, quantity: Float, createdAt: Date, updatedAt: Date, orderDelivery: input_order_delivery, orderLineItem: input_order_line_item): order_delivery_position
-  upsert_order_line_item(tenantId: ID, id: ID, versionId: ID, orderId: ID, orderVersionId: ID, identifier: String, quantity: Int, label: String, unitPrice: Float, totalPrice: Float, description: String, parentId: ID, type: String, createdAt: Date, updatedAt: Date, order: input_order, orderDeliveryPositions: [input_order_delivery_position]): order_line_item
+  upsert_order_line_item(tenantId: ID, id: ID, versionId: ID, orderId: ID, orderVersionId: ID, identifier: String, quantity: Int, label: String, payload: Json, good: Boolean, removable: Boolean, stackable: Boolean, priority: Int, price: Json, priceDefinition: Json, unitPrice: Float, totalPrice: Float, description: String, parentId: ID, type: String, createdAt: Date, updatedAt: Date, order: input_order, orderDeliveryPositions: [input_order_delivery_position], parent: input_order_line_item): order_line_item
   upsert_order_state(tenantId: ID, id: ID, versionId: ID, description: String, position: Int, hasMail: Boolean, createdAt: Date, updatedAt: Date, orders: [input_order], orderDeliveries: [input_order_delivery]): order_state
   upsert_order_transaction(tenantId: ID, id: ID, versionId: ID, orderId: ID, orderVersionId: ID, paymentMethodId: ID, paymentMethodVersionId: ID, orderTransactionStateId: ID, orderTransactionStateVersionId: ID, amount: Json, details: Json, createdAt: Date, updatedAt: Date, order: input_order, paymentMethod: input_payment_method, orderTransactionState: input_order_transaction_state): order_transaction
   upsert_order_transaction_state(tenantId: ID, versionId: ID, id: ID, position: Int, hasMail: Boolean, description: String, createdAt: Date, updatedAt: Date, orderTransactions: [input_order_transaction]): order_transaction_state
@@ -925,6 +925,7 @@ input input_order {
   billingAddressVersionId: ID
   date: Date
   amountTotal: Float
+  amountNet: Float
   positionPrice: Float
   shippingTotal: Float
   currencyFactor: Float
@@ -1042,6 +1043,13 @@ input input_order_line_item {
   identifier: String
   quantity: Int
   label: String
+  payload: Json
+  good: Boolean
+  removable: Boolean
+  stackable: Boolean
+  priority: Int
+  price: Json
+  priceDefinition: Json
   unitPrice: Float
   totalPrice: Float
   description: String
@@ -1051,6 +1059,7 @@ input input_order_line_item {
   updatedAt: Date
   order: input_order
   orderDeliveryPositions: [input_order_delivery_position]
+  parent: input_order_line_item
 }
 
 input input_order_state {
@@ -1827,6 +1836,7 @@ type order {
   billingAddressVersionId: ID!
   date: Date!
   amountTotal: Float!
+  amountNet: Float
   positionPrice: Float!
   shippingTotal: Float!
   currencyFactor: Float!
@@ -2004,6 +2014,13 @@ type order_line_item {
   identifier: String!
   quantity: Int!
   label: String!
+  payload: Json
+  good: Boolean!
+  removable: Boolean!
+  stackable: Boolean!
+  priority: Int!
+  price: Json
+  priceDefinition: Json
   unitPrice: Float!
   totalPrice: Float!
   description: String
@@ -2013,6 +2030,7 @@ type order_line_item {
   updatedAt: Date!
   order: order
   orderDeliveryPositions: order_delivery_position_connection
+  parent: order_line_item
 }
 
 type order_line_item_connection {

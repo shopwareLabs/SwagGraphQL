@@ -19,7 +19,7 @@ class PageInfoStruct extends Struct
     /** @var bool */
     protected $hasPreviousPage;
 
-    public function getEndCursor(): string
+    public function getEndCursor(): ?string
     {
         return $this->endCursor;
     }
@@ -29,7 +29,7 @@ class PageInfoStruct extends Struct
         return $this->hasNextPage;
     }
 
-    public function getStartCursor(): string
+    public function getStartCursor(): ?string
     {
         return $this->startCursor;
     }
@@ -45,9 +45,9 @@ class PageInfoStruct extends Struct
         $offset = $criteria->getOffset() ?? 0;
 
         return (new PageInfoStruct())->assign([
-            'endCursor' => base64_encode(strval($limit + $offset)),
+            'endCursor' => $total === 0 ? null : base64_encode(strval($limit + $offset)),
             'hasNextPage' => $total >= $limit + $offset,
-            'startCursor' => base64_encode(strval($offset + 1)),
+            'startCursor' => $total === 0 ? null :base64_encode(strval($offset + 1)),
             'hasPreviousPage' => $offset > 0
         ]);
     }

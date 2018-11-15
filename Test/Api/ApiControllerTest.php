@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagGraphQL\Api\ApiController;
+use SwagGraphQL\Api\UnsupportedContentTypeException;
 use SwagGraphQL\Resolver\QueryResolver;
 use SwagGraphQL\Schema\SchemaFactory;
 use SwagGraphQL\Schema\TypeRegistry;
@@ -51,10 +52,7 @@ class ApiControllerTest extends TestCase
 
     public function testQueryIntrospectionQuery()
     {
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => Introspection::getIntrospectionQuery()]));
+        $request = $this->createPostJsonRequest(Introspection::getIntrospectionQuery());
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -77,16 +75,83 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('error', $data);
         static::assertEmpty($data['data']['product']['edges']);
         static::assertEquals(0, $data['data']['product']['total']);
+    }
+
+    public function testQueryGET()
+    {
+        $query = '
+            query {
+	            product {
+	                edges {
+	                    node {
+	                        id
+		                    name
+	                    }
+	                }
+	                total
+	            }
+            }
+        ';
+        $request = $request = Request::create(
+            'localhost',
+            Request::METHOD_GET,
+            ['query' => $query]
+        );
+        $response = $this->apiController->query($request, $this->context);
+        static::assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+        static::assertArrayNotHasKey('error', $data);
+        static::assertEmpty($data['data']['product']['edges']);
+        static::assertEquals(0, $data['data']['product']['total']);
+    }
+
+    public function testQueryWithApplicationGraphQL()
+    {
+        $query = '
+            query {
+	            product {
+	                edges {
+	                    node {
+	                        id
+		                    name
+	                    }
+	                }
+	                total
+	            }
+            }
+        ';
+        $request = Request::create(
+            'localhost',
+            Request::METHOD_POST,
+            [],
+            [],
+            [],
+            [],
+            $query
+        );
+        $request->headers->add(['content_type' => 'application/graphql']);
+        $response = $this->apiController->query($request, $this->context);
+        static::assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+        static::assertArrayNotHasKey('error', $data);
+        static::assertEmpty($data['data']['product']['edges']);
+        static::assertEquals(0, $data['data']['product']['total']);
+    }
+
+    public function testWithUnsupportedContentType()
+    {
+        $this->expectException(UnsupportedContentTypeException::class);
+        $request = new Request();
+        $request->setMethod(Request::METHOD_POST);
+        $request->headers->set('content_type', 'application/svg');
+        $this->apiController->query($request, $this->context);
     }
 
     public function testQueryProductWithOneProduct()
@@ -119,10 +184,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -184,10 +246,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -265,10 +324,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ";
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -338,11 +394,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -427,10 +479,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -523,10 +572,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -580,10 +626,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -668,10 +711,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -767,10 +807,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -849,10 +886,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -896,10 +930,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ";
-        $request = $this->createMock(Request::class);
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn(json_encode(['query' => $query]));
+        $request = $this->createPostJsonRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -910,5 +941,21 @@ class ApiControllerTest extends TestCase
         $productResult = $data['data']['upsert_product'];
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($manufacturerId, $productResult['manufacturer']['id']);
+    }
+
+    private function createPostJsonRequest(string $query): Request
+    {
+        $request = Request::create(
+            'localhost',
+            Request::METHOD_POST,
+            [],
+            [],
+            [],
+            [],
+            json_encode(['query' => $query])
+        );
+        $request->headers->add(['content_type' => 'application/json']);
+
+        return $request;
     }
 }
