@@ -24,6 +24,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 
 class TypeRegistry
@@ -170,7 +171,6 @@ class TypeRegistry
 
     private function getFieldsForDefinition(string $name): array
     {
-        /** @var EntityDefinition $definition */
         $definition = $this->definitionRegistry->get($name);
 
         $fields = [];
@@ -186,7 +186,6 @@ class TypeRegistry
 
     private function getInputFieldsForDefinition(string $name): array
     {
-        /** @var EntityDefinition $definition */
         $definition = $this->definitionRegistry->get($name);
 
         $fields = [];
@@ -196,6 +195,8 @@ class TypeRegistry
                 $fields[$field->getPropertyName()]['type'] = $type;
             }
         }
+
+        $fields = $this->getDefaults($definition, $fields);
 
         return $fields;
     }
@@ -254,5 +255,17 @@ class TypeRegistry
         }
 
         return $type;
+    }
+
+    private function getDefaults(string $definition, array $fields): array
+    {
+        $defaults = $definition::getDefaults(new EntityExistence($definition, [], false, false, false, []));
+        foreach ($defaults as $propertyName => $default) {
+            if (array_key_exists($propertyName, $fields)) {
+                $fields[$propertyName]['defaultValue'] = $default;
+            }
+        }
+
+        return $fields;
     }
 }

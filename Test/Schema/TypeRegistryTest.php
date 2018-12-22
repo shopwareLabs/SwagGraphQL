@@ -20,6 +20,7 @@ use SwagGraphQL\Schema\CustomTypes;
 use SwagGraphQL\Schema\TypeRegistry;
 use SwagGraphQL\Test\_fixtures\AssociationEntity;
 use SwagGraphQL\Test\_fixtures\BaseEntity;
+use SwagGraphQL\Test\_fixtures\BaseEntityWithDefaults;
 use SwagGraphQL\Test\_fixtures\ManyToManyEntity;
 use SwagGraphQL\Test\_fixtures\ManyToOneEntity;
 use SwagGraphQL\Test\_fixtures\MappingEntity;
@@ -280,5 +281,41 @@ class TypeRegistryTest extends TestCase
         static::assertInstanceOf(ObjectType::class, $query);
         static::assertEquals('Mutation', $query->name);
         static::assertCount(0, $query->getFields());
+    }
+
+    public function testGetMutationWithDefault()
+    {
+        $this->definitionRegistry->expects($this->once())
+            ->method('getElements')
+            ->willReturn([BaseEntityWithDefaults::class]);
+
+        $this->definitionRegistry->expects($this->exactly(2))
+            ->method('get')
+            ->with(BaseEntityWithDefaults::getEntityName())
+            ->willReturn(BaseEntityWithDefaults::class);
+
+        $query = $this->typeRegistry->getMutation();
+        static::assertInstanceOf(ObjectType::class, $query);
+        static::assertEquals('Mutation', $query->name);
+        static::assertCount(1, $query->getFields());
+
+        $baseField = $query->getField('upsert_' . BaseEntityWithDefaults::getEntityName());
+        $this->assertObject([
+            'id' => NonNull::class,
+            'versionId' => NonNull::class,
+            'string' => StringType::class
+        ], $baseField->getType());
+
+        $this->assertInputArgs([
+            'id' => IDType::class,
+            'versionId' => IDType::class,
+            'string' => StringType::class
+        ], $baseField);
+
+        var_dump($baseField);
+        $this->assertDefault(
+            'test',
+            $baseField->getArg('string')
+        );
     }
 }

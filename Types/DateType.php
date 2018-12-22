@@ -22,7 +22,10 @@ class DateType extends ScalarType
     public function serialize($value)
     {
         if (!$value instanceof \DateTimeInterface) {
-            throw new InvariantViolation("Could not serialize following Date: " . print_r($value, true));
+            $value = \DateTime::createFromFormat(DATE_ATOM, $value);
+            if ($value === false) {
+                throw new Error("Could not serialize following Date: " . $value);
+            }
         }
 
         return $value->format(DATE_ATOM);

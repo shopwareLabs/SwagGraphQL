@@ -6,9 +6,11 @@ namespace SwagGraphQL\Test\Traits;
 use GraphQL\Type\Definition\BooleanType;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\EnumValueDefinition;
+use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\FloatType;
 use GraphQL\Type\Definition\IDType;
+use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\IntType;
 use GraphQL\Type\Definition\ListOfType;
@@ -142,6 +144,11 @@ trait SchemaTestTrait
         foreach ($expectedValues as $value) {
             static::assertInstanceOf(EnumValueDefinition::class, $enum->getValue($value));
         }
+    }
 
+    private function assertDefault($default, FieldArgument $field)
+    {
+        static::assertTrue($field->defaultValueExists());
+        static::assertEquals($default, $field->defaultValue);
     }
 }
