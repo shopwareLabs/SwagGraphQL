@@ -22,10 +22,8 @@ class MappingEntity extends MappingEntityDefinition
     {
         return new FieldCollection([
             (new FkField('association_id', 'associationId', AssociationEntity::class))->setFlags(new PrimaryKey(), new Required()),
-            (new ReferenceVersionField(AssociationEntity::class))->setFlags(new PrimaryKey(), new Required()),
 
             (new FkField('many_to_many_id', 'manyToManyId', ManyToManyEntity::class))->setFlags(new PrimaryKey(), new Required()),
-            (new ReferenceVersionField(ManyToManyEntity::class))->setFlags(new PrimaryKey(), new Required()),
 
             new ManyToOneAssociationField('association', 'association_id', AssociationEntity::class, false),
             new ManyToOneAssociationField('manyToMany', 'many_to_many_id', ManyToManyEntity::class, false),

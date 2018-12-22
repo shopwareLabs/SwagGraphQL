@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use SwagGraphQL\Resolver\Struct\ConnectionStruct;
 use SwagGraphQL\Resolver\Struct\EdgeStruct;
 use SwagGraphQL\Resolver\Struct\PageInfoStruct;
+use SwagGraphQL\Schema\Mutation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class QueryResolver
@@ -46,6 +47,7 @@ class QueryResolver
         } catch (\Throwable $e) {
             // default error-handler will just show "internal server error"
             // therefore throw own Exception
+            var_dump($e);
             throw new QueryResolvingException($e->getMessage(), 0, $e);
         }
     }
@@ -82,26 +84,55 @@ class QueryResolver
 
     /**
      * Resolver for Mutation queries
-     * On the Root-Level it upserts an Entity and returns it
+     * On the Root-Level it checks the action and calls the according function
      * On non Root-Level it returns the get-Value of the Field
      */
     private function resolveMutation($rootValue, $args, $context, ResolveInfo $info)
     {
         if ($rootValue === null) {
-            $definition = $this->definitionRegistry->get($this->getEntityNameFromMutation($info->fieldName));
-            $repo = $this->getRepository($definition);
+            $mutation = Mutation::fromName($info->fieldName);
 
-            $event = $repo->upsert([$args], $context);
-            $id = $event->getEventByDefinition($definition)->getIds()[0];
-
-            $criteria = new ReadCriteria([$id]);
-            AssociationResolver::addAssociations($criteria, $info->getFieldSelection(PHP_INT_MAX), $definition);
-
-            return $repo->read($criteria, $context)->get($id);
+            switch ($mutation->getAction()) {
+                case Mutation::ACTION_UPSERT:
+                    return $this->upsert($args, $context, $info, $mutation->getEntityName());
+                case Mutation::ACTION_DELETE:
+                    return $this->delete($args, $context, $mutation->getEntityName());
+            }
         }
 
         $getter = 'get' . ucfirst($info->fieldName);
         return $rootValue->$getter();
+    }
+
+    /**
+     * Upserts and returns the entity
+     */
+    private function upsert($args, $context, ResolveInfo $info, string $entity)
+    {
+        $definition = $this->definitionRegistry->get($entity);
+        $repo = $this->getRepository($definition);
+
+        $event = $repo->upsert([$args], $context);
+        $id = $event->getEventByDefinition($definition)->getIds()[0];
+
+        $criteria = new ReadCriteria([$id]);
+        AssociationResolver::addAssociations($criteria, $info->getFieldSelection(PHP_INT_MAX), $definition);
+
+        return $repo->read($criteria, $context)->get($id);
+    }
+
+    /**
+     * Deletes the entity and returns its ID
+     */
+    private function delete($args, $context, string $entity): string
+    {
+        $definition = $this->definitionRegistry->get($entity);
+        $repo = $this->getRepository($definition);
+
+        $event = $repo->delete([$args], $context);
+        $id = $event->getEventByDefinition($definition)->getIds()[0];
+
+        return $id;
     }
 
     private function getRepository(string $definition): RepositoryInterface
@@ -118,15 +149,6 @@ class QueryResolver
         return $repo;
     }
 
-    private function getEntityNameFromMutation(string $fieldName): string
-    {
-        if (strpos($fieldName, 'upsert_' !== 1)) {
-            throw new \Exception('Mutation without "upsert_" prefix called, got: ' . $fieldName);
-        }
-
-        return substr($fieldName, 7);
-    }
-
     private function wrapConnectionType(array $elements): ConnectionStruct
     {
         return (new ConnectionStruct())->assign([
@@ -135,4 +157,5 @@ class QueryResolver
             'pageInfo' => new PageInfoStruct()
         ]);
     }
+
 }

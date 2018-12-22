@@ -28,7 +28,6 @@ class BaseEntityWithDefaults extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            new VersionField(),
             new StringField('string', 'string')
         ]);
     }

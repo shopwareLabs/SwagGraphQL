@@ -22,7 +22,6 @@ class ManyToManyEntity extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            new VersionField(),
             new ManyToManyAssociationField(
                 'association',
                 AssociationEntity::class,

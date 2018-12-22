@@ -27,7 +27,6 @@ class BaseEntity extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            new VersionField(),
             new BoolField('bool', 'bool'),
             new DateField('date', 'date'),
             new IntField('int', 'int'),

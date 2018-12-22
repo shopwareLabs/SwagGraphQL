@@ -22,7 +22,6 @@ class ManyToOneEntity extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            new VersionField(),
             new OneToManyAssociationField(
                 'association',
                 AssociationEntity::class,

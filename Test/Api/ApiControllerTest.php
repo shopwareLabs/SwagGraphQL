@@ -9,6 +9,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagGraphQL\Api\ApiController;
@@ -942,6 +943,40 @@ class ApiControllerTest extends TestCase
         $productResult = $data['data']['upsert_product'];
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($manufacturerId, $productResult['manufacturer']['id']);
+    }
+
+    public function testMutationDeleteProduct()
+    {
+        $productId = Uuid::uuid4()->getHex();
+
+        $products = [
+            [
+                'id' => $productId,
+                'price' => ['gross' => 10, 'net' => 9],
+                'manufacturer' => ['name' => 'test'],
+                'name' => 'product',
+                'tax' => ['taxRate' => 13, 'name' => 'green'],
+            ],
+        ];
+
+        $this->repository->create($products, Context::createDefaultContext());
+
+        $query = "
+            mutation {
+	            delete_product(
+	                id: \"{$productId}\"
+	            )
+            }
+        ";
+        $request = $this->createPostJsonRequest($query);
+        $response = $this->apiController->query($request, $this->context);
+        static::assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+
+        static::assertArrayNotHasKey('error', $data);
+        static::assertEquals($productId, $data['data']['delete_product']);
+
+        static::assertCount(0, $this->repository->read(new ReadCriteria([$productId]), Context::createDefaultContext())->getIds());
     }
 
     private function createPostJsonRequest(string $query): Request

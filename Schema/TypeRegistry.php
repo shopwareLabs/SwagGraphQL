@@ -2,12 +2,12 @@
 
 namespace SwagGraphQL\Schema;
 
+use GraphQL\Type\Definition\IDType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
@@ -25,6 +25,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 
 class TypeRegistry
@@ -72,8 +73,13 @@ class TypeRegistry
             if ($this->isTranslationDefinition($definition) || $this->isMappingDefinition($definition)) {
                 continue;
             }
-            $fields['upsert_' . $definition::getEntityName()]['args'] = $this->getInputFieldsForDefinition($definition::getEntityName());
-            $fields['upsert_' . $definition::getEntityName()]['type'] = $this->getObjectForDefinition($definition::getEntityName());
+            $upsertName = new Mutation(Mutation::ACTION_UPSERT, $definition::getEntityName());
+            $fields[$upsertName->getName()]['args'] = $this->getInputFieldsForDefinition($definition::getEntityName());
+            $fields[$upsertName->getName()]['type'] = $this->getObjectForDefinition($definition::getEntityName());
+
+            $deleteName = new Mutation(Mutation::ACTION_DELETE, $definition::getEntityName());
+            $fields[$deleteName->getName()]['args'] = $this->getPrimaryKeyFields($definition::getEntityName());
+            $fields[$deleteName->getName()]['type'] = Type::id();
         }
 
         return new ObjectType([
@@ -176,6 +182,21 @@ class TypeRegistry
         $fields = [];
         foreach ($definition::getFields() as $field) {
             $type = $this->getFieldType($field);
+            if ($type) {
+                $fields[$field->getPropertyName()]['type'] = $type;
+            }
+        }
+
+        return $fields;
+    }
+
+    private function getPrimaryKeyFields(string $name): array
+    {
+        $definition = $this->definitionRegistry->get($name);
+
+        $fields = [];
+        foreach ($definition::getFields()->filterByFlag(PrimaryKey::class) as $field) {
+            $type = $this->getFieldType($field, true);
             if ($type) {
                 $fields[$field->getPropertyName()]['type'] = $type;
             }
