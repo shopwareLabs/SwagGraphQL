@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\Aggregate\ProductCategory\ProductCategoryDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
+use SwagGraphQL\Schema\CustomTypes;
 use SwagGraphQL\Schema\TypeRegistry;
 use SwagGraphQL\Test\_fixtures\AssociationEntity;
 use SwagGraphQL\Test\_fixtures\BaseEntity;
@@ -39,7 +40,7 @@ class TypeRegistryTest extends TestCase
     public function setUp()
     {
         $this->definitionRegistry = $this->createMock(DefinitionRegistry::class);
-        $this->typeRegistry = new TypeRegistry($this->definitionRegistry);
+        $this->typeRegistry = new TypeRegistry($this->definitionRegistry, new CustomTypes());
     }
 
     public function testGetQueryForBaseEntity()

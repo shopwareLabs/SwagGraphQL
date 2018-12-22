@@ -37,9 +37,13 @@ class TypeRegistry
     /** @var DefinitionRegistry */
     private $definitionRegistry;
 
-    public function __construct(DefinitionRegistry $definitionRegistry)
+    /** @var CustomTypes */
+    private $customTypes;
+
+    public function __construct(DefinitionRegistry $definitionRegistry, CustomTypes $customTypes)
     {
         $this->definitionRegistry = $definitionRegistry;
+        $this->customTypes = $customTypes;
     }
 
     public function getQuery(): ObjectType
@@ -126,8 +130,8 @@ class TypeRegistry
                 'fields' => [
                     'total' => Type::int(),
                     'edges' => $edge,
-                    'pageInfo' => CustomTypes::pageInfo(),
-                    'aggregations' => Type::listOf(CustomTypes::aggregationResult())
+                    'pageInfo' => $this->customTypes->pageInfo(),
+                    'aggregations' => Type::listOf($this->customTypes->aggregationResult())
                 ]
             ]);
         }
@@ -158,9 +162,9 @@ class TypeRegistry
             'after' => ['type' => Type::string()],
             'before' => ['type' => Type::string()],
             'sortBy' => ['type' => Type::string()],
-            'sortDirection' => ['type' => CustomTypes::sortDirection()],
-            'query' => ['type' => CustomTypes::query()],
-            'aggregations' => ['type' => Type::listOf(CustomTypes::aggregation())]
+            'sortDirection' => ['type' => $this->customTypes->sortDirection()],
+            'query' => ['type' => $this->customTypes->query()],
+            'aggregations' => ['type' => Type::listOf($this->customTypes->aggregation())]
         ];
     }
 
@@ -208,7 +212,7 @@ class TypeRegistry
                 $type = Type::boolean();
                 break;
             case $field instanceOf DateField:
-                $type = CustomTypes::date();
+                $type = $this->customTypes->date();
                 break;
             case $field instanceof IntField:
                 $type = Type::int();
@@ -217,7 +221,7 @@ class TypeRegistry
                 $type = Type::float();
                 break;
             case $field instanceof JsonField:
-                $type = CustomTypes::json();
+                $type = $this->customTypes->json();
                 break;
             case $field instanceof LongTextField:
             case $field instanceof LongTextWithHtmlField:

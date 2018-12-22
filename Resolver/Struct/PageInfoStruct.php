@@ -36,12 +36,12 @@ class PageInfoStruct extends Struct
 
     public function getHasPreviousPage(): bool
     {
-        return $this->hasNextPage;
+        return $this->hasPreviousPage;
     }
 
     public static function fromCriteria(Criteria $criteria, int $total): PageInfoStruct
     {
-        $limit = ($criteria->getLimit() ?? $total);
+        $limit = $criteria->getLimit() ?? $total;
         $offset = $criteria->getOffset() ?? 0;
 
         return (new PageInfoStruct())->assign([

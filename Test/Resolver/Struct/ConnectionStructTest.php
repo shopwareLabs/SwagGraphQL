@@ -3,6 +3,7 @@
 namespace SwagGraphQL\Test\Resolver\Struct;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
@@ -20,8 +21,10 @@ class ConnectionStructTest extends TestCase
 {
     public function testFromResult()
     {
-        $entity1 = (new Entity())->assign(['id' => '1']);
-        $entity2 = (new Entity())->assign(['id' => '2']);
+        $entity1 = new ProductEntity();
+        $entity1->setId('1');
+        $entity2 = new ProductEntity();
+        $entity2->setId('2');
         $criteria = new Criteria;
         $criteria->setLimit(10);
         $criteria->setOffset(5);
@@ -34,7 +37,7 @@ class ConnectionStructTest extends TestCase
                 new AvgAggregationResult(new AvgAggregation('field', 'avg'), 14)
             ]),
             $criteria,
-            Context::createDefaultContext(Defaults::TENANT_ID)
+            Context::createDefaultContext()
         );
         $connection = ConnectionStruct::fromResult($result);
 

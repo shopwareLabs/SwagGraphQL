@@ -48,7 +48,7 @@ class CustomTypes
     private static $aggregationResult;
 
     // Custom Scalars
-    public static function date(): DateType
+    public function date(): DateType
     {
         if (!static::$dateType) {
             static::$dateType = new DateType();
@@ -57,7 +57,7 @@ class CustomTypes
         return static::$dateType;
     }
 
-    public static function json(): JsonType
+    public function json(): JsonType
     {
         if (!static::$jsonType) {
             static::$jsonType = new JsonType();
@@ -67,7 +67,7 @@ class CustomTypes
     }
 
     // Enums
-    public static function sortDirection(): EnumType
+    public function sortDirection(): EnumType
     {
         if (!static::$sortDirection) {
             static::$sortDirection = new EnumType([
@@ -86,7 +86,7 @@ class CustomTypes
         return static::$sortDirection;
     }
 
-    public static function queryOperator(): EnumType
+    public function queryOperator(): EnumType
     {
         if (!static::$queryOperator) {
             static::$queryOperator = new EnumType([
@@ -105,7 +105,7 @@ class CustomTypes
         return static::$queryOperator;
     }
 
-    public static function rangeOperator(): EnumType
+    public function rangeOperator(): EnumType
     {
         if (!static::$rangeOperator) {
             static::$rangeOperator = new EnumType([
@@ -130,7 +130,7 @@ class CustomTypes
         return static::$rangeOperator;
     }
 
-    public static function queryTypes(): EnumType
+    public function queryTypes(): EnumType
     {
         if (!static::$queryTypes) {
             static::$queryTypes = new EnumType([
@@ -142,7 +142,7 @@ class CustomTypes
         return static::$queryTypes;
     }
 
-    public static function aggregationTypes(): EnumType
+    public function aggregationTypes(): EnumType
     {
         if (!static::$aggregationTypes) {
             static::$aggregationTypes = new EnumType([
@@ -155,7 +155,7 @@ class CustomTypes
     }
 
     // Objects
-    public static function pageInfo(): ObjectType
+    public function pageInfo(): ObjectType
     {
         if (!static::$pageInfo) {
             static::$pageInfo = new ObjectType([
@@ -172,7 +172,7 @@ class CustomTypes
         return static::$pageInfo;
     }
 
-    public static function aggregationResult(): ObjectType
+    public function aggregationResult(): ObjectType
     {
         if (!static::$aggregationResult) {
             static::$aggregationResult = new ObjectType([
@@ -195,7 +195,7 @@ class CustomTypes
     }
 
     // Inputs
-    public static function query(): InputObjectType
+    public function query(): InputObjectType
     {
         if (!static::$query) {
             static::$query = new InputObjectType([
@@ -222,7 +222,7 @@ class CustomTypes
         return static::$query;
     }
 
-    public static function aggregation(): InputObjectType
+    public function aggregation(): InputObjectType
     {
         if (!static::$aggregation) {
             static::$aggregation = new InputObjectType([

@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagGraphQL\Api\ApiController;
 use SwagGraphQL\Api\UnsupportedContentTypeException;
 use SwagGraphQL\Resolver\QueryResolver;
+use SwagGraphQL\Schema\CustomTypes;
 use SwagGraphQL\Schema\SchemaFactory;
 use SwagGraphQL\Schema\TypeRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,10 +35,10 @@ class ApiControllerTest extends TestCase
     public function setUp()
     {
         $registry = $this->getContainer()->get(DefinitionRegistry::class);
-        $schema = SchemaFactory::createSchema(new TypeRegistry($registry));
+        $schema = SchemaFactory::createSchema(new TypeRegistry($registry, new CustomTypes()));
 
         $this->apiController = new ApiController($schema, new QueryResolver($this->getContainer(), $registry));
-        $this->context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $this->context = Context::createDefaultContext();
         $this->repository = $this->getContainer()->get('product.repository');
     }
 
@@ -169,7 +170,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = '
             query {
@@ -231,7 +232,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = '
             query {
@@ -303,7 +304,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = "
             query {
@@ -372,7 +373,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = '
             query {
@@ -455,7 +456,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = '
             query {
@@ -543,7 +544,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = '
             query {
@@ -608,7 +609,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = '
             query {
@@ -689,7 +690,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = '
             query {
@@ -782,7 +783,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = '
             query {
@@ -864,7 +865,7 @@ class ApiControllerTest extends TestCase
             ],
         ];
 
-        $this->repository->create($products, Context::createDefaultContext(Defaults::TENANT_ID));
+        $this->repository->create($products, Context::createDefaultContext());
 
         $query = '
             query {
