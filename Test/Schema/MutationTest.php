@@ -7,11 +7,18 @@ use SwagGraphQL\Schema\Mutation;
 
 class MutationTest extends TestCase
 {
-    public function testGetNameUpsert()
+    public function testGetNameCreate()
     {
-        $mutation = new Mutation(Mutation::ACTION_UPSERT, 'test');
+        $mutation = new Mutation(Mutation::ACTION_CREATE, 'test');
 
-        static::assertEquals('upsert_test', $mutation->getName());
+        static::assertEquals('create_test', $mutation->getName());
+    }
+
+    public function testGetNameUpdate()
+    {
+        $mutation = new Mutation(Mutation::ACTION_UPDATE, 'test');
+
+        static::assertEquals('update_test', $mutation->getName());
     }
 
     public function testGetNameDelete()
@@ -21,11 +28,19 @@ class MutationTest extends TestCase
         static::assertEquals('delete_test', $mutation->getName());
     }
 
-    public function testFromNameUpsert()
+    public function testFromNameCreate()
     {
-        $mutation = Mutation::fromName('upsert_test');
+        $mutation = Mutation::fromName('create_test');
 
-        static::assertEquals(Mutation::ACTION_UPSERT, $mutation->getAction());
+        static::assertEquals(Mutation::ACTION_CREATE, $mutation->getAction());
+        static::assertEquals('test', $mutation->getEntityName());
+    }
+
+    public function testFromNameUpdate()
+    {
+        $mutation = Mutation::fromName('update_test');
+
+        static::assertEquals(Mutation::ACTION_UPDATE, $mutation->getAction());
         static::assertEquals('test', $mutation->getEntityName());
     }
 

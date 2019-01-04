@@ -51,11 +51,6 @@ class TypeRegistryTest extends TestCase
             ->method('getElements')
             ->willReturn([BaseEntity::class]);
 
-        $this->definitionRegistry->expects($this->once())
-            ->method('get')
-            ->with(BaseEntity::getEntityName())
-            ->willReturn(BaseEntity::class);
-
         $query = $this->typeRegistry->getQuery();
         static::assertInstanceOf(ObjectType::class, $query);
         static::assertEquals('Query', $query->name);
@@ -80,18 +75,6 @@ class TypeRegistryTest extends TestCase
         $this->definitionRegistry->expects($this->once())
             ->method('getElements')
             ->willReturn([AssociationEntity::class, ManyToManyEntity::class, ManyToOneEntity::class, MappingEntity::class]);
-
-        $this->definitionRegistry->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                [AssociationEntity::getEntityName()],
-                [ManyToManyEntity::getEntityName()],
-                [ManyToOneEntity::getEntityName()]
-            )->willReturnOnConsecutiveCalls(
-                AssociationEntity::class,
-                ManyToManyEntity::class,
-                ManyToOneEntity::class
-            );
 
         $query = $this->typeRegistry->getQuery();
         static::assertInstanceOf(ObjectType::class, $query);
@@ -147,18 +130,13 @@ class TypeRegistryTest extends TestCase
             ->method('getElements')
             ->willReturn([BaseEntity::class]);
 
-        $this->definitionRegistry->expects($this->exactly(3))
-            ->method('get')
-            ->with(BaseEntity::getEntityName())
-            ->willReturn(BaseEntity::class);
-
         $query = $this->typeRegistry->getMutation();
         static::assertInstanceOf(ObjectType::class, $query);
         static::assertEquals('Mutation', $query->name);
-        static::assertCount(2, $query->getFields());
+        static::assertCount(3, $query->getFields());
 
-        $upsert = new Mutation(Mutation::ACTION_UPSERT, BaseEntity::getEntityName());
-        $upsertField = $query->getField($upsert->getName());
+        $create = new Mutation(Mutation::ACTION_CREATE, BaseEntity::getEntityName());
+        $createField = $query->getField($create->getName());
         $this->assertObject([
             'id' => NonNull::class,
             'bool' => BooleanType::class,
@@ -167,7 +145,7 @@ class TypeRegistryTest extends TestCase
             'float' => FloatType::class,
             'json' => JsonType::class,
             'string' => StringType::class
-        ], $upsertField->getType());
+        ], $createField->getType());
 
         $this->assertInputArgs([
             'id' => IDType::class,
@@ -177,13 +155,35 @@ class TypeRegistryTest extends TestCase
             'float' => FloatType::class,
             'json' => JsonType::class,
             'string' => StringType::class
-        ], $upsertField);
+        ], $createField);
+
+        $update = new Mutation(Mutation::ACTION_UPDATE, BaseEntity::getEntityName());
+        $updateField = $query->getField($update->getName());
+        $this->assertObject([
+            'id' => NonNull::class,
+            'bool' => BooleanType::class,
+            'date' => DateType::class,
+            'int' => IntType::class,
+            'float' => FloatType::class,
+            'json' => JsonType::class,
+            'string' => StringType::class
+        ], $updateField->getType());
+
+        $this->assertInputArgs([
+            'id' => NonNull::class,
+            'bool' => BooleanType::class,
+            'date' => DateType::class,
+            'int' => IntType::class,
+            'float' => FloatType::class,
+            'json' => JsonType::class,
+            'string' => StringType::class
+        ], $updateField);
 
         $delete = new Mutation(Mutation::ACTION_DELETE, BaseEntity::getEntityName());
         $deleteField = $query->getField($delete->getName());
         static::assertInstanceOf(IDType::class, $deleteField->getType());
         static::assertCount(1, $deleteField->args);
-        static::assertInstanceOf(IDType::class, $deleteField->getArg('id')->getType());
+        static::assertInstanceOf(NonNull::class, $deleteField->getArg('id')->getType());
     }
 
     public function testGetMutationForAssociationEntity()
@@ -192,36 +192,12 @@ class TypeRegistryTest extends TestCase
             ->method('getElements')
             ->willReturn([AssociationEntity::class, ManyToManyEntity::class, ManyToOneEntity::class, MappingEntity::class]);
 
-        $this->definitionRegistry->expects($this->exactly(9))
-            ->method('get')
-            ->withConsecutive(
-                [AssociationEntity::getEntityName()],
-                [AssociationEntity::getEntityName()],
-                [ManyToManyEntity::getEntityName()],
-                [ManyToManyEntity::getEntityName()],
-                [ManyToOneEntity::getEntityName()],
-                [ManyToOneEntity::getEntityName()],
-                [AssociationEntity::getEntityName()],
-                [ManyToManyEntity::getEntityName()],
-                [ManyToOneEntity::getEntityName()]
-            )->willReturnOnConsecutiveCalls(
-                AssociationEntity::class,
-                AssociationEntity::class,
-                ManyToManyEntity::class,
-                ManyToManyEntity::class,
-                ManyToOneEntity::class,
-                ManyToOneEntity::class,
-                AssociationEntity::class,
-                ManyToManyEntity::class,
-                ManyToOneEntity::class
-            );
-
         $query = $this->typeRegistry->getMutation();
         static::assertInstanceOf(ObjectType::class, $query);
         static::assertEquals('Mutation', $query->name);
-        static::assertCount(6, $query->getFields());
+        static::assertCount(9, $query->getFields());
 
-        $association = new Mutation(Mutation::ACTION_UPSERT, AssociationEntity::getEntityName());
+        $association = new Mutation(Mutation::ACTION_CREATE, AssociationEntity::getEntityName());
         $associationField = $query->getField($association->getName());
         static::assertObject([
             'manyToMany' => ObjectType::class,
@@ -238,13 +214,30 @@ class TypeRegistryTest extends TestCase
             'manyToOne' => InputObjectType::class
         ], $associationField);
 
+        $association = new Mutation(Mutation::ACTION_UPDATE, AssociationEntity::getEntityName());
+        $associationField = $query->getField($association->getName());
+        static::assertObject([
+            'manyToMany' => ObjectType::class,
+            'manyToOneId' => IDType::class,
+            'manyToOne' => ObjectType::class
+        ], $associationField->getType());
+        static::assertConnectionObject([
+            'association' => ObjectType::class,
+        ], $associationField->getType()->getField('manyToMany')->getType());
+        static::assertInputArgs([
+            'id' => NonNull::class,
+            'manyToMany' => ListOfType::class,
+            'manyToOneId' => IDType::class,
+            'manyToOne' => InputObjectType::class
+        ], $associationField);
+
         $delete = new Mutation(Mutation::ACTION_DELETE, AssociationEntity::getEntityName());
         $deleteField = $query->getField($delete->getName());
         static::assertInstanceOf(IDType::class, $deleteField->getType());
         static::assertCount(1, $deleteField->args);
-        static::assertInstanceOf(IDType::class, $deleteField->getArg('id')->getType());
+        static::assertInstanceOf(NonNull::class, $deleteField->getArg('id')->getType());
 
-        $manyToMany = new Mutation(Mutation::ACTION_UPSERT, ManyToManyEntity::getEntityName());
+        $manyToMany = new Mutation(Mutation::ACTION_CREATE, ManyToManyEntity::getEntityName());
         $manyToManyField = $query->getField($manyToMany->getName());
         static::assertObject([
             'association' => ObjectType::class,
@@ -259,13 +252,28 @@ class TypeRegistryTest extends TestCase
             'association' => ListOfType::class,
         ], $manyToManyField);
 
+        $manyToMany = new Mutation(Mutation::ACTION_UPDATE, ManyToManyEntity::getEntityName());
+        $manyToManyField = $query->getField($manyToMany->getName());
+        static::assertObject([
+            'association' => ObjectType::class,
+        ], $manyToManyField->getType());
+        static::assertConnectionObject([
+            'manyToMany' => ObjectType::class,
+            'manyToOneId' => IDType::class,
+            'manyToOne' => ObjectType::class
+        ], $manyToManyField->getType()->getField('association')->getType());
+        static::assertInputArgs([
+            'id' => NonNull::class,
+            'association' => ListOfType::class,
+        ], $manyToManyField);
+
         $delete = new Mutation(Mutation::ACTION_DELETE, ManyToManyEntity::getEntityName());
         $deleteField = $query->getField($delete->getName());
         static::assertInstanceOf(IDType::class, $deleteField->getType());
         static::assertCount(1, $deleteField->args);
-        static::assertInstanceOf(IDType::class, $deleteField->getArg('id')->getType());
+        static::assertInstanceOf(NonNull::class, $deleteField->getArg('id')->getType());
 
-        $manyToOne = new Mutation(Mutation::ACTION_UPSERT, ManyToOneEntity::getEntityName());
+        $manyToOne = new Mutation(Mutation::ACTION_CREATE, ManyToOneEntity::getEntityName());
         $manyToOneField = $query->getField($manyToOne->getName());
         static::assertObject([
             'association' => ObjectType::class,
@@ -280,11 +288,26 @@ class TypeRegistryTest extends TestCase
             'association' => ListOfType::class,
         ], $manyToOneField);
 
+        $manyToOne = new Mutation(Mutation::ACTION_UPDATE, ManyToOneEntity::getEntityName());
+        $manyToOneField = $query->getField($manyToOne->getName());
+        static::assertObject([
+            'association' => ObjectType::class,
+        ], $manyToOneField->getType());
+        static::assertConnectionObject([
+            'manyToMany' => ObjectType::class,
+            'manyToOneId' => IDType::class,
+            'manyToOne' => ObjectType::class
+        ], $manyToOneField->getType()->getField('association')->getType());
+        static::assertInputArgs([
+            'id' => NonNull::class,
+            'association' => ListOfType::class,
+        ], $manyToOneField);
+
         $delete = new Mutation(Mutation::ACTION_DELETE, ManyToOneEntity::getEntityName());
         $deleteField = $query->getField($delete->getName());
         static::assertInstanceOf(IDType::class, $deleteField->getType());
         static::assertCount(1, $deleteField->args);
-        static::assertInstanceOf(IDType::class, $deleteField->getArg('id')->getType());
+        static::assertInstanceOf(NonNull::class, $deleteField->getArg('id')->getType());
     }
 
     public function testGetMutationIgnoresTranslationEntity()
@@ -317,18 +340,13 @@ class TypeRegistryTest extends TestCase
             ->method('getElements')
             ->willReturn([BaseEntityWithDefaults::class]);
 
-        $this->definitionRegistry->expects($this->exactly(3))
-            ->method('get')
-            ->with(BaseEntityWithDefaults::getEntityName())
-            ->willReturn(BaseEntityWithDefaults::class);
-
         $query = $this->typeRegistry->getMutation();
         static::assertInstanceOf(ObjectType::class, $query);
         static::assertEquals('Mutation', $query->name);
-        static::assertCount(2, $query->getFields());
+        static::assertCount(3, $query->getFields());
 
-        $upsert = new Mutation(Mutation::ACTION_UPSERT, BaseEntityWithDefaults::getEntityName());
-        $baseField = $query->getField($upsert->getName());
+        $create = new Mutation(Mutation::ACTION_CREATE, BaseEntityWithDefaults::getEntityName());
+        $baseField = $query->getField($create->getName());
         static::assertObject([
             'id' => NonNull::class,
             'string' => StringType::class
@@ -344,10 +362,24 @@ class TypeRegistryTest extends TestCase
             $baseField->getArg('string')
         );
 
+        $update = new Mutation(Mutation::ACTION_UPDATE, BaseEntityWithDefaults::getEntityName());
+        $baseField = $query->getField($update->getName());
+        static::assertObject([
+            'id' => NonNull::class,
+            'string' => StringType::class
+        ], $baseField->getType());
+
+        static::assertInputArgs([
+            'id' => NonNull::class,
+            'string' => StringType::class
+        ], $baseField);
+
+        static::assertFalse($baseField->getArg('string')->defaultValueExists());
+
         $delete = new Mutation(Mutation::ACTION_DELETE, BaseEntityWithDefaults::getEntityName());
         $deleteField = $query->getField($delete->getName());
         static::assertInstanceOf(IDType::class, $deleteField->getType());
         static::assertCount(1, $deleteField->args);
-        static::assertInstanceOf(IDType::class, $deleteField->getArg('id')->getType());
+        static::assertInstanceOf(NonNull::class, $deleteField->getArg('id')->getType());
     }
 }

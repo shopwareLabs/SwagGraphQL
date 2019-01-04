@@ -5,6 +5,9 @@ namespace SwagGraphQL\Schema;
 class Mutation
 {
     const ACTION_DELETE = 'delete';
+    const ACTION_CREATE = 'create';
+    const ACTION_UPDATE = 'update';
+
     const ACTION_UPSERT = 'upsert';
 
     /** @var string */
@@ -15,8 +18,11 @@ class Mutation
 
     public static function fromName(string $name): Mutation
     {
-        if (strpos($name, static::ACTION_UPSERT) === 0) {
-            return new self(static::ACTION_UPSERT, substr($name, strlen(static::ACTION_UPSERT) + 1));
+        if (strpos($name, static::ACTION_CREATE) === 0) {
+            return new self(static::ACTION_CREATE, substr($name, strlen(static::ACTION_CREATE) + 1));
+        }
+        if (strpos($name, static::ACTION_UPDATE) === 0) {
+            return new self(static::ACTION_UPDATE, substr($name, strlen(static::ACTION_UPDATE) + 1));
         }
         if (strpos($name, static::ACTION_DELETE) === 0) {
             return new self(static::ACTION_DELETE, substr($name, strlen(static::ACTION_DELETE) + 1));

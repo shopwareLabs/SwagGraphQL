@@ -93,8 +93,10 @@ class QueryResolver
             $mutation = Mutation::fromName($info->fieldName);
 
             switch ($mutation->getAction()) {
-                case Mutation::ACTION_UPSERT:
-                    return $this->upsert($args, $context, $info, $mutation->getEntityName());
+                case Mutation::ACTION_CREATE:
+                    return $this->create($args, $context, $info, $mutation->getEntityName());
+                case Mutation::ACTION_UPDATE:
+                    return $this->update($args, $context, $info, $mutation->getEntityName());
                 case Mutation::ACTION_DELETE:
                     return $this->delete($args, $context, $mutation->getEntityName());
             }
@@ -105,14 +107,31 @@ class QueryResolver
     }
 
     /**
-     * Upserts and returns the entity
+     * Creates and returns the entity
      */
-    private function upsert($args, $context, ResolveInfo $info, string $entity)
+    private function create($args, $context, ResolveInfo $info, string $entity)
     {
         $definition = $this->definitionRegistry->get($entity);
         $repo = $this->getRepository($definition);
 
-        $event = $repo->upsert([$args], $context);
+        $event = $repo->create([$args], $context);
+        $id = $event->getEventByDefinition($definition)->getIds()[0];
+
+        $criteria = new ReadCriteria([$id]);
+        AssociationResolver::addAssociations($criteria, $info->getFieldSelection(PHP_INT_MAX), $definition);
+
+        return $repo->read($criteria, $context)->get($id);
+    }
+
+    /**
+     * Update and returns the entity
+     */
+    private function update($args, $context, ResolveInfo $info, string $entity)
+    {
+        $definition = $this->definitionRegistry->get($entity);
+        $repo = $this->getRepository($definition);
+
+        $event = $repo->update([$args], $context);
         $id = $event->getEventByDefinition($definition)->getIds()[0];
 
         $criteria = new ReadCriteria([$id]);

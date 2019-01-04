@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagGraphQL\Test\Schema;
+namespace SwagGraphQL\Test\Api;
 
 use GraphQL\Type\Introspection;
 use PHPUnit\Framework\TestCase;
@@ -59,7 +59,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayHasKey('data', $data);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
     }
 
     public function testQueryProductWithoutData()
@@ -81,7 +81,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertEmpty($data['data']['product']['edges']);
         static::assertEquals(0, $data['data']['product']['total']);
     }
@@ -109,7 +109,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertEmpty($data['data']['product']['edges']);
         static::assertEquals(0, $data['data']['product']['total']);
     }
@@ -142,7 +142,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertEmpty($data['data']['product']['edges']);
         static::assertEquals(0, $data['data']['product']['total']);
     }
@@ -190,7 +190,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertCount(1, $data['data']['product']['edges']);
 
         $productResult = $data['data']['product']['edges'][0]['node'];
@@ -252,7 +252,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertCount(3, $data['data']['product']['edges']);
 
         $firstProduct = $data['data']['product']['edges'][0]['node'];
@@ -330,7 +330,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertCount(1, $data['data']['product']['edges']);
 
         $firstProduct = $data['data']['product']['edges'][0]['node'];
@@ -400,7 +400,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertCount(2, $data['data']['product']['edges']);
 
         $firstProduct = $data['data']['product']['edges'][0]['node'];
@@ -485,7 +485,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertCount(2, $data['data']['product']['edges']);
 
         $firstProduct = $data['data']['product']['edges'][0]['node'];
@@ -578,7 +578,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
 
         static::assertEquals(4, $data['data']['product']['total']);
 
@@ -632,7 +632,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertCount(1, $data['data']['product']['edges']);
 
         $productResult = $data['data']['product']['edges'][0]['node'];
@@ -717,7 +717,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertCount(1, $data['data']['product']['edges']);
 
         $productResult = $data['data']['product']['edges'][0]['node'];
@@ -813,7 +813,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertCount(1, $data['data']['product']['edges']);
 
         $productResult = $data['data']['product']['edges'][0]['node'];
@@ -892,7 +892,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertCount(1, $data['data']['product']['edges']);
 
         $productResult = $data['data']['product']['edges'][0]['node'];
@@ -910,12 +910,12 @@ class ApiControllerTest extends TestCase
         static::assertEquals('second Category', $secondCategory['name']);
     }
 
-    public function testMutationProduct()
+    public function testCreateProduct()
     {
         $manufacturerId = Uuid::uuid4()->getHex();
         $query = "
             mutation {
-	            upsert_product(
+	            create_product(
 	                name: \"product\" 
 	                manufacturer: {
 	                    id: \"{$manufacturerId}\"
@@ -937,12 +937,49 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
 
-        static::assertArrayNotHasKey('error', $data);
-        static::assertCount(3, $data['data']['upsert_product']);
+        static::assertArrayNotHasKey('errors', $data);
+        static::assertCount(3, $data['data']['create_product']);
 
-        $productResult = $data['data']['upsert_product'];
+        $productResult = $data['data']['create_product'];
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($manufacturerId, $productResult['manufacturer']['id']);
+    }
+
+    public function testUpdateProduct()
+    {
+        $productId = Uuid::uuid4()->getHex();
+        $products = [
+            [
+                'id' => $productId,
+                'price' => ['gross' => 10, 'net' => 9],
+                'manufacturer' => ['name' => 'test'],
+                'name' => 'product',
+                'tax' => ['taxRate' => 13, 'name' => 'green'],
+            ],
+        ];
+        $this->repository->create($products, Context::createDefaultContext());
+
+        $query = "
+            mutation {
+	            update_product(
+	                id: \"{$productId}\"
+	                name: \"new product\" 
+	            ) {
+		            id
+		            name
+	            }
+            }
+        ";
+        $request = $this->createPostJsonRequest($query);
+        $response = $this->apiController->query($request, $this->context);
+        static::assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+
+        static::assertArrayNotHasKey('errors', $data);
+        static::assertCount(2, $data['data']['update_product']);
+
+        $productResult = $data['data']['update_product'];
+        static::assertEquals('new product', $productResult['name']);
     }
 
     public function testMutationDeleteProduct()
@@ -973,7 +1010,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
 
-        static::assertArrayNotHasKey('error', $data);
+        static::assertArrayNotHasKey('errors', $data);
         static::assertEquals($productId, $data['data']['delete_product']);
 
         static::assertCount(0, $this->repository->read(new ReadCriteria([$productId]), Context::createDefaultContext())->getIds());

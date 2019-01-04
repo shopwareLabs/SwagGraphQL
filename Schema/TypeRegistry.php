@@ -5,10 +5,12 @@ namespace SwagGraphQL\Schema;
 use GraphQL\Type\Definition\IDType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
@@ -23,6 +25,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\VersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
@@ -57,7 +61,8 @@ class TypeRegistry
             }
 
             $fields[$definition::getEntityName()]['args'] = $this->getConnectionArgs();
-            $fields[$definition::getEntityName()]['type'] = $this->getConnectionTypeForDefinition($definition::getEntityName());
+            /** @noinspection PhpStrictTypeCheckingInspection */
+            $fields[$definition::getEntityName()]['type'] = $this->getConnectionTypeForDefinition($definition);
         }
 
         return new ObjectType([
@@ -73,12 +78,21 @@ class TypeRegistry
             if ($this->isTranslationDefinition($definition) || $this->isMappingDefinition($definition)) {
                 continue;
             }
-            $upsertName = new Mutation(Mutation::ACTION_UPSERT, $definition::getEntityName());
-            $fields[$upsertName->getName()]['args'] = $this->getInputFieldsForDefinition($definition::getEntityName());
-            $fields[$upsertName->getName()]['type'] = $this->getObjectForDefinition($definition::getEntityName());
+            $createName = new Mutation(Mutation::ACTION_CREATE, $definition::getEntityName());
+            /** @noinspection PhpStrictTypeCheckingInspection */
+            $fields[$createName->getName()]['args'] = $this->getInputFieldsForCreate($definition);
+            /** @noinspection PhpStrictTypeCheckingInspection */
+            $fields[$createName->getName()]['type'] = $this->getObjectForDefinition($definition);
+
+            $updateName = new Mutation(Mutation::ACTION_UPDATE, $definition::getEntityName());
+            /** @noinspection PhpStrictTypeCheckingInspection */
+            $fields[$updateName->getName()]['args'] = $this->getInputFieldsForUpdate($definition);
+            /** @noinspection PhpStrictTypeCheckingInspection */
+            $fields[$updateName->getName()]['type'] = $this->getObjectForDefinition($definition);
 
             $deleteName = new Mutation(Mutation::ACTION_DELETE, $definition::getEntityName());
-            $fields[$deleteName->getName()]['args'] = $this->getPrimaryKeyFields($definition::getEntityName());
+            /** @noinspection PhpStrictTypeCheckingInspection */
+            $fields[$deleteName->getName()]['args'] = $this->getPrimaryKeyFields($definition);
             $fields[$deleteName->getName()]['type'] = Type::id();
         }
 
@@ -99,41 +113,41 @@ class TypeRegistry
         return $instance instanceof MappingEntityDefinition;
     }
 
-    private function getObjectForDefinition(string $name): ObjectType
+    private function getObjectForDefinition(string $definition): ObjectType
     {
-        if (!isset($this->types[$name])) {
-            $this->types[$name] = new ObjectType([
-                'name' => $name,
-                'fields' => function () use ($name) {
-                    return $this->getFieldsForDefinition($name);
+        if (!isset($this->types[$definition::getEntityName()])) {
+            $this->types[$definition::getEntityName()] = new ObjectType([
+                'name' => $definition::getEntityName(),
+                'fields' => function () use ($definition) {
+                    return $this->getFieldsForDefinition($definition);
                 }
             ]);
         }
 
-        return $this->types[$name];
+        return $this->types[$definition::getEntityName()];
     }
 
-    private function getInputForDefinition(string $name): InputObjectType
+    private function getInputForDefinition(string $definition): InputObjectType
     {
-        if (!isset($this->inputTypes[$name])) {
-            $this->inputTypes[$name] = new InputObjectType([
-                'name' => 'input_' . $name,
-                'fields' => function () use ($name) {
-                    return $this->getInputFieldsForDefinition($name);
+        if (!isset($this->inputTypes[$definition::getEntityName()])) {
+            $this->inputTypes[$definition::getEntityName()] = new InputObjectType([
+                'name' => 'input_' . $definition::getEntityName(),
+                'fields' => function () use ($definition) {
+                    return $this->getInputFieldsForDefinition($definition);
                 }
             ]);
         }
 
-        return $this->inputTypes[$name];
+        return $this->inputTypes[$definition::getEntityName()];
     }
 
-    private function getConnectionTypeForDefinition(string $name): ObjectType
+    private function getConnectionTypeForDefinition(string $definition): ObjectType
     {
-        $edge = $this->getEdgeTypeForDefinition($name);
+        $edge = $this->getEdgeTypeForDefinition($definition);
 
-        if (!isset($this->types[$name . '_connection'])) {
-            $this->types[$name . '_connection'] = new ObjectType([
-                'name' => $name . '_connection',
+        if (!isset($this->types[$definition::getEntityName() . '_connection'])) {
+            $this->types[$definition::getEntityName() . '_connection'] = new ObjectType([
+                'name' => $definition::getEntityName() . '_connection',
                 'fields' => [
                     'total' => Type::int(),
                     'edges' => $edge,
@@ -143,22 +157,22 @@ class TypeRegistry
             ]);
         }
 
-        return $this->types[$name . '_connection'];
+        return $this->types[$definition::getEntityName() . '_connection'];
     }
 
-    private function getEdgeTypeForDefinition(string $name): ListOfType
+    private function getEdgeTypeForDefinition(string $definition): ListOfType
     {
-        if (!isset($this->types[$name . '_edge'])) {
-            $this->types[$name . '_edge'] = Type::listOf(new ObjectType([
-                'name' => $name . '_edge',
+        if (!isset($this->types[$definition::getEntityName() . '_edge'])) {
+            $this->types[$definition::getEntityName() . '_edge'] = Type::listOf(new ObjectType([
+                'name' => $definition::getEntityName() . '_edge',
                 'fields' => [
-                    'node' => $this->getObjectForDefinition($name),
+                    'node' => $this->getObjectForDefinition($definition),
                     'cursor' => Type::id()
                 ]
             ]));
         }
 
-        return $this->types[$name . '_edge'];
+        return $this->types[$definition::getEntityName() . '_edge'];
     }
 
     private function getConnectionArgs(): array
@@ -175,10 +189,8 @@ class TypeRegistry
         ];
     }
 
-    private function getFieldsForDefinition(string $name): array
+    private function getFieldsForDefinition(string $definition): array
     {
-        $definition = $this->definitionRegistry->get($name);
-
         $fields = [];
         foreach ($definition::getFields() as $field) {
             $type = $this->getFieldType($field);
@@ -190,14 +202,15 @@ class TypeRegistry
         return $fields;
     }
 
-    private function getPrimaryKeyFields(string $name): array
+    private function getPrimaryKeyFields(string $definition): array
     {
-        $definition = $this->definitionRegistry->get($name);
-
         $fields = [];
         foreach ($definition::getFields()->filterByFlag(PrimaryKey::class) as $field) {
             $type = $this->getFieldType($field, true);
             if ($type) {
+                if (!$field instanceof VersionField) {
+                    $type = Type::nonNull($type);
+                }
                 $fields[$field->getPropertyName()]['type'] = $type;
             }
         }
@@ -205,22 +218,54 @@ class TypeRegistry
         return $fields;
     }
 
-    private function getInputFieldsForDefinition(string $name): array
+    private function getInputFieldsForDefinition(string $definition, \Closure $typeModifier = null): array
     {
-        $definition = $this->definitionRegistry->get($name);
-
         $fields = [];
+        /** @var Field $field */
         foreach ($definition::getFields() as $field) {
             $type = $this->getFieldType($field, true);
             if ($type) {
+                if ($typeModifier) {
+                    $type = $typeModifier($type, $field);
+                }
                 $fields[$field->getPropertyName()]['type'] = $type;
             }
         }
 
-        $fields = $this->getDefaults($definition, $fields);
-
         return $fields;
     }
+
+    private function getInputFieldsForCreate(string $definition): array
+    {
+        $fields = $this->getInputFieldsForDefinition($definition, function(Type $type, Field $field) {
+            // We wrap all required Fields as NonNullable
+            // Except IDs because we assume that those will be generate or come from the ID field of the association Object
+            // also CreatedAt and UpdatedAt are marked as required in the DAL but they are not necessary
+            if ($field->getFlag(Required::class) &&
+                !$type instanceof IDType &&
+                !$field instanceof UpdatedAtField &&
+                !$field instanceof CreatedAtField) {
+                return Type::nonNull($type);
+            }
+
+            return $type;
+        });
+
+        return $this->getDefaults($definition, $fields);
+    }
+
+    private function getInputFieldsForUpdate(string $definition): array
+    {
+        return $this->getInputFieldsForDefinition($definition, function(Type $type, Field $field) {
+            // we make PKs required for Update
+            if ($field->getFlag(PrimaryKey::class) && !$type instanceof NonNull && !$field instanceof VersionField) {
+                return Type::nonNull($type);
+            }
+
+            return $type;
+        });
+    }
+
 
     private function getFieldType(Field $field, bool $input = false): ?Type
     {
@@ -253,25 +298,25 @@ class TypeRegistry
                 break;
             case $field instanceof ManyToManyAssociationField:
                 $type = $input ?
-                    Type::listOf($this->getInputForDefinition($field->getReferenceDefinition()::getEntityName())) :
-                    $this->getConnectionTypeForDefinition($field->getReferenceDefinition()::getEntityName());
+                    Type::listOf($this->getInputForDefinition($field->getReferenceDefinition())) :
+                    $this->getConnectionTypeForDefinition($field->getReferenceDefinition());
                 break;
             case $field instanceof OneToManyAssociationField:
                 $type = $type = $input ?
-                    Type::listOf($this->getInputForDefinition($field->getReferenceClass()::getEntityName())) :
-                    $this->getConnectionTypeForDefinition($field->getReferenceClass()::getEntityName());
+                    Type::listOf($this->getInputForDefinition($field->getReferenceClass())) :
+                    $this->getConnectionTypeForDefinition($field->getReferenceClass());
                 break;
             case $field instanceof ManyToOneAssociationField:
                 $type = $input ?
-                    $this->getInputForDefinition($field->getReferenceClass()::getEntityName()) :
-                    $this->getObjectForDefinition($field->getReferenceClass()::getEntityName());
+                    $this->getInputForDefinition($field->getReferenceClass()) :
+                    $this->getObjectForDefinition($field->getReferenceClass());
                 break;
             default:
                 // StructField, StructCollectionField, TranslationAssociationField are not exposed
                 return null;
         }
 
-        if (!$input && $field->getFlag(Required::class)) {
+        if ((!$input) && $field->getFlag(Required::class)) {
             return Type::nonNull($type);
         }
 
