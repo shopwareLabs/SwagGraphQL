@@ -50,7 +50,7 @@ class CustomTypes
     // Custom Scalars
     public function date(): DateType
     {
-        if (!static::$dateType) {
+        if (static::$dateType === null) {
             static::$dateType = new DateType();
         }
 
@@ -59,7 +59,7 @@ class CustomTypes
 
     public function json(): JsonType
     {
-        if (!static::$jsonType) {
+        if (static::$jsonType === null) {
             static::$jsonType = new JsonType();
         }
 
@@ -69,7 +69,7 @@ class CustomTypes
     // Enums
     public function sortDirection(): EnumType
     {
-        if (!static::$sortDirection) {
+        if (static::$sortDirection === null) {
             static::$sortDirection = new EnumType([
                 'name' => 'sortDirection',
                 'values' => [
@@ -88,7 +88,7 @@ class CustomTypes
 
     public function queryOperator(): EnumType
     {
-        if (!static::$queryOperator) {
+        if (static::$queryOperator === null) {
             static::$queryOperator = new EnumType([
                 'name' => 'queryOperator',
                 'values' => [
@@ -107,7 +107,7 @@ class CustomTypes
 
     public function rangeOperator(): EnumType
     {
-        if (!static::$rangeOperator) {
+        if (static::$rangeOperator === null) {
             static::$rangeOperator = new EnumType([
                 'name' => 'rangeOperator',
                 'values' => [
@@ -132,7 +132,7 @@ class CustomTypes
 
     public function queryTypes(): EnumType
     {
-        if (!static::$queryTypes) {
+        if (static::$queryTypes === null) {
             static::$queryTypes = new EnumType([
                 'name' => 'queryTypes',
                 'values' => ['equals', 'contains', 'equalsAny', 'multi', 'not', 'range']
@@ -144,7 +144,7 @@ class CustomTypes
 
     public function aggregationTypes(): EnumType
     {
-        if (!static::$aggregationTypes) {
+        if (static::$aggregationTypes === null) {
             static::$aggregationTypes = new EnumType([
                 'name' => 'aggregationTypes',
                 'values' => ['avg', 'cardinality', 'count', 'max', 'min', 'stats', 'sum', 'value_count']
@@ -157,7 +157,7 @@ class CustomTypes
     // Objects
     public function pageInfo(): ObjectType
     {
-        if (!static::$pageInfo) {
+        if (static::$pageInfo === null) {
             static::$pageInfo = new ObjectType([
                 'name' => 'pageInfo',
                 'fields' => [
@@ -174,7 +174,7 @@ class CustomTypes
 
     public function aggregationResult(): ObjectType
     {
-        if (!static::$aggregationResult) {
+        if (static::$aggregationResult === null) {
             static::$aggregationResult = new ObjectType([
                 'name' => 'aggregationResults',
                 'fields' => [
@@ -197,7 +197,7 @@ class CustomTypes
     // Inputs
     public function query(): InputObjectType
     {
-        if (!static::$query) {
+        if (static::$query === null) {
             static::$query = new InputObjectType([
                 'name' => 'query',
                 'fields' => function () {
@@ -224,7 +224,7 @@ class CustomTypes
 
     public function aggregation(): InputObjectType
     {
-        if (!static::$aggregation) {
+        if (static::$aggregation === null) {
             static::$aggregation = new InputObjectType([
                 'name' => 'aggregation',
                 'fields' => function () {

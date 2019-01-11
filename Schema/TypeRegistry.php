@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
@@ -38,7 +39,7 @@ use SwagGraphQL\CustomFields\GraphQLField;
 class TypeRegistry
 {
     /**
-     * @var ObjectType[]
+     * @var array
      */
     private $types = [];
 
@@ -233,6 +234,7 @@ class TypeRegistry
     {
         $fields = [];
         foreach ($definition::getFields()->filterByFlag(PrimaryKey::class) as $field) {
+            /** @var ObjectType|ScalarType|InputObjectType|ListOfType|null $type */
             $type = $this->getFieldType($field, true);
             if ($type) {
                 if (!$field instanceof VersionField) {
@@ -264,7 +266,7 @@ class TypeRegistry
 
     private function getInputFieldsForCreate(string $definition): array
     {
-        $fields = $this->getInputFieldsForDefinition($definition, function(Type $type, Field $field) {
+        $fields = $this->getInputFieldsForDefinition($definition, function($type, Field $field) {
             // We wrap all required Fields as NonNullable
             // Except IDs because we assume that those will be generate or come from the ID field of the association Object
             // also CreatedAt and UpdatedAt are marked as required in the DAL but they are not necessary
@@ -283,7 +285,7 @@ class TypeRegistry
 
     private function getInputFieldsForUpdate(string $definition): array
     {
-        return $this->getInputFieldsForDefinition($definition, function(Type $type, Field $field) {
+        return $this->getInputFieldsForDefinition($definition, function($type, Field $field) {
             // we make PKs required for Update
             if ($field->getFlag(PrimaryKey::class) && !$type instanceof NonNull && !$field instanceof VersionField) {
                 return Type::nonNull($type);

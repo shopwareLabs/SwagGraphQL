@@ -60,7 +60,12 @@ class JsonType extends ScalarType
     public function parseLiteral($valueNode, ?array $variables = null)
     {
         if (!$valueNode instanceof StringValueNode) {
-            throw new Error('Query error: Can only parse strings got: ' . $valueNode->kind, [$valueNode]);
+            $kind = 'undefined';
+            if (property_exists($valueNode, 'kind')) {
+                $kind = $valueNode->kind;
+            }
+
+            throw new Error('Query error: Can only parse strings got: ' . $kind, $valueNode);
         }
 
         return json_decode($valueNode->value, true);
