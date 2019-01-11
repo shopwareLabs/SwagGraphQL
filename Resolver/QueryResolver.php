@@ -4,6 +4,7 @@ namespace SwagGraphQL\Resolver;
 
 use GraphQL\Executor\Executor;
 use GraphQL\Type\Definition\ResolveInfo;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
@@ -109,7 +110,7 @@ class QueryResolver
     /**
      * Creates and returns the entity
      */
-    private function create($args, $context, ResolveInfo $info, string $entity)
+    private function create($args, $context, ResolveInfo $info, string $entity): Entity
     {
         $definition = $this->definitionRegistry->get($entity);
         $repo = $this->getRepository($definition);
@@ -126,7 +127,7 @@ class QueryResolver
     /**
      * Update and returns the entity
      */
-    private function update($args, $context, ResolveInfo $info, string $entity)
+    private function update($args, $context, ResolveInfo $info, string $entity): Entity
     {
         $definition = $this->definitionRegistry->get($entity);
         $repo = $this->getRepository($definition);

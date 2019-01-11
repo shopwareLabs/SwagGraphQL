@@ -3,6 +3,7 @@
 namespace SwagGraphQL;
 
 use Shopware\Core\Framework\Plugin;
+use SwagGraphQL\DependencyInjection\CompilerPass\CustomFieldRegistryCompilerPass;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -15,6 +16,8 @@ class SwagGraphQL extends Plugin
         $loader->load('services.xml');
 
         parent::build($container);
+
+        $container->addCompilerPass(new CustomFieldRegistryCompilerPass());
     }
 
 }

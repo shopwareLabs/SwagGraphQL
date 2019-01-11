@@ -12,6 +12,8 @@
         <service id="SwagGraphQL\Schema\TypeRegistry">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry"></argument>
             <argument type="service" id="SwagGraphQL\Schema\CustomTypes"></argument>
+            <argument type="service" id="swag_graphql.query_registry"></argument>
+            <argument type="service" id="swag_graphql.mutation_registry"></argument>
         </service>
 
         <service id="SwagGraphQL\Schema\SchemaFactory"></service>
@@ -27,5 +29,19 @@
         </service>
 
         <service id="SwagGraphQL\Schema\CustomTypes"></service>
+
+        <!--Custom Fields-->
+        <service id="swag_graphql.query_registry" class="SwagGraphQL\Schema\CustomFieldRegistry">
+            <argument type="collection"/>
+        </service>
+        <service id="swag_graphql.mutation_registry" class="SwagGraphQL\Schema\CustomFieldRegistry">
+            <argument type="collection"/>
+        </service>
+
+        <!--Actions-->
+        <service id="SwagGraphQL\Actions\DissolveMediaFolderAction">
+            <argument type="service" id="Shopware\Core\Content\Media\MediaFolderService"></argument>
+            <tag name="swag_graphql.mutations" mutation="dissolve_media_folder"></tag>
+        </service>
     </services>
 </container>

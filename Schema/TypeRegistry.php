@@ -7,7 +7,9 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
@@ -31,30 +33,55 @@ use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
+use SwagGraphQL\CustomFields\GraphQLField;
 
 class TypeRegistry
 {
-    /** @var ObjectType[] */
+    /**
+     * @var ObjectType[]
+     */
     private $types = [];
 
-    /** @var InputObjectType[] */
+    /**
+     * @var InputObjectType[]
+     */
     private $inputTypes = [];
 
-    /** @var DefinitionRegistry */
+    /**
+     * @var DefinitionRegistry
+     */
     private $definitionRegistry;
 
-    /** @var CustomTypes */
+    /**
+     * @var CustomTypes
+     */
     private $customTypes;
 
-    public function __construct(DefinitionRegistry $definitionRegistry, CustomTypes $customTypes)
-    {
+    /**
+     * @var CustomFieldRegistry
+     */
+    private $queries;
+
+    /**
+     * @var CustomFieldRegistry
+     */
+    private $mutations;
+
+    public function __construct(
+        DefinitionRegistry $definitionRegistry,
+        CustomTypes $customTypes,
+        CustomFieldRegistry $queries,
+        CustomFieldRegistry $mutations
+    ) {
         $this->definitionRegistry = $definitionRegistry;
         $this->customTypes = $customTypes;
+        $this->queries = $queries;
+        $this->mutations = $mutations;
     }
 
     public function getQuery(): ObjectType
     {
-        $fields = [];
+        $fields = $this->customQueries();
         foreach ($this->definitionRegistry->getElements() as $definition) {
             if ($this->isTranslationDefinition($definition) || $this->isMappingDefinition($definition)) {
                 continue;
@@ -73,7 +100,7 @@ class TypeRegistry
 
     public function getMutation(): ObjectType
     {
-        $fields = [];
+        $fields = $this->customMutations();
         foreach ($this->definitionRegistry->getElements() as $definition) {
             if ($this->isTranslationDefinition($definition) || $this->isMappingDefinition($definition)) {
                 continue;
@@ -266,7 +293,6 @@ class TypeRegistry
         });
     }
 
-
     private function getFieldType(Field $field, bool $input = false): ?Type
     {
         $type = null;
@@ -330,6 +356,42 @@ class TypeRegistry
             if (array_key_exists($propertyName, $fields)) {
                 $fields[$propertyName]['defaultValue'] = $default;
             }
+        }
+
+        return $fields;
+    }
+
+    private function customQueries(): array
+    {
+        $fields = [];
+
+        /** @var GraphQLField $query */
+        foreach ($this->queries->getFields() as $name => $query) {
+            $fields[$name] = [
+                'type' => $query->returnType(),
+                'args' => $query->defineArgs(),
+                'resolve' => function($rootValue, $args, Context $context, ResolveInfo $info) use ($query) {
+                    return $query->resolve($rootValue, $args, $context, $info);
+                }
+            ];
+        }
+
+        return $fields;
+    }
+
+    private function customMutations(): array
+    {
+        $fields = [];
+
+        /** @var GraphQLField $mutation */
+        foreach ($this->mutations->getFields() as $name => $mutation) {
+            $fields[$name] = [
+                'type' => $mutation->returnType(),
+                'args' => $mutation->defineArgs(),
+                'resolve' => function($rootValue, $args, Context $context, ResolveInfo $info) use ($mutation) {
+                    return $mutation->resolve($rootValue, $args, $context, $info);
+                }
+            ];
         }
 
         return $fields;
