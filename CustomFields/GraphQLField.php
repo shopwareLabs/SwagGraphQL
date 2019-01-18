@@ -25,6 +25,11 @@ interface GraphQLField
     public function defineArgs(): array;
 
     /**
+     * @return string description of the field
+     */
+    public function description(): string;
+
+    /**
      * @param mixed $rootValue
      * @param array $args
      * @param Context $context

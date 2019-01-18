@@ -48,7 +48,6 @@ class QueryResolver
         } catch (\Throwable $e) {
             // default error-handler will just show "internal server error"
             // therefore throw own Exception
-            var_dump($e);
             throw new QueryResolvingException($e->getMessage(), 0, $e);
         }
     }
@@ -72,15 +71,7 @@ class QueryResolver
             return ConnectionStruct::fromResult($searchResult);
         }
 
-        $getter = 'get' . ucfirst($info->fieldName);
-        $result = $rootValue->$getter();
-
-        if ($result instanceof EntityCollection) {
-            // ToDo handle args in connections
-            return $this->wrapConnectionType($result->getElements());
-        }
-
-        return $result;
+        return $this->getSimpleValue($rootValue, $info);
     }
 
     /**
@@ -103,8 +94,7 @@ class QueryResolver
             }
         }
 
-        $getter = 'get' . ucfirst($info->fieldName);
-        return $rootValue->$getter();
+        return $this->getSimpleValue($rootValue, $info);
     }
 
     /**
@@ -176,6 +166,25 @@ class QueryResolver
             'total' => 0,
             'pageInfo' => new PageInfoStruct()
         ]);
+    }
+
+    private function getSimpleValue($rootValue, ResolveInfo $info)
+    {
+        $result = null;
+        $getter = 'get' . ucfirst($info->fieldName);
+        if (method_exists($rootValue, $getter)) {
+            $result = $rootValue->$getter();
+        }
+        if (is_array($rootValue) && array_key_exists($info->fieldName, $rootValue)) {
+            $result = $rootValue[$info->fieldName];
+        }
+
+        if ($result instanceof EntityCollection) {
+            // ToDo handle args in connections
+            return $this->wrapConnectionType($result->getElements());
+        }
+
+        return $result;
     }
 
 }

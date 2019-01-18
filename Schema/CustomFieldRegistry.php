@@ -6,7 +6,7 @@ use SwagGraphQL\CustomFields\GraphQLField;
 
 class CustomFieldRegistry
 {
-    private $fields;
+    private $fields = [];
 
     public function addField(string $name, GraphQLField $field)
     {

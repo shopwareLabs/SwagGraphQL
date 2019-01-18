@@ -39,9 +39,29 @@
         </service>
 
         <!--Actions-->
+        <service id="SwagGraphQL\Actions\GenerateIntegrationKeyAction">
+            <tag name="swag_graphql.queries" query="generate_integration_key"></tag>
+        </service>
+        <service id="SwagGraphQL\Actions\GenerateSalesChannelKeyAction">
+            <tag name="swag_graphql.queries" query="generate_sales_channel_key"></tag>
+        </service>
+        <service id="SwagGraphQL\Actions\GenerateUserKeyAction">
+            <tag name="swag_graphql.queries" query="generate_user_key"></tag>
+        </service>
+
         <service id="SwagGraphQL\Actions\DissolveMediaFolderAction">
             <argument type="service" id="Shopware\Core\Content\Media\MediaFolderService"></argument>
             <tag name="swag_graphql.mutations" mutation="dissolve_media_folder"></tag>
+        </service>
+        <service id="SwagGraphQL\Actions\ProvideFileNameAction">
+            <argument type="service" id="Shopware\Core\Content\Media\File\FileNameProvider"></argument>
+            <tag name="swag_graphql.mutations" mutation="provide_file_name"></tag>
+        </service>
+        <service id="SwagGraphQL\Actions\RenameMediaAction">
+            <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
+            <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"></argument>
+            <argument type="service" id="media.repository"></argument>
+            <tag name="swag_graphql.mutations" mutation="rename_media"></tag>
         </service>
     </services>
 </container>

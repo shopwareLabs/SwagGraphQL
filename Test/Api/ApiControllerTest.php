@@ -11,18 +11,17 @@ use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
 use Shopware\Core\Framework\Rule\Container\AndRule;
-use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagGraphQL\Api\ApiController;
 use SwagGraphQL\Api\UnsupportedContentTypeException;
 use SwagGraphQL\Resolver\QueryResolver;
-use SwagGraphQL\Schema\CustomTypes;
 use SwagGraphQL\Schema\SchemaFactory;
 use SwagGraphQL\Schema\TypeRegistry;
+use SwagGraphQL\Test\Traits\GraphqlApiTest;
 use Symfony\Component\HttpFoundation\Request;
 
 class ApiControllerTest extends TestCase
 {
-    use IntegrationTestBehaviour;
+    use GraphqlApiTest;
 
     /** @var ApiController */
     private $apiController;
@@ -36,7 +35,7 @@ class ApiControllerTest extends TestCase
     public function setUp()
     {
         $registry = $this->getContainer()->get(DefinitionRegistry::class);
-        $schema = SchemaFactory::createSchema(new TypeRegistry($registry, new CustomTypes()));
+        $schema = SchemaFactory::createSchema($this->getContainer()->get(TypeRegistry::class));
 
         $this->apiController = new ApiController($schema, new QueryResolver($this->getContainer(), $registry));
         $this->context = Context::createDefaultContext();
@@ -54,7 +53,7 @@ class ApiControllerTest extends TestCase
 
     public function testQueryIntrospectionQuery()
     {
-        $request = $this->createPostJsonRequest(Introspection::getIntrospectionQuery());
+        $request = $this->createGraphqlRequestRequest(Introspection::getIntrospectionQuery());
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -77,7 +76,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -186,7 +185,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -248,7 +247,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -326,7 +325,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ";
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -396,7 +395,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -481,7 +480,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -574,7 +573,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -628,7 +627,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -713,7 +712,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -809,7 +808,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -888,7 +887,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ';
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -932,7 +931,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ";
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -970,7 +969,7 @@ class ApiControllerTest extends TestCase
 	            }
             }
         ";
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -1005,7 +1004,7 @@ class ApiControllerTest extends TestCase
 	            )
             }
         ";
-        $request = $this->createPostJsonRequest($query);
+        $request = $this->createGraphqlRequestRequest($query);
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
@@ -1014,21 +1013,5 @@ class ApiControllerTest extends TestCase
         static::assertEquals($productId, $data['data']['delete_product']);
 
         static::assertCount(0, $this->repository->read(new ReadCriteria([$productId]), Context::createDefaultContext())->getIds());
-    }
-
-    private function createPostJsonRequest(string $query): Request
-    {
-        $request = Request::create(
-            'localhost',
-            Request::METHOD_POST,
-            [],
-            [],
-            [],
-            [],
-            json_encode(['query' => $query])
-        );
-        $request->headers->add(['content_type' => 'application/json']);
-
-        return $request;
     }
 }

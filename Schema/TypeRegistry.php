@@ -35,6 +35,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 use SwagGraphQL\CustomFields\GraphQLField;
+use SwagGraphQL\Resolver\QueryResolvingException;
 
 class TypeRegistry
 {
@@ -78,6 +79,20 @@ class TypeRegistry
         $this->customTypes = $customTypes;
         $this->queries = $queries;
         $this->mutations = $mutations;
+    }
+
+    public function getObjectForDefinition(string $definition): ObjectType
+    {
+        if (!isset($this->types[$definition::getEntityName()])) {
+            $this->types[$definition::getEntityName()] = new ObjectType([
+                'name' => $definition::getEntityName(),
+                'fields' => function () use ($definition) {
+                    return $this->getFieldsForDefinition($definition);
+                }
+            ]);
+        }
+
+        return $this->types[$definition::getEntityName()];
     }
 
     public function getQuery(): ObjectType
@@ -139,20 +154,6 @@ class TypeRegistry
     {
         $instance = new $definition();
         return $instance instanceof MappingEntityDefinition;
-    }
-
-    private function getObjectForDefinition(string $definition): ObjectType
-    {
-        if (!isset($this->types[$definition::getEntityName()])) {
-            $this->types[$definition::getEntityName()] = new ObjectType([
-                'name' => $definition::getEntityName(),
-                'fields' => function () use ($definition) {
-                    return $this->getFieldsForDefinition($definition);
-                }
-            ]);
-        }
-
-        return $this->types[$definition::getEntityName()];
     }
 
     private function getInputForDefinition(string $definition): InputObjectType
@@ -372,8 +373,15 @@ class TypeRegistry
             $fields[$name] = [
                 'type' => $query->returnType(),
                 'args' => $query->defineArgs(),
+                'description' => $query->description(),
                 'resolve' => function($rootValue, $args, Context $context, ResolveInfo $info) use ($query) {
-                    return $query->resolve($rootValue, $args, $context, $info);
+                    try {
+                        return $query->resolve($rootValue, $args, $context, $info);
+                    } catch (\Throwable $e) {
+                        // default error-handler will just show "internal server error"
+                        // therefore throw own Exception
+                        throw new QueryResolvingException($e->getMessage(), 0, $e);
+                    }
                 }
             ];
         }
@@ -390,8 +398,15 @@ class TypeRegistry
             $fields[$name] = [
                 'type' => $mutation->returnType(),
                 'args' => $mutation->defineArgs(),
+                'description' => $mutation->description(),
                 'resolve' => function($rootValue, $args, Context $context, ResolveInfo $info) use ($mutation) {
-                    return $mutation->resolve($rootValue, $args, $context, $info);
+                    try {
+                        return $mutation->resolve($rootValue, $args, $context, $info);
+                    } catch (\Throwable $e) {
+                        // default error-handler will just show "internal server error"
+                        // therefore throw own Exception
+                        throw new QueryResolvingException($e->getMessage(), 0, $e);
+                    }
                 }
             ];
         }

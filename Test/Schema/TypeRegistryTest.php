@@ -18,6 +18,7 @@ use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslatio
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use SwagGraphQL\Schema\CustomFieldRegistry;
 use SwagGraphQL\Schema\CustomTypes;
 use SwagGraphQL\Schema\Mutation;
 use SwagGraphQL\Schema\TypeRegistry;
@@ -47,8 +48,8 @@ class TypeRegistryTest extends TestCase
         $this->typeRegistry = new TypeRegistry(
             $this->definitionRegistry,
             new CustomTypes(),
-            $this->getContainer()->get('swag_graphql.query_registry'),
-            $this->getContainer()->get('swag_graphql.mutation_registry')
+            new CustomFieldRegistry(),
+            new CustomFieldRegistry()
         );
     }
 

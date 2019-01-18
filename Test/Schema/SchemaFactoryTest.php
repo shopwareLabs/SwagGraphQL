@@ -16,8 +16,7 @@ class SchemaFactoryTest extends TestCase
 
     public function testCreateSchema()
     {
-        $registry = $this->getContainer()->get(DefinitionRegistry::class);
-        $schema = SchemaFactory::createSchema(new TypeRegistry($registry, new CustomTypes()));
+        $schema = SchemaFactory::createSchema($this->getContainer()->get(TypeRegistry::class));
 
         static::assertInstanceOf(Schema::class, $schema);
         static::assertEmpty($schema->validate());

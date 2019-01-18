@@ -23,14 +23,19 @@ class DissolveMediaFolderAction implements GraphQLField
 
     public function returnType(): Type
     {
-        return Type::id();
+        return Type::nonNull(Type::id());
     }
 
     public function defineArgs(): array
     {
         return [
-            self::FOLDER_ID_ARGUMENT => Type::id()
+            self::FOLDER_ID_ARGUMENT => Type::nonNull(Type::id())
         ];
+    }
+
+    public function description(): string
+    {
+        return 'Dissolves a media folder and puts the content one level higher.';
     }
 
     public function resolve($rootValue, $args, Context $context, ResolveInfo $info)
