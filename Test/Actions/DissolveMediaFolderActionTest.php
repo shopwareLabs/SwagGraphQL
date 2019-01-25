@@ -5,8 +5,8 @@ namespace SwagGraphQL\Test\Actions;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagGraphQL\Api\ApiController;
 use SwagGraphQL\Resolver\QueryResolver;
@@ -24,7 +24,7 @@ class DissolveMediaFolderActionTest extends TestCase
     /** @var Context */
     private $context;
 
-    /** @var RepositoryInterface */
+    /** @var EntityRepositoryInterface */
     private $repository;
 
     public function setUp()
@@ -69,7 +69,7 @@ class DissolveMediaFolderActionTest extends TestCase
             print_r($data['data'], true)
         );
 
-        $folders = $this->repository->read(new ReadCriteria([$folderId]), $this->context);
+        $folders = $this->repository->search(new Criteria([$folderId]), $this->context);
         static::assertNull($folders->get($folderId));
     }
 }

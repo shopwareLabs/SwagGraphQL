@@ -6,9 +6,9 @@ use GraphQL\Executor\Executor;
 use GraphQL\Type\Definition\ResolveInfo;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagGraphQL\Resolver\Struct\ConnectionStruct;
 use SwagGraphQL\Resolver\Struct\EdgeStruct;
 use SwagGraphQL\Resolver\Struct\PageInfoStruct;
@@ -108,10 +108,10 @@ class QueryResolver
         $event = $repo->create([$args], $context);
         $id = $event->getEventByDefinition($definition)->getIds()[0];
 
-        $criteria = new ReadCriteria([$id]);
+        $criteria = new Criteria([$id]);
         AssociationResolver::addAssociations($criteria, $info->getFieldSelection(PHP_INT_MAX), $definition);
 
-        return $repo->read($criteria, $context)->get($id);
+        return $repo->search($criteria, $context)->get($id);
     }
 
     /**
@@ -125,10 +125,10 @@ class QueryResolver
         $event = $repo->update([$args], $context);
         $id = $event->getEventByDefinition($definition)->getIds()[0];
 
-        $criteria = new ReadCriteria([$id]);
+        $criteria = new Criteria([$id]);
         AssociationResolver::addAssociations($criteria, $info->getFieldSelection(PHP_INT_MAX), $definition);
 
-        return $repo->read($criteria, $context)->get($id);
+        return $repo->search($criteria, $context)->get($id);
     }
 
     /**
@@ -145,7 +145,7 @@ class QueryResolver
         return $id;
     }
 
-    private function getRepository(string $definition): RepositoryInterface
+    private function getRepository(string $definition): EntityRepositoryInterface
     {
         $repositoryClass = $definition::getEntityName() . '.repository';
 
@@ -153,7 +153,7 @@ class QueryResolver
             throw new \Exception('Repository not found: ' . $definition::getEntityName());
         }
 
-        /** @var RepositoryInterface $repo */
+        /** @var EntityRepositoryInterface $repo */
         $repo = $this->container->get($definition::getEntityName() . '.repository');
 
         return $repo;

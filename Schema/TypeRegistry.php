@@ -28,6 +28,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslationsAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\VersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
@@ -274,7 +275,8 @@ class TypeRegistry
             if ($field->getFlag(Required::class) &&
                 !$type instanceof IDType &&
                 !$field instanceof UpdatedAtField &&
-                !$field instanceof CreatedAtField) {
+                !$field instanceof CreatedAtField &&
+                !$field instanceof TranslationsAssociationField) {
                 return Type::nonNull($type);
             }
 

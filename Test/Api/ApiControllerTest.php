@@ -9,7 +9,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use SwagGraphQL\Api\ApiController;
 use SwagGraphQL\Api\UnsupportedContentTypeException;
@@ -1012,6 +1012,6 @@ class ApiControllerTest extends TestCase
         static::assertArrayNotHasKey('errors', $data);
         static::assertEquals($productId, $data['data']['delete_product']);
 
-        static::assertCount(0, $this->repository->read(new ReadCriteria([$productId]), Context::createDefaultContext())->getIds());
+        static::assertCount(0, $this->repository->search(new Criteria([$productId]), Context::createDefaultContext())->getIds());
     }
 }

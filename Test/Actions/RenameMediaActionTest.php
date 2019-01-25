@@ -9,8 +9,8 @@ use Shopware\Core\Content\Media\Pathname\UrlGeneratorInterface;
 use Shopware\Core\Content\Test\Media\MediaFixtures;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagGraphQL\Api\ApiController;
 use SwagGraphQL\Resolver\QueryResolver;
 use SwagGraphQL\Schema\SchemaFactory;
@@ -27,7 +27,7 @@ class RenameMediaActionTest extends TestCase
     /** @var Context */
     private $context;
 
-    /** @var RepositoryInterface */
+    /** @var EntityRepositoryInterface */
     private $repository;
 
     public function setUp()
@@ -82,7 +82,7 @@ class RenameMediaActionTest extends TestCase
 
         /** @var MediaEntity $updatedMedia */
         $updatedMedia = $this->repository
-            ->read(new ReadCriteria([$media->getId()]), $this->context)
+            ->search(new Criteria([$media->getId()]), $this->context)
             ->get($media->getId());
         static::assertEquals('new Name', $updatedMedia->getFileName());
 
