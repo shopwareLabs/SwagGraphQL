@@ -1,15 +1,25 @@
 {
   "name": "shopware/swag-graphql",
-  "type": "library",
+  "type": "shopware-plugin",
   "minimum-stability": "dev",
   "description": "A Simple Plugin that exposes an GraphQL-API for the Shopware 6 Core-API.",
   "keywords": ["shopware", "shop"],
   "homepage": "http://www.shopware.com",
-  "license": [
-    "AGPL-3.0",
-    "proprietary"
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "shopware AG"
+    }
   ],
   "require": {
     "webonyx/graphql-php": "dev-master"
+  },
+  "extra": {
+    "installer-name": "SwagGraphQL",
+    "copyright": "(c) by shopware AG",
+    "label": {
+      "de_DE": "GraphQL",
+      "en_GB": "GraphQL"
+    }
   }
 }
