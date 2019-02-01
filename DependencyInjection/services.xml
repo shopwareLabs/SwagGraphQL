@@ -7,6 +7,9 @@
         <service id="SwagGraphQL\Api\ApiController" public="true">
             <argument type="service" id="swag_graphql.schema"></argument>
             <argument type="service" id="SwagGraphQL\Resolver\QueryResolver"></argument>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="SwagGraphQL\Schema\TypeRegistry">

@@ -221,9 +221,9 @@ class CriteriaParserTest extends TestCase
             ProductDefinition::class
         );
 
-        static::assertInstanceOf(MaxAggregation::class, $criteria->getAggregations()[0]);
-        static::assertEquals('product.id', $criteria->getAggregations()[0]->getField());
-        static::assertEquals('max_id', $criteria->getAggregations()[0]->getName());
+        static::assertInstanceOf(MaxAggregation::class, $criteria->getAggregations()['max_id']);
+        static::assertEquals('product.id', $criteria->getAggregations()['max_id']->getField());
+        static::assertEquals('max_id', $criteria->getAggregations()['max_id']->getName());
     }
 
     public function testParseMinAggregation()
@@ -240,9 +240,9 @@ class CriteriaParserTest extends TestCase
             ProductDefinition::class
         );
 
-        static::assertInstanceOf(MinAggregation::class, $criteria->getAggregations()[0]);
-        static::assertEquals('product.id', $criteria->getAggregations()[0]->getField());
-        static::assertEquals('min_id', $criteria->getAggregations()[0]->getName());
+        static::assertInstanceOf(MinAggregation::class, $criteria->getAggregations()['min_id']);
+        static::assertEquals('product.id', $criteria->getAggregations()['min_id']->getField());
+        static::assertEquals('min_id', $criteria->getAggregations()['min_id']->getName());
     }
 
     public function testParseAvgAggregation()
@@ -259,9 +259,9 @@ class CriteriaParserTest extends TestCase
             ProductDefinition::class
         );
 
-        static::assertInstanceOf(AvgAggregation::class, $criteria->getAggregations()[0]);
-        static::assertEquals('product.id', $criteria->getAggregations()[0]->getField());
-        static::assertEquals('avg_id', $criteria->getAggregations()[0]->getName());
+        static::assertInstanceOf(AvgAggregation::class, $criteria->getAggregations()['avg_id']);
+        static::assertEquals('product.id', $criteria->getAggregations()['avg_id']->getField());
+        static::assertEquals('avg_id', $criteria->getAggregations()['avg_id']->getName());
     }
 
     public function testParseCountAggregation()
@@ -278,9 +278,9 @@ class CriteriaParserTest extends TestCase
             ProductDefinition::class
         );
 
-        static::assertInstanceOf(CountAggregation::class, $criteria->getAggregations()[0]);
-        static::assertEquals('product.id', $criteria->getAggregations()[0]->getField());
-        static::assertEquals('count_id', $criteria->getAggregations()[0]->getName());
+        static::assertInstanceOf(CountAggregation::class, $criteria->getAggregations()['count_id']);
+        static::assertEquals('product.id', $criteria->getAggregations()['count_id']->getField());
+        static::assertEquals('count_id', $criteria->getAggregations()['count_id']->getName());
     }
 
     public function testParseValueCountAggregation()
@@ -297,9 +297,9 @@ class CriteriaParserTest extends TestCase
             ProductDefinition::class
         );
 
-        static::assertInstanceOf(ValueCountAggregation::class, $criteria->getAggregations()[0]);
-        static::assertEquals('product.id', $criteria->getAggregations()[0]->getField());
-        static::assertEquals('value_count_id', $criteria->getAggregations()[0]->getName());
+        static::assertInstanceOf(ValueCountAggregation::class, $criteria->getAggregations()['value_count_id']);
+        static::assertEquals('product.id', $criteria->getAggregations()['value_count_id']->getField());
+        static::assertEquals('value_count_id', $criteria->getAggregations()['value_count_id']->getName());
     }
 
     public function testParseStatsAggregation()
@@ -316,8 +316,8 @@ class CriteriaParserTest extends TestCase
             ProductDefinition::class
         );
 
-        static::assertInstanceOf(StatsAggregation::class, $criteria->getAggregations()[0]);
-        static::assertEquals('product.id', $criteria->getAggregations()[0]->getField());
-        static::assertEquals('stats_id', $criteria->getAggregations()[0]->getName());
+        static::assertInstanceOf(StatsAggregation::class, $criteria->getAggregations()['stats_id']);
+        static::assertEquals('product.id', $criteria->getAggregations()['stats_id']->getField());
+        static::assertEquals('stats_id', $criteria->getAggregations()['stats_id']->getName());
     }
 }

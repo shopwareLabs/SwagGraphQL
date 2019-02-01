@@ -82,22 +82,10 @@ class CriteriaParser
     private static function parseAggregations(array $args, Criteria $criteria, string $definition): void
     {
         if (isset($args['aggregations'])) {
-            $args['aggregations'] = static::parseAggregationType($args['aggregations']);
             $e = new SearchRequestException();
             AggregationParser::buildAggregations($definition, $args, $criteria, $e);
 
             $e->tryToThrow();
         }
-    }
-
-    private static function parseAggregationType(array $aggregations): array
-    {
-        foreach ($aggregations as $key => $aggregation) {
-
-            $aggregations[$aggregation['name']][$aggregation['type']]['field'] = $aggregation['field'];
-            unset($aggregations[$key]);
-        }
-
-        return $aggregations;
     }
 }

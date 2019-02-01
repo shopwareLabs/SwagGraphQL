@@ -8,13 +8,13 @@ use GraphQL\Type\Schema;
 use GraphQL\Utils\SchemaPrinter;
 use Shopware\Core\Framework\Context;
 use SwagGraphQL\Resolver\QueryResolver;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ApiController extends Controller
+class ApiController extends AbstractController
 {
     /** @var Schema  */
     private $schema;
