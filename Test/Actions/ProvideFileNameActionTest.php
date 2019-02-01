@@ -49,7 +49,7 @@ class ProvideFileNameActionTest extends TestCase
 
         $query = sprintf('
             mutation {
-	            provide_file_name(
+	            provideFileName(
 	                fileName: "%s",
 	                fileExtension: "jpg"
 	            )
@@ -62,7 +62,7 @@ class ProvideFileNameActionTest extends TestCase
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data, print_r($data, true));
         static::assertEquals(
-            $data['data']['provide_file_name'],
+            $data['data']['provideFileName'],
             $media->getFileName() . '_(1)',
             print_r($data['data'], true)
         );

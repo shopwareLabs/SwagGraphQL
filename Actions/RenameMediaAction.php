@@ -16,7 +16,7 @@ use SwagGraphQL\Schema\TypeRegistry;
 
 class RenameMediaAction implements GraphQLField
 {
-    CONST MEDIA_ID_ARGUMENT = 'media_id';
+    CONST MEDIA_ID_ARGUMENT = 'mediaId';
     CONST FILENAME_ARGUMENT = 'fileName';
 
     /**

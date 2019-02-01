@@ -54,8 +54,8 @@ class RenameMediaActionTest extends TestCase
 
         $query = sprintf('
             mutation {
-	            rename_media(
-	                media_id: "%s"
+	            renameMedia(
+	                mediaId: "%s"
 	                fileName: "new Name"
 	            ) {
 	                id
@@ -70,12 +70,12 @@ class RenameMediaActionTest extends TestCase
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data, print_r($data, true));
         static::assertEquals(
-            $data['data']['rename_media']['id'],
+            $data['data']['renameMedia']['id'],
             $media->getId(),
             print_r($data['data'], true)
         );
         static::assertEquals(
-            $data['data']['rename_media']['fileName'],
+            $data['data']['renameMedia']['fileName'],
             'new Name',
             print_r($data['data'], true)
         );

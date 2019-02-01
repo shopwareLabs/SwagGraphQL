@@ -11,26 +11,26 @@ class MutationTest extends TestCase
     {
         $mutation = new Mutation(Mutation::ACTION_CREATE, 'test');
 
-        static::assertEquals('create_test', $mutation->getName());
+        static::assertEquals('createTest', $mutation->getName());
     }
 
     public function testGetNameUpdate()
     {
         $mutation = new Mutation(Mutation::ACTION_UPDATE, 'test');
 
-        static::assertEquals('update_test', $mutation->getName());
+        static::assertEquals('updateTest', $mutation->getName());
     }
 
     public function testGetNameDelete()
     {
         $mutation = new Mutation(Mutation::ACTION_DELETE, 'test');
 
-        static::assertEquals('delete_test', $mutation->getName());
+        static::assertEquals('deleteTest', $mutation->getName());
     }
 
     public function testFromNameCreate()
     {
-        $mutation = Mutation::fromName('create_test');
+        $mutation = Mutation::fromName('createTest');
 
         static::assertEquals(Mutation::ACTION_CREATE, $mutation->getAction());
         static::assertEquals('test', $mutation->getEntityName());
@@ -38,7 +38,7 @@ class MutationTest extends TestCase
 
     public function testFromNameUpdate()
     {
-        $mutation = Mutation::fromName('update_test');
+        $mutation = Mutation::fromName('updateTest');
 
         static::assertEquals(Mutation::ACTION_UPDATE, $mutation->getAction());
         static::assertEquals('test', $mutation->getEntityName());
@@ -46,7 +46,7 @@ class MutationTest extends TestCase
 
     public function testFromNameDelete()
     {
-        $mutation = Mutation::fromName('delete_test');
+        $mutation = Mutation::fromName('deleteTest');
 
         static::assertEquals(Mutation::ACTION_DELETE, $mutation->getAction());
         static::assertEquals('test', $mutation->getEntityName());

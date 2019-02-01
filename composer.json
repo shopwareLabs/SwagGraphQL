@@ -12,7 +12,8 @@
     }
   ],
   "require": {
-    "webonyx/graphql-php": "dev-master"
+    "webonyx/graphql-php": "dev-master",
+    "doctrine/inflector": "1.3.0"
   },
   "extra": {
     "installer-name": "SwagGraphQL",

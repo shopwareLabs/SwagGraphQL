@@ -71,7 +71,7 @@ class CustomTypes
     {
         if (static::$sortDirection === null) {
             static::$sortDirection = new EnumType([
-                'name' => 'sortDirection',
+                'name' => 'SortDirection',
                 'values' => [
                     'ASC' => [
                         'value' => FieldSorting::ASCENDING
@@ -90,7 +90,7 @@ class CustomTypes
     {
         if (static::$queryOperator === null) {
             static::$queryOperator = new EnumType([
-                'name' => 'queryOperator',
+                'name' => 'QueryOperator',
                 'values' => [
                     'AND' => [
                         'value' => MultiFilter::CONNECTION_AND
@@ -109,7 +109,7 @@ class CustomTypes
     {
         if (static::$rangeOperator === null) {
             static::$rangeOperator = new EnumType([
-                'name' => 'rangeOperator',
+                'name' => 'RangeOperator',
                 'values' => [
                     'GTE' => [
                         'value' => RangeFilter::GTE
@@ -134,7 +134,7 @@ class CustomTypes
     {
         if (static::$queryTypes === null) {
             static::$queryTypes = new EnumType([
-                'name' => 'queryTypes',
+                'name' => 'QueryTypes',
                 'values' => ['equals', 'contains', 'equalsAny', 'multi', 'not', 'range']
             ]);
         }
@@ -146,7 +146,7 @@ class CustomTypes
     {
         if (static::$aggregationTypes === null) {
             static::$aggregationTypes = new EnumType([
-                'name' => 'aggregationTypes',
+                'name' => 'AggregationTypes',
                 'values' => ['avg', 'cardinality', 'count', 'max', 'min', 'stats', 'sum', 'value_count']
             ]);
         }
@@ -159,7 +159,7 @@ class CustomTypes
     {
         if (static::$pageInfo === null) {
             static::$pageInfo = new ObjectType([
-                'name' => 'pageInfo',
+                'name' => 'PageInfo',
                 'fields' => [
                     'endCursor' => ['type' => Type::id()],
                     'startCursor' => ['type' => Type::id()],
@@ -176,11 +176,11 @@ class CustomTypes
     {
         if (static::$aggregationResult === null) {
             static::$aggregationResult = new ObjectType([
-                'name' => 'aggregationResults',
+                'name' => 'AggregationResults',
                 'fields' => [
                     'name' => ['type' => Type::string()],
                     'results' => ['type' => Type::listOf(new ObjectType([
-                        'name' => 'aggregationResult',
+                        'name' => 'AggregationResult',
                         'fields' => [
                             'type' => ['type' => Type::string()],
                             'result' => ['type' => Type::float()]
@@ -199,7 +199,7 @@ class CustomTypes
     {
         if (static::$query === null) {
             static::$query = new InputObjectType([
-                'name' => 'query',
+                'name' => 'SearchQuery',
                 'fields' => function () {
                     return [
                         'type' => Type::nonNull(static::queryTypes()),
@@ -208,7 +208,7 @@ class CustomTypes
                         'field' => Type::string(),
                         'value' => Type::string(),
                         'parameters' => Type::listOf(new InputObjectType([
-                            'name' => 'parameter',
+                            'name' => 'Parameter',
                             'fields' => [
                                 'operator' => Type::nonNull(static::rangeOperator()),
                                 'value' => Type::nonNull(Type::float())
@@ -226,7 +226,7 @@ class CustomTypes
     {
         if (static::$aggregation === null) {
             static::$aggregation = new InputObjectType([
-                'name' => 'aggregation',
+                'name' => 'Aggregation',
                 'fields' => function () {
                     return [
                         'type' => Type::nonNull(static::aggregationTypes()),

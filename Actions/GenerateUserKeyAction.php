@@ -14,7 +14,7 @@ class GenerateUserKeyAction implements GraphQLField
     public function returnType(): Type
     {
         return new ObjectType([
-            'name' => 'UserAccessKey',
+            'name' => 'KeyPair',
             'fields' => [
                 'accessKey' => [
                     'type' => Type::nonNull(Type::id())

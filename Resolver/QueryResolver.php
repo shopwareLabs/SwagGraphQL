@@ -2,6 +2,7 @@
 
 namespace SwagGraphQL\Resolver;
 
+use Doctrine\Common\Inflector\Inflector;
 use GraphQL\Executor\Executor;
 use GraphQL\Type\Definition\ResolveInfo;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
@@ -36,8 +37,13 @@ class QueryResolver
      */
     public function resolve($rootValue, $args, $context, ResolveInfo $info)
     {
+        $path = $info->path[0];
+        if (is_array($path)) {
+            $path = $path[0];
+        }
+
         try {
-            if (strpos($info->path[0], '__') === 0) {
+            if (strpos($path, '__') === 0) {
                 return Executor::defaultFieldResolver($rootValue, $args, $context, $info);
             }
             if ($info->operation->operation !== 'mutation') {
@@ -60,7 +66,9 @@ class QueryResolver
     private function resolveQuery($rootValue, $args, $context, ResolveInfo $info)
     {
         if ($rootValue === null) {
-            $definition = $this->definitionRegistry->get($info->fieldName);
+            $entityName = Inflector::singularize($info->fieldName);
+            $entityName = Inflector::tableize($entityName);
+            $definition = $this->definitionRegistry->get($entityName);
             $repo = $this->getRepository($definition);
 
             $criteria = CriteriaParser::buildCriteria($args, $definition);

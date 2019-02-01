@@ -65,7 +65,7 @@ class ApiControllerTest extends TestCase
     {
         $query = '
             query {
-	            product {
+	            products {
 	                edges {
 	                    node {
 	                        id
@@ -81,15 +81,15 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertEmpty($data['data']['product']['edges']);
-        static::assertEquals(0, $data['data']['product']['total']);
+        static::assertEmpty($data['data']['products']['edges']);
+        static::assertEquals(0, $data['data']['products']['total']);
     }
 
     public function testQueryGET()
     {
         $query = '
             query {
-	            product {
+	            products {
 	                edges {
 	                    node {
 	                        id
@@ -109,15 +109,15 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertEmpty($data['data']['product']['edges']);
-        static::assertEquals(0, $data['data']['product']['total']);
+        static::assertEmpty($data['data']['products']['edges']);
+        static::assertEquals(0, $data['data']['products']['total']);
     }
 
     public function testQueryWithApplicationGraphQL()
     {
         $query = '
             query {
-	            product {
+	            products {
 	                edges {
 	                    node {
 	                        id
@@ -142,8 +142,8 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertEmpty($data['data']['product']['edges']);
-        static::assertEquals(0, $data['data']['product']['total']);
+        static::assertEmpty($data['data']['products']['edges']);
+        static::assertEquals(0, $data['data']['products']['total']);
     }
 
     public function testWithUnsupportedContentType()
@@ -174,7 +174,7 @@ class ApiControllerTest extends TestCase
 
         $query = '
             query {
-	            product {
+	            products {
 	                edges {
 	                    node {
 	                        id
@@ -190,13 +190,13 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(1, $data['data']['product']['edges']);
+        static::assertCount(1, $data['data']['products']['edges']);
 
-        $productResult = $data['data']['product']['edges'][0]['node'];
+        $productResult = $data['data']['products']['edges'][0]['node'];
         static::assertCount(2, $productResult);
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($productId, $productResult['id']);
-        static::assertEquals(1, $data['data']['product']['total']);
+        static::assertEquals(1, $data['data']['products']['total']);
     }
 
     public function testQueryProductWithMultipleProduct()
@@ -236,7 +236,7 @@ class ApiControllerTest extends TestCase
 
         $query = '
             query {
-	            product {
+	            products {
 	                edges {
 	                    node {
 	                        id
@@ -252,23 +252,23 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(3, $data['data']['product']['edges']);
+        static::assertCount(3, $data['data']['products']['edges']);
 
-        $firstProduct = $data['data']['product']['edges'][0]['node'];
+        $firstProduct = $data['data']['products']['edges'][0]['node'];
         static::assertCount(2, $firstProduct);
         static::assertEquals('first product', $firstProduct['name']);
         static::assertEquals($firstProductId, $firstProduct['id']);
 
-        $secondProduct = $data['data']['product']['edges'][1]['node'];
+        $secondProduct = $data['data']['products']['edges'][1]['node'];
         static::assertCount(2, $secondProduct);
         static::assertEquals('second product', $secondProduct['name']);
         static::assertEquals($secondProductId, $secondProduct['id']);
 
-        $thirdProduct = $data['data']['product']['edges'][2]['node'];
+        $thirdProduct = $data['data']['products']['edges'][2]['node'];
         static::assertCount(2, $thirdProduct);
         static::assertEquals('third product', $thirdProduct['name']);
         static::assertEquals($thirdProductId, $thirdProduct['id']);
-        static::assertEquals(3, $data['data']['product']['total']);
+        static::assertEquals(3, $data['data']['products']['total']);
     }
 
     public function testQueryProductWithFilter()
@@ -308,7 +308,7 @@ class ApiControllerTest extends TestCase
 
         $query = "
             query {
-	            product (
+	            products (
 	                query:  {
 	                    type: equals
 	                    field: \"id\"
@@ -330,14 +330,14 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(1, $data['data']['product']['edges']);
+        static::assertCount(1, $data['data']['products']['edges']);
 
-        $firstProduct = $data['data']['product']['edges'][0]['node'];
+        $firstProduct = $data['data']['products']['edges'][0]['node'];
         static::assertCount(2, $firstProduct);
         static::assertEquals('first product', $firstProduct['name']);
         static::assertEquals($firstProductId, $firstProduct['id']);
 
-        static::assertEquals(1, $data['data']['product']['total']);
+        static::assertEquals(1, $data['data']['products']['total']);
     }
 
     public function testQueryProductWithNestedFilter()
@@ -377,7 +377,7 @@ class ApiControllerTest extends TestCase
 
         $query = '
             query {
-	            product (
+	            products (
 	                sortBy: "id"
 	                query:  {
 	                    type: equals
@@ -400,19 +400,19 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(2, $data['data']['product']['edges']);
+        static::assertCount(2, $data['data']['products']['edges']);
 
-        $firstProduct = $data['data']['product']['edges'][0]['node'];
+        $firstProduct = $data['data']['products']['edges'][0]['node'];
         static::assertCount(2, $firstProduct);
         static::assertEquals('first product', $firstProduct['name']);
         static::assertEquals($firstProductId, $firstProduct['id']);
 
-        $secondProduct = $data['data']['product']['edges'][1]['node'];
+        $secondProduct = $data['data']['products']['edges'][1]['node'];
         static::assertCount(2, $secondProduct);
         static::assertEquals('third product', $secondProduct['name']);
         static::assertEquals($thirdProductId, $secondProduct['id']);
 
-        static::assertEquals(2, $data['data']['product']['total']);
+        static::assertEquals(2, $data['data']['products']['total']);
     }
 
     public function testQueryProductWithPagination()
@@ -460,7 +460,7 @@ class ApiControllerTest extends TestCase
 
         $query = '
             query {
-	            product (
+	            products (
 	                sortBy: "name"
 	                sortDirection: DESC
 	                first: 2
@@ -485,22 +485,22 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(2, $data['data']['product']['edges']);
+        static::assertCount(2, $data['data']['products']['edges']);
 
-        $firstProduct = $data['data']['product']['edges'][0]['node'];
+        $firstProduct = $data['data']['products']['edges'][0]['node'];
         static::assertCount(2, $firstProduct);
         static::assertEquals('c product', $firstProduct['name']);
         static::assertEquals($thirdProductId, $firstProduct['id']);
 
-        $secondProduct = $data['data']['product']['edges'][1]['node'];
+        $secondProduct = $data['data']['products']['edges'][1]['node'];
         static::assertCount(2, $secondProduct);
         static::assertEquals('b product', $secondProduct['name']);
         static::assertEquals($secondProductId, $secondProduct['id']);
 
-        static::assertEquals(4, $data['data']['product']['total']);
+        static::assertEquals(4, $data['data']['products']['total']);
 
-        static::assertEquals(true, $data['data']['product']['pageInfo']['hasNextPage']);
-        static::assertEquals('Mw==', $data['data']['product']['pageInfo']['endCursor']);
+        static::assertEquals(true, $data['data']['products']['pageInfo']['hasNextPage']);
+        static::assertEquals('Mw==', $data['data']['products']['pageInfo']['endCursor']);
     }
 
     public function testQueryProductWithAggregation()
@@ -548,7 +548,7 @@ class ApiControllerTest extends TestCase
 
         $query = '
             query {
-	            product (
+	            products (
 	                aggregations: [
 	                    {
 	                        type: sum
@@ -579,16 +579,16 @@ class ApiControllerTest extends TestCase
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
 
-        static::assertEquals(4, $data['data']['product']['total']);
+        static::assertEquals(4, $data['data']['products']['total']);
 
-        static::assertCount(2, $data['data']['product']['aggregations']);
+        static::assertCount(2, $data['data']['products']['aggregations']);
 
-        $firstAggregation = $data['data']['product']['aggregations'][0];
+        $firstAggregation = $data['data']['products']['aggregations'][0];
         static::assertEquals('tax_sum', $firstAggregation['name']);
         static::assertEquals('sum', $firstAggregation['results'][0]['type']);
         static::assertEquals(52, $firstAggregation['results'][0]['result']);
 
-        $secondAggregation = $data['data']['product']['aggregations'][1];
+        $secondAggregation = $data['data']['products']['aggregations'][1];
         static::assertEquals('tax_avg', $secondAggregation['name']);
         static::assertEquals('avg', $secondAggregation['results'][0]['type']);
         static::assertEquals(13, $secondAggregation['results'][0]['result']);
@@ -613,7 +613,7 @@ class ApiControllerTest extends TestCase
 
         $query = '
             query {
-	            product {
+	            products {
 	                edges {
 	                    node {
 	                        id
@@ -632,16 +632,16 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(1, $data['data']['product']['edges']);
+        static::assertCount(1, $data['data']['products']['edges']);
 
-        $productResult = $data['data']['product']['edges'][0]['node'];
+        $productResult = $data['data']['products']['edges'][0]['node'];
         static::assertCount(3, $productResult);
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($productId, $productResult['id']);
         static::assertCount(1, $productResult['manufacturer']);
         static::assertEquals('test', $productResult['manufacturer']['name']);
 
-        static::assertEquals(1, $data['data']['product']['total']);
+        static::assertEquals(1, $data['data']['products']['total']);
     }
 
     public function testQueryProductIncludesOneToMany()
@@ -694,7 +694,7 @@ class ApiControllerTest extends TestCase
 
         $query = '
             query {
-	            product {
+	            products {
 	                edges {
 	                    node {
 	                        id
@@ -717,9 +717,9 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(1, $data['data']['product']['edges']);
+        static::assertCount(1, $data['data']['products']['edges']);
 
-        $productResult = $data['data']['product']['edges'][0]['node'];
+        $productResult = $data['data']['products']['edges'][0]['node'];
         static::assertCount(3, $productResult);
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($productId, $productResult['id']);
@@ -733,7 +733,7 @@ class ApiControllerTest extends TestCase
         static::assertCount(1, $secondPriceRule);
         static::assertEquals(5,  $secondPriceRule['quantityStart']);
 
-        static::assertEquals(1, $data['data']['product']['total']);
+        static::assertEquals(1, $data['data']['products']['total']);
     }
 
     public function testQueryProductIncludesOneToManyNested()
@@ -787,7 +787,7 @@ class ApiControllerTest extends TestCase
 
         $query = '
             query {
-	            product {
+	            products {
 	                edges {
 	                    node {
 	                        id
@@ -813,9 +813,9 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(1, $data['data']['product']['edges']);
+        static::assertCount(1, $data['data']['products']['edges']);
 
-        $productResult = $data['data']['product']['edges'][0]['node'];
+        $productResult = $data['data']['products']['edges'][0]['node'];
         static::assertCount(3, $productResult);
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($productId, $productResult['id']);
@@ -833,7 +833,7 @@ class ApiControllerTest extends TestCase
         static::assertCount(1, $secondPriceRule['rule']);
         static::assertEquals('second Rule',  $secondPriceRule['rule']['name']);
 
-        static::assertEquals(1, $data['data']['product']['total']);
+        static::assertEquals(1, $data['data']['products']['total']);
     }
 
     public function testQueryProductIncludesManyToManyOnce()
@@ -869,7 +869,7 @@ class ApiControllerTest extends TestCase
 
         $query = '
             query {
-	            product {
+	            products {
 	                edges {
 	                    node {
 	                        id
@@ -892,9 +892,9 @@ class ApiControllerTest extends TestCase
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(1, $data['data']['product']['edges']);
+        static::assertCount(1, $data['data']['products']['edges']);
 
-        $productResult = $data['data']['product']['edges'][0]['node'];
+        $productResult = $data['data']['products']['edges'][0]['node'];
         static::assertCount(3, $productResult);
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($productId, $productResult['id']);
@@ -914,7 +914,7 @@ class ApiControllerTest extends TestCase
         $manufacturerId = Uuid::uuid4()->getHex();
         $query = "
             mutation {
-	            create_product(
+	            createProduct(
 	                name: \"product\" 
 	                manufacturer: {
 	                    id: \"{$manufacturerId}\"
@@ -937,9 +937,9 @@ class ApiControllerTest extends TestCase
         $data = json_decode($response->getContent(), true);
 
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(3, $data['data']['create_product']);
+        static::assertCount(3, $data['data']['createProduct']);
 
-        $productResult = $data['data']['create_product'];
+        $productResult = $data['data']['createProduct'];
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($manufacturerId, $productResult['manufacturer']['id']);
     }
@@ -960,7 +960,7 @@ class ApiControllerTest extends TestCase
 
         $query = "
             mutation {
-	            update_product(
+	            updateProduct(
 	                id: \"{$productId}\"
 	                name: \"new product\" 
 	            ) {
@@ -975,9 +975,9 @@ class ApiControllerTest extends TestCase
         $data = json_decode($response->getContent(), true);
 
         static::assertArrayNotHasKey('errors', $data);
-        static::assertCount(2, $data['data']['update_product']);
+        static::assertCount(2, $data['data']['updateProduct']);
 
-        $productResult = $data['data']['update_product'];
+        $productResult = $data['data']['updateProduct'];
         static::assertEquals('new product', $productResult['name']);
     }
 
@@ -999,7 +999,7 @@ class ApiControllerTest extends TestCase
 
         $query = "
             mutation {
-	            delete_product(
+	            deleteProduct(
 	                id: \"{$productId}\"
 	            )
             }
@@ -1010,7 +1010,7 @@ class ApiControllerTest extends TestCase
         $data = json_decode($response->getContent(), true);
 
         static::assertArrayNotHasKey('errors', $data);
-        static::assertEquals($productId, $data['data']['delete_product']);
+        static::assertEquals($productId, $data['data']['deleteProduct']);
 
         static::assertCount(0, $this->repository->search(new Criteria([$productId]), Context::createDefaultContext())->getIds());
     }

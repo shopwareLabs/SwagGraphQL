@@ -2,6 +2,8 @@
 
 namespace SwagGraphQL\Schema;
 
+use Doctrine\Common\Inflector\Inflector;
+
 class Mutation
 {
     const ACTION_DELETE = 'delete';
@@ -19,13 +21,13 @@ class Mutation
     public static function fromName(string $name): Mutation
     {
         if (strpos($name, static::ACTION_CREATE) === 0) {
-            return new self(static::ACTION_CREATE, substr($name, strlen(static::ACTION_CREATE) + 1));
+            return new self(static::ACTION_CREATE, Inflector::tableize(substr($name, strlen(static::ACTION_CREATE))));
         }
         if (strpos($name, static::ACTION_UPDATE) === 0) {
-            return new self(static::ACTION_UPDATE, substr($name, strlen(static::ACTION_UPDATE) + 1));
+            return new self(static::ACTION_UPDATE, Inflector::tableize(substr($name, strlen(static::ACTION_UPDATE))));
         }
         if (strpos($name, static::ACTION_DELETE) === 0) {
-            return new self(static::ACTION_DELETE, substr($name, strlen(static::ACTION_DELETE) + 1));
+            return new self(static::ACTION_DELETE, Inflector::tableize(substr($name, strlen(static::ACTION_DELETE))));
         }
 
         throw new \Exception('Mutation without valid action prefix called, got: ' . $name);
@@ -49,6 +51,6 @@ class Mutation
 
     public function getName(): string
     {
-        return sprintf('%s_%s', $this->action, $this->entityName);
+        return $this->action . Inflector::classify($this->entityName);
     }
 }

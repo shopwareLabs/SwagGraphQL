@@ -12,7 +12,7 @@ class ProvideFileNameAction implements GraphQLField
 {
     CONST FILE_NAME_ARGUMENT = 'fileName';
     CONST FILE_EXTENSION_ARGUMENT = 'fileExtension';
-    CONST MEDIA_ID_ARGUMENT = 'media_id';
+    CONST MEDIA_ID_ARGUMENT = 'mediaId';
 
     /**
      * @var FileNameProvider

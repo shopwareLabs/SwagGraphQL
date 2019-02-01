@@ -2,6 +2,7 @@
 
 namespace SwagGraphQL\Schema;
 
+use Doctrine\Common\Inflector\Inflector;
 use GraphQL\Type\Definition\IDType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ListOfType;
@@ -86,7 +87,7 @@ class TypeRegistry
     {
         if (!isset($this->types[$definition::getEntityName()])) {
             $this->types[$definition::getEntityName()] = new ObjectType([
-                'name' => $definition::getEntityName(),
+                'name' => Inflector::classify($definition::getEntityName()),
                 'fields' => function () use ($definition) {
                     return $this->getFieldsForDefinition($definition);
                 }
@@ -104,9 +105,10 @@ class TypeRegistry
                 continue;
             }
 
-            $fields[$definition::getEntityName()]['args'] = $this->getConnectionArgs();
-            /** @noinspection PhpStrictTypeCheckingInspection */
-            $fields[$definition::getEntityName()]['type'] = $this->getConnectionTypeForDefinition($definition);
+            $fieldName = Inflector::camelize($definition::getEntityName());
+            $pluralizedName = Inflector::pluralize($fieldName);
+            $fields[$pluralizedName]['args'] = $this->getConnectionArgs();
+            $fields[$pluralizedName]['type'] = $this->getConnectionTypeForDefinition($definition);
         }
 
         return new ObjectType([
@@ -123,19 +125,14 @@ class TypeRegistry
                 continue;
             }
             $createName = new Mutation(Mutation::ACTION_CREATE, $definition::getEntityName());
-            /** @noinspection PhpStrictTypeCheckingInspection */
             $fields[$createName->getName()]['args'] = $this->getInputFieldsForCreate($definition);
-            /** @noinspection PhpStrictTypeCheckingInspection */
             $fields[$createName->getName()]['type'] = $this->getObjectForDefinition($definition);
 
             $updateName = new Mutation(Mutation::ACTION_UPDATE, $definition::getEntityName());
-            /** @noinspection PhpStrictTypeCheckingInspection */
             $fields[$updateName->getName()]['args'] = $this->getInputFieldsForUpdate($definition);
-            /** @noinspection PhpStrictTypeCheckingInspection */
             $fields[$updateName->getName()]['type'] = $this->getObjectForDefinition($definition);
 
             $deleteName = new Mutation(Mutation::ACTION_DELETE, $definition::getEntityName());
-            /** @noinspection PhpStrictTypeCheckingInspection */
             $fields[$deleteName->getName()]['args'] = $this->getPrimaryKeyFields($definition);
             $fields[$deleteName->getName()]['type'] = Type::id();
         }
@@ -161,7 +158,7 @@ class TypeRegistry
     {
         if (!isset($this->inputTypes[$definition::getEntityName()])) {
             $this->inputTypes[$definition::getEntityName()] = new InputObjectType([
-                'name' => 'input_' . $definition::getEntityName(),
+                'name' => 'Input' . Inflector::classify($definition::getEntityName()),
                 'fields' => function () use ($definition) {
                     return $this->getInputFieldsForDefinition($definition);
                 }
@@ -177,7 +174,7 @@ class TypeRegistry
 
         if (!isset($this->types[$definition::getEntityName() . '_connection'])) {
             $this->types[$definition::getEntityName() . '_connection'] = new ObjectType([
-                'name' => $definition::getEntityName() . '_connection',
+                'name' => Inflector::classify($definition::getEntityName()) . 'Connection',
                 'fields' => [
                     'total' => Type::int(),
                     'edges' => $edge,
@@ -194,7 +191,7 @@ class TypeRegistry
     {
         if (!isset($this->types[$definition::getEntityName() . '_edge'])) {
             $this->types[$definition::getEntityName() . '_edge'] = Type::listOf(new ObjectType([
-                'name' => $definition::getEntityName() . '_edge',
+                'name' => Inflector::classify($definition::getEntityName()) . 'Edge',
                 'fields' => [
                     'node' => $this->getObjectForDefinition($definition),
                     'cursor' => Type::id()

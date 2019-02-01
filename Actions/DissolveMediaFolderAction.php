@@ -10,7 +10,7 @@ use SwagGraphQL\CustomFields\GraphQLField;
 
 class DissolveMediaFolderAction implements GraphQLField
 {
-    CONST FOLDER_ID_ARGUMENT = 'media_folder_id';
+    CONST FOLDER_ID_ARGUMENT = 'mediaFolderId';
     /**
      * @var MediaFolderService
      */

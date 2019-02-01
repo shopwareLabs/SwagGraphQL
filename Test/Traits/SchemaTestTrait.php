@@ -53,14 +53,14 @@ trait SchemaTestTrait
 
     private function assertPageInfo(ObjectType $object): void
     {
-        static::assertEquals('pageInfo', $object->name);
+        static::assertEquals('PageInfo', $object->name);
         static::assertInstanceOf(IDType::class, $object->getField('endCursor')->getType());
         static::assertInstanceOf(BooleanType::class, $object->getField('hasNextPage')->getType());
     }
 
     private function assertAggregations(ObjectType $object): void
     {
-        static::assertEquals('aggregationResults', $object->name);
+        static::assertEquals('AggregationResults', $object->name);
         static::assertInstanceOf(StringType::class, $object->getField('name')->getType());
         static::assertInstanceOf(ListOfType::class, $object->getField('results')->getType());
         static::assertInstanceOf(ObjectType::class, $object->getField('results')->getType()->getWrappedType());
@@ -69,7 +69,7 @@ trait SchemaTestTrait
 
     private function assertAggregationResult(ObjectType $object): void
     {
-        static::assertEquals('aggregationResult', $object->name);
+        static::assertEquals('AggregationResult', $object->name);
         static::assertInstanceOf(StringType::class, $object->getField('type')->getType());
         static::assertInstanceOf(FloatType::class, $object->getField('result')->getType());
     }
@@ -99,7 +99,7 @@ trait SchemaTestTrait
 
     private function assertQueryType(InputObjectType $object): void
     {
-        static::assertEquals('query', $object->name);
+        static::assertEquals('SearchQuery', $object->name);
         static::assertInstanceOf(StringType::class, $object->getField('field')->getType());
         static::assertInstanceOf(StringType::class, $object->getField('value')->getType());
 
@@ -110,7 +110,7 @@ trait SchemaTestTrait
 
         static::assertInstanceOf(ListOfType::class, $object->getField('queries')->getType());
         static::assertInstanceOf(InputObjectType::class, $object->getField('queries')->getType()->getWrappedType());
-        static::assertEquals('query', $object->getField('queries')->getType()->getWrappedType()->name);
+        static::assertEquals('SearchQuery', $object->getField('queries')->getType()->getWrappedType()->name);
 
         static::assertInstanceOf(ListOfType::class, $object->getField('parameters')->getType());
         static::assertInstanceOf(InputObjectType::class, $object->getField('parameters')->getType()->getWrappedType());
@@ -119,7 +119,7 @@ trait SchemaTestTrait
 
     private function assertQueryParameters(InputObjectType $object): void
     {
-        static::assertEquals('parameter', $object->name);
+        static::assertEquals('Parameter', $object->name);
         static::assertInstanceOf(NonNull::class, $object->getField('operator')->getType());
         static::assertInstanceOf(FloatType::class, $object->getField('value')->getType()->getWrappedType());
         static::assertInstanceOf(NonNull::class, $object->getField('operator')->getType());
@@ -128,7 +128,7 @@ trait SchemaTestTrait
 
     private function assertAggregation(InputObjectType $object): void
     {
-        static::assertEquals('aggregation', $object->name);
+        static::assertEquals('Aggregation', $object->name);
         static::assertInstanceOf(NonNull::class, $object->getField('name')->getType());
         static::assertInstanceOf(StringType::class, $object->getField('name')->getType()->getWrappedType());
         static::assertInstanceOf(NonNull::class, $object->getField('field')->getType());

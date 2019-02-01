@@ -52,8 +52,8 @@ class DissolveMediaFolderActionTest extends TestCase
         $this->repository->create($data, $this->context);
         $query = "
             mutation {
-	            dissolve_media_folder(
-	                media_folder_id: \"$folderId\"
+	            dissolveMediaFolder(
+	                mediaFolderId: \"$folderId\"
 	            )
             }
         ";
@@ -64,7 +64,7 @@ class DissolveMediaFolderActionTest extends TestCase
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data, print_r($data, true));
         static::assertEquals(
-            $data['data']['dissolve_media_folder'],
+            $data['data']['dissolveMediaFolder'],
             $folderId,
             print_r($data['data'], true)
         );

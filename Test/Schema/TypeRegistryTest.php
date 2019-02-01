@@ -2,6 +2,7 @@
 
 namespace SwagGraphQL\Test\Schema;
 
+use Doctrine\Common\Inflector\Inflector;
 use GraphQL\Type\Definition\BooleanType;
 use GraphQL\Type\Definition\FloatType;
 use GraphQL\Type\Definition\IDType;
@@ -64,7 +65,9 @@ class TypeRegistryTest extends TestCase
         static::assertEquals('Query', $query->name);
         static::assertCount(1, $query->getFields());
 
-        $baseField = $query->getField(BaseEntity::getEntityName());
+        $fieldName = Inflector::camelize(BaseEntity::getEntityName());
+        $pluralizedName = Inflector::pluralize($fieldName);
+        $baseField = $query->getField($pluralizedName);
         $this->assertConnectionObject([
             'id' => NonNull::class,
             'bool' => BooleanType::class,
@@ -89,20 +92,25 @@ class TypeRegistryTest extends TestCase
         static::assertEquals('Query', $query->name);
         static::assertCount(3, $query->getFields());
 
-        $associationField = $query->getField(AssociationEntity::getEntityName());
+        $fieldName = Inflector::camelize(AssociationEntity::getEntityName());
+        $pluralizedName = Inflector::pluralize($fieldName);
+        $associationField = $query->getField($pluralizedName);
         static::assertConnectionObject([
             'manyToMany' => ObjectType::class,
             'manyToOneId' => IDType::class,
             'manyToOne' => ObjectType::class
         ], $associationField->getType());
 
-        $manyToManyField = $query->getField(ManyToManyEntity::getEntityName());
+        $fieldName = Inflector::camelize(ManyToManyEntity::getEntityName());
+        $pluralizedName = Inflector::pluralize($fieldName);
+        $manyToManyField = $query->getField($pluralizedName);
         static::assertConnectionObject([
             'association' => ObjectType::class,
         ], $manyToManyField->getType());
 
-
-        $manyToOneField = $query->getField(ManyToOneEntity::getEntityName());
+        $fieldName = Inflector::camelize(ManyToOneEntity::getEntityName());
+        $pluralizedName = Inflector::pluralize($fieldName);
+        $manyToOneField = $query->getField($pluralizedName);
         static::assertConnectionObject([
             'association' => ObjectType::class,
         ], $manyToOneField->getType());

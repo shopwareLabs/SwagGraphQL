@@ -39,7 +39,7 @@ class GenerateSalesChannelKeyActionTest extends TestCase
     {
         $query = "
             query {
-	            generate_sales_channel_key
+	            generateSalesChannelKey
 	        }
         ";
 
@@ -49,7 +49,7 @@ class GenerateSalesChannelKeyActionTest extends TestCase
         $data = json_decode($response->getContent(), true);
         static::assertArrayNotHasKey('errors', $data, print_r($data, true));
         static::assertNotNull(
-            $data['data']['generate_sales_channel_key'],
+            $data['data']['generateSalesChannelKey'],
             print_r($data['data'], true)
         );
     }

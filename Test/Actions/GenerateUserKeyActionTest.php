@@ -39,7 +39,7 @@ class GenerateUserKeyActionTest extends TestCase
     {
         $query = "
             query {
-	            generate_user_key {
+	            generateUserKey {
 	                accessKey
 	                secretAccessKey
 	            }
@@ -53,12 +53,12 @@ class GenerateUserKeyActionTest extends TestCase
         static::assertArrayNotHasKey('errors', $data, print_r($data, true));
         static::assertArrayHasKey(
             'accessKey',
-            $data['data']['generate_user_key'],
+            $data['data']['generateUserKey'],
             print_r($data['data'], true)
         );
         static::assertArrayHasKey(
             'secretAccessKey',
-            $data['data']['generate_user_key'],
+            $data['data']['generateUserKey'],
             print_r($data['data'], true)
         );
     }

@@ -39,7 +39,7 @@ class GenerateIntegrationKeyActionTest extends TestCase
     {
         $query = "
             query {
-	            generate_integration_key {
+	            generateIntegrationKey {
 	                accessKey
 	                secretAccessKey
 	            }
@@ -53,12 +53,12 @@ class GenerateIntegrationKeyActionTest extends TestCase
         static::assertArrayNotHasKey('errors', $data, print_r($data, true));
         static::assertArrayHasKey(
             'accessKey',
-            $data['data']['generate_integration_key'],
+            $data['data']['generateIntegrationKey'],
             print_r($data['data'], true)
         );
         static::assertArrayHasKey(
             'secretAccessKey',
-            $data['data']['generate_integration_key'],
+            $data['data']['generateIntegrationKey'],
             print_r($data['data'], true)
         );
     }
