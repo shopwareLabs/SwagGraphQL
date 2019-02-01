@@ -172,6 +172,43 @@ class ApiControllerTest extends TestCase
 
         $this->repository->create($products, Context::createDefaultContext());
 
+        $query = "
+            query {
+	            product(id: \"$productId\") {
+	                id
+		            name
+	            }
+            }
+        ";
+        $request = $this->createGraphqlRequestRequest($query);
+        $response = $this->apiController->query($request, $this->context);
+        static::assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+        static::assertArrayNotHasKey('errors', $data);
+
+        $productResult = $data['data']['product'];
+        static::assertCount(2, $productResult);
+        static::assertEquals('product', $productResult['name']);
+        static::assertEquals($productId, $productResult['id']);
+    }
+
+    public function testQueryProductsWithOneProduct()
+    {
+        $productId = Uuid::uuid4()->getHex();
+        $taxId = Uuid::uuid4()->getHex();
+
+        $products = [
+            [
+                'id' => $productId,
+                'price' => ['gross' => 10, 'net' => 9],
+                'manufacturer' => ['name' => 'test'],
+                'name' => 'product',
+                'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+            ],
+        ];
+
+        $this->repository->create($products, Context::createDefaultContext());
+
         $query = '
             query {
 	            products {
@@ -199,7 +236,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(1, $data['data']['products']['total']);
     }
 
-    public function testQueryProductWithMultipleProduct()
+    public function testQueryProductsWithMultipleProduct()
     {
         $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
         sort($ids);
@@ -271,7 +308,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(3, $data['data']['products']['total']);
     }
 
-    public function testQueryProductWithFilter()
+    public function testQueryProductsWithFilter()
     {
         $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
         sort($ids);
@@ -340,7 +377,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(1, $data['data']['products']['total']);
     }
 
-    public function testQueryProductWithNestedFilter()
+    public function testQueryProductsWithNestedFilter()
     {
         $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
         sort($ids);
@@ -415,7 +452,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(2, $data['data']['products']['total']);
     }
 
-    public function testQueryProductWithPagination()
+    public function testQueryProductsWithPagination()
     {
         $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
         sort($ids);
@@ -503,7 +540,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals('Mw==', $data['data']['products']['pageInfo']['endCursor']);
     }
 
-    public function testQueryProductWithAggregation()
+    public function testQueryProductsWithAggregation()
     {
         $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
         sort($ids);
@@ -594,7 +631,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(13, $secondAggregation['results'][0]['result']);
     }
 
-    public function testQueryProductIncludesManyToOne()
+    public function testQueryProductsIncludesManyToOne()
     {
         $productId = Uuid::uuid4()->getHex();
         $taxId = Uuid::uuid4()->getHex();
@@ -644,7 +681,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(1, $data['data']['products']['total']);
     }
 
-    public function testQueryProductIncludesOneToMany()
+    public function testQueryProductsIncludesOneToMany()
     {
         $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
         sort($ids);
@@ -736,7 +773,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(1, $data['data']['products']['total']);
     }
 
-    public function testQueryProductIncludesOneToManyNested()
+    public function testQueryProductsIncludesOneToManyNested()
     {
         $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
         sort($ids);
@@ -836,7 +873,7 @@ class ApiControllerTest extends TestCase
         static::assertEquals(1, $data['data']['products']['total']);
     }
 
-    public function testQueryProductIncludesManyToManyOnce()
+    public function testQueryProductsIncludesManyToManyOnce()
     {
         $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
         sort($ids);

@@ -106,6 +106,9 @@ class TypeRegistry
             }
 
             $fieldName = Inflector::camelize($definition::getEntityName());
+            $fields[$fieldName]['args'] = $this->getPrimaryKeyFields($definition);
+            $fields[$fieldName]['type'] = $this->getObjectForDefinition($definition);
+
             $pluralizedName = Inflector::pluralize($fieldName);
             $fields[$pluralizedName]['args'] = $this->getConnectionArgs();
             $fields[$pluralizedName]['type'] = $this->getConnectionTypeForDefinition($definition);

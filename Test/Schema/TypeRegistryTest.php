@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\Aggregate\ProductCategory\ProductCategoryDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
-use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagGraphQL\Schema\CustomFieldRegistry;
 use SwagGraphQL\Schema\CustomTypes;
@@ -63,12 +62,9 @@ class TypeRegistryTest extends TestCase
         $query = $this->typeRegistry->getQuery();
         static::assertInstanceOf(ObjectType::class, $query);
         static::assertEquals('Query', $query->name);
-        static::assertCount(1, $query->getFields());
+        static::assertCount(2, $query->getFields());
 
-        $fieldName = Inflector::camelize(BaseEntity::getEntityName());
-        $pluralizedName = Inflector::pluralize($fieldName);
-        $baseField = $query->getField($pluralizedName);
-        $this->assertConnectionObject([
+        $expectedFields = [
             'id' => NonNull::class,
             'bool' => BooleanType::class,
             'date' => DateType::class,
@@ -76,9 +72,19 @@ class TypeRegistryTest extends TestCase
             'float' => FloatType::class,
             'json' => JsonType::class,
             'string' => StringType::class
-        ], $baseField->getType());
-        
-        $this->assertConnectionArgs($baseField);
+        ];
+
+        $fieldName = Inflector::camelize(BaseEntity::getEntityName());
+        $baseField = $query->getField($fieldName);
+        static::assertObject($expectedFields, $baseField->getType());
+        static::assertInputArgs([
+            'id' => NonNull::class,
+        ], $baseField);
+
+        $pluralizedName = Inflector::pluralize($fieldName);
+        $baseField = $query->getField($pluralizedName);
+        static::assertConnectionObject($expectedFields, $baseField->getType());
+        static::assertConnectionArgs($baseField);
     }
 
     public function testGetQueryForAssociationEntity()
@@ -90,30 +96,44 @@ class TypeRegistryTest extends TestCase
         $query = $this->typeRegistry->getQuery();
         static::assertInstanceOf(ObjectType::class, $query);
         static::assertEquals('Query', $query->name);
-        static::assertCount(3, $query->getFields());
+        static::assertCount(6, $query->getFields());
 
-        $fieldName = Inflector::camelize(AssociationEntity::getEntityName());
-        $pluralizedName = Inflector::pluralize($fieldName);
-        $associationField = $query->getField($pluralizedName);
-        static::assertConnectionObject([
+        $expectedFields = [
             'manyToMany' => ObjectType::class,
             'manyToOneId' => IDType::class,
             'manyToOne' => ObjectType::class
-        ], $associationField->getType());
+        ];
+        $fieldName = Inflector::camelize(AssociationEntity::getEntityName());
+        $associationField = $query->getField($fieldName);
+        static::assertObject($expectedFields, $associationField->getType());
+
+        $pluralizedName = Inflector::pluralize($fieldName);
+        $associationField = $query->getField($pluralizedName);
+        static::assertConnectionObject($expectedFields, $associationField->getType());
+
+        $expectedFields = [
+            'association' => ObjectType::class,
+        ];
 
         $fieldName = Inflector::camelize(ManyToManyEntity::getEntityName());
+        $manyToManyField = $query->getField($fieldName);
+        static::assertObject($expectedFields, $manyToManyField->getType());
+
         $pluralizedName = Inflector::pluralize($fieldName);
         $manyToManyField = $query->getField($pluralizedName);
-        static::assertConnectionObject([
+        static::assertConnectionObject($expectedFields, $manyToManyField->getType());
+
+        $expectedFields = [
             'association' => ObjectType::class,
-        ], $manyToManyField->getType());
+        ];
 
         $fieldName = Inflector::camelize(ManyToOneEntity::getEntityName());
+        $manyToOneField = $query->getField($fieldName);
+        static::assertObject($expectedFields, $manyToOneField->getType());
+
         $pluralizedName = Inflector::pluralize($fieldName);
         $manyToOneField = $query->getField($pluralizedName);
-        static::assertConnectionObject([
-            'association' => ObjectType::class,
-        ], $manyToOneField->getType());
+        static::assertConnectionObject($expectedFields, $manyToOneField->getType());
     }
 
     public function testGetQueryIgnoresTranslationEntity()
@@ -153,7 +173,7 @@ class TypeRegistryTest extends TestCase
 
         $create = new Mutation(Mutation::ACTION_CREATE, BaseEntity::getEntityName());
         $createField = $query->getField($create->getName());
-        $this->assertObject([
+        static::assertObject([
             'id' => NonNull::class,
             'bool' => BooleanType::class,
             'date' => DateType::class,
@@ -163,7 +183,7 @@ class TypeRegistryTest extends TestCase
             'string' => StringType::class
         ], $createField->getType());
 
-        $this->assertInputArgs([
+        static::assertInputArgs([
             'id' => IDType::class,
             'bool' => BooleanType::class,
             'date' => DateType::class,
@@ -175,7 +195,7 @@ class TypeRegistryTest extends TestCase
 
         $update = new Mutation(Mutation::ACTION_UPDATE, BaseEntity::getEntityName());
         $updateField = $query->getField($update->getName());
-        $this->assertObject([
+        static::assertObject([
             'id' => NonNull::class,
             'bool' => BooleanType::class,
             'date' => DateType::class,
@@ -185,7 +205,7 @@ class TypeRegistryTest extends TestCase
             'string' => StringType::class
         ], $updateField->getType());
 
-        $this->assertInputArgs([
+        static::assertInputArgs([
             'id' => NonNull::class,
             'bool' => BooleanType::class,
             'date' => DateType::class,

@@ -67,8 +67,7 @@ class QueryResolver
     {
         if ($rootValue === null) {
             $entityName = Inflector::singularize($info->fieldName);
-            $entityName = Inflector::tableize($entityName);
-            $definition = $this->definitionRegistry->get($entityName);
+            $definition = $this->definitionRegistry->get(Inflector::tableize($entityName));
             $repo = $this->getRepository($definition);
 
             $criteria = CriteriaParser::buildCriteria($args, $definition);
@@ -76,7 +75,11 @@ class QueryResolver
 
             $searchResult = $repo->search($criteria, $context);
 
-            return ConnectionStruct::fromResult($searchResult);
+            if ($entityName !== $info->fieldName) {
+                return ConnectionStruct::fromResult($searchResult);
+            } else {
+                return $searchResult->getEntities()->first();
+            }
         }
 
         return $this->getSimpleValue($rootValue, $info);
