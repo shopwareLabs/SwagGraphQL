@@ -71,7 +71,7 @@ class QueryResolver
             $repo = $this->getRepository($definition);
 
             $criteria = CriteriaParser::buildCriteria($args, $definition);
-            AssociationResolver::addAssociations($criteria, $info->getFieldSelection(PHP_INT_MAX), $definition);
+            AssociationResolver::addAssociations($criteria, $info->lookahead()->queryPlan(), $definition);
 
             $searchResult = $repo->search($criteria, $context);
 
@@ -120,7 +120,7 @@ class QueryResolver
         $id = $event->getEventByDefinition($definition)->getIds()[0];
 
         $criteria = new Criteria([$id]);
-        AssociationResolver::addAssociations($criteria, $info->getFieldSelection(PHP_INT_MAX), $definition);
+        AssociationResolver::addAssociations($criteria, $info->lookahead()->queryPlan(), $definition);
 
         return $repo->search($criteria, $context)->get($id);
     }
@@ -137,7 +137,7 @@ class QueryResolver
         $id = $event->getEventByDefinition($definition)->getIds()[0];
 
         $criteria = new Criteria([$id]);
-        AssociationResolver::addAssociations($criteria, $info->getFieldSelection(PHP_INT_MAX), $definition);
+        AssociationResolver::addAssociations($criteria, $info->lookahead()->queryPlan(), $definition);
 
         return $repo->search($criteria, $context)->get($id);
     }

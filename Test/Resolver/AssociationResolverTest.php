@@ -2,9 +2,12 @@
 
 namespace SwagGraphQL\Test\Resolver;
 
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagGraphQL\Resolver\AssociationResolver;
 
 class AssociationResolverTest extends TestCase
@@ -13,8 +16,16 @@ class AssociationResolverTest extends TestCase
     {
         $criteria = new Criteria();
         AssociationResolver::addAssociations($criteria, [
-            'id' => true,
-            'name' => true
+            'id' => [
+                'type' => Type::id(),
+                'args' => [],
+                'fields' => []
+            ],
+            'name' => [
+                'type' => Type::string(),
+                'args' => [],
+                'fields' => []
+            ]
         ], ProductDefinition::class);
 
         static::assertEmpty($criteria->getAssociations());
@@ -24,10 +35,26 @@ class AssociationResolverTest extends TestCase
     {
         $criteria = new Criteria();
         AssociationResolver::addAssociations($criteria, [
-            'id' => true,
-            'name' => true,
+            'id' => [
+                'type' => Type::id(),
+                'args' => [],
+                'fields' => []
+            ],
+            'name' => [
+                'type' => Type::string(),
+                'args' => [],
+                'fields' => []
+            ],
             'manufacturer' => [
-                'name' => true
+                'type' => new ObjectType(['name' => 'test']),
+                'args' => [],
+                'fields' => [
+                    'name' => [
+                        'type' => Type::string(),
+                        'args' => [],
+                        'fields' => []
+                    ]
+                ]
             ]
         ], ProductDefinition::class);
 
@@ -39,10 +66,26 @@ class AssociationResolverTest extends TestCase
     {
         $criteria = new Criteria();
         AssociationResolver::addAssociations($criteria, [
-            'id' => true,
-            'name' => true,
+            'id' => [
+                'type' => Type::id(),
+                'args' => [],
+                'fields' => []
+            ],
+            'name' => [
+                'type' => Type::string(),
+                'args' => [],
+                'fields' => []
+            ],
             'categories' => [
-                'name' => true
+                'type' => new ObjectType(['name' => 'test']),
+                'args' => [],
+                'fields' => [
+                    'name' => [
+                        'type' => Type::string(),
+                        'args' => [],
+                        'fields' => []
+                    ]
+                ]
             ]
         ], ProductDefinition::class);
 
@@ -54,12 +97,36 @@ class AssociationResolverTest extends TestCase
     {
         $criteria = new Criteria();
         AssociationResolver::addAssociations($criteria, [
-            'id' => true,
-            'name' => true,
+            'id' => [
+                'type' => Type::id(),
+                'args' => [],
+                'fields' => []
+            ],
+            'name' => [
+                'type' => Type::string(),
+                'args' => [],
+                'fields' => []
+            ],
             'categories' => [
-                'name' => true,
-                'parent' => [
-                    'name' => true
+                'type' => new ObjectType(['name' => 'test']),
+                'args' => [],
+                'fields' => [
+                    'name' => [
+                        'type' => Type::string(),
+                        'args' => [],
+                        'fields' => []
+                    ],
+                    'parent' => [
+                        'type' => new ObjectType(['name' => 'test']),
+                        'args' => [],
+                        'fields' => [
+                            'name' => [
+                                'type' => Type::string(),
+                                'args' => [],
+                                'fields' => []
+                            ]
+                        ]
+                    ]
                 ]
             ]
         ], ProductDefinition::class);
@@ -78,16 +145,49 @@ class AssociationResolverTest extends TestCase
     {
         $criteria = new Criteria();
         AssociationResolver::addAssociations($criteria, [
-            'id' => true,
-            'name' => true,
+            'id' => [
+                'type' => Type::id(),
+                'args' => [],
+                'fields' => []
+            ],
+            'name' => [
+                'type' => Type::string(),
+                'args' => [],
+                'fields' => []
+            ],
             'categories' => [
-                'edges' => [
-                    'node' => [
-                        'name' => true,
-                        'parent' => [
-                            'name' => true
+                'type' => new ObjectType(['name' => 'test']),
+                'args' => [],
+                'fields' => [
+                    'edges' => [
+                        'type' => new ObjectType(['name' => 'test']),
+                        'args' => [],
+                        'fields' => [
+                            'node' => [
+                                'type' => new ObjectType(['name' => 'test']),
+                                'args' => [],
+                                'fields' => [
+                                    'name' => [
+                                        'type' => Type::string(),
+                                        'args' => [],
+                                        'fields' => []
+                                    ],
+                                    'parent' => [
+                                        'type' => new ObjectType(['name' => 'test']),
+                                        'args' => [],
+                                        'fields' => [
+                                            'name' => [
+                                                'type' => Type::string(),
+                                                'args' => [],
+                                                'fields' => []
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
+
                 ]
             ]
         ], ProductDefinition::class);
@@ -97,6 +197,72 @@ class AssociationResolverTest extends TestCase
         /** @var Criteria $nested */
         $nested = $criteria->getAssociations()['product.categories'];
         static::assertInstanceOf(Criteria::class, $nested);
+
+        static::assertArrayHasKey('category.parent', $nested->getAssociations());
+        static::assertInstanceOf(Criteria::class, $nested->getAssociations()['category.parent']);
+    }
+
+    public function testAddsNestedAssociationWithArgs()
+    {
+        $criteria = new Criteria();
+        AssociationResolver::addAssociations($criteria, [
+            'id' => [
+                'type' => Type::id(),
+                'args' => [],
+                'fields' => []
+            ],
+            'name' => [
+                'type' => Type::string(),
+                'args' => [],
+                'fields' => []
+            ],
+            'categories' => [
+                'type' => new ObjectType(['name' => 'test']),
+                'args' => [
+                    'sortBy' => 'name',
+                    'sortDirection' => 'DESC'
+                ],
+                'fields' => [
+                    'edges' => [
+                        'type' => new ObjectType(['name' => 'test']),
+                        'args' => [],
+                        'fields' => [
+                            'node' => [
+                                'type' => new ObjectType(['name' => 'test']),
+                                'args' => [],
+                                'fields' => [
+                                    'name' => [
+                                        'type' => Type::string(),
+                                        'args' => [],
+                                        'fields' => []
+                                    ],
+                                    'parent' => [
+                                        'type' => new ObjectType(['name' => 'test']),
+                                        'args' => [],
+                                        'fields' => [
+                                            'name' => [
+                                                'type' => Type::string(),
+                                                'args' => [],
+                                                'fields' => []
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+
+                ]
+            ]
+        ], ProductDefinition::class);
+
+        static::assertArrayHasKey('product.categories', $criteria->getAssociations());
+
+        /** @var Criteria $nested */
+        $nested = $criteria->getAssociations()['product.categories'];
+        static::assertInstanceOf(Criteria::class, $nested);
+        static::assertEquals('name', $nested->getSorting()[0]->getField());
+        static::assertEquals(FieldSorting::DESCENDING, $nested->getSorting()[0]->getDirection());
 
         static::assertArrayHasKey('category.parent', $nested->getAssociations());
         static::assertInstanceOf(Criteria::class, $nested->getAssociations()['category.parent']);

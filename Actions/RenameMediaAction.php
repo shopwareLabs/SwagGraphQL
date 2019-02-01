@@ -71,7 +71,7 @@ class RenameMediaAction implements GraphQLField
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $mediaId));
-        AssociationResolver::addAssociations($criteria, $info->getFieldSelection(PHP_INT_MAX), MediaDefinition::class);
+        AssociationResolver::addAssociations($criteria, $info->lookahead()->queryPlan(), MediaDefinition::class);
 
         return $this->mediaRepository->search($criteria, $context)->get($mediaId);
     }

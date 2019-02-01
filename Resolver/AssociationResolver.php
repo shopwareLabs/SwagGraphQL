@@ -22,17 +22,17 @@ class AssociationResolver
      * adds all necessary Associations to the criteria
      * therefore it traverses the fieldSelection-array to get all Associations that should be loaded
      */
-    public static function addAssociations(Criteria $criteria, array $fieldSelection, string $definition): void
+    public static function addAssociations(Criteria $criteria, array $queryPlan, string $definition): void
     {
-        foreach ($fieldSelection as $field => $selection) {
-            if (is_array($selection)) {
+        foreach ($queryPlan as $field => $selection) {
+            if (count($selection['fields']) > 0) {
                 if (!$definition::getFields()->has($field) && static::isTechnicalField($field)) {
-                    static::addAssociations($criteria, $selection, $definition);
+                    static::addAssociations($criteria, $selection['fields'], $definition);
                     continue;
                 }
                 $association = static::getAssociationDefinition($definition, $field);
-                $associationCriteria = new Criteria();
-                static::addAssociations($associationCriteria, $selection, $association);
+                $associationCriteria = CriteriaParser::buildCriteria($selection['args'], $association);
+                static::addAssociations($associationCriteria, $selection['fields'], $association);
                 $criteria->addAssociation(sprintf('%s.%s', $definition::getEntityName(), $field), $associationCriteria);
             }
         }

@@ -416,7 +416,7 @@ class ApiControllerTest extends TestCase
             query {
 	            products (
 	                sortBy: "id"
-	                query:  {
+	                query: {
 	                    type: equals
 	                    field: "manufacturer.name"
 	                    value: "test"
@@ -769,6 +769,100 @@ class ApiControllerTest extends TestCase
         $secondPriceRule =  $productResult['priceRules']['edges'][1]['node'];
         static::assertCount(1, $secondPriceRule);
         static::assertEquals(5,  $secondPriceRule['quantityStart']);
+
+        static::assertEquals(1, $data['data']['products']['total']);
+    }
+
+    public function testQueryProductsWithFilteredOneToMany()
+    {
+        $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
+        sort($ids);
+        $firstId = $ids[0];
+        $secondId = $ids[1];
+        $productId = Uuid::uuid4()->getHex();
+        $taxId = Uuid::uuid4()->getHex();
+        $ruleId = Uuid::uuid4()->getHex();
+
+        $products = [
+            [
+                'id' => $productId,
+                'price' => ['gross' => 10, 'net' => 9],
+                'manufacturer' => ['name' => 'test'],
+                'name' => 'product',
+                'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'priceRules' => [
+                    [
+                        'id' => $firstId,
+                        'currencyId' => Defaults::CURRENCY,
+                        'quantityStart' => 1,
+                        'rule' => [
+                            'id' => $ruleId,
+                            'name' => 'test',
+                            'payload' => new AndRule(),
+                            'priority' => 1,
+                        ],
+                        'price' => ['gross' => 15, 'net' => 10],
+                    ],
+                    [
+                        'id' => $secondId,
+                        'currencyId' => Defaults::CURRENCY,
+                        'quantityStart' => 5,
+                        'rule' => [
+                            'id' => $ruleId,
+                            'name' => 'test',
+                            'payload' => new AndRule(),
+                            'priority' => 1,
+                        ],
+                        'price' => ['gross' => 10, 'net' => 5],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->repository->create($products, Context::createDefaultContext());
+
+        $query = '
+            query {
+	            products {
+	                edges {
+	                    node {
+	                        id
+		                    name
+		                    priceRules(
+		                        query: {
+	                                type: equals
+	                                field: "quantityStart"
+	                                value: "5"
+	                            }
+	                        ) {
+		                        edges {
+		                            node {
+		                            	quantityStart
+		                            }
+		                        }
+		                    }
+	                    }
+	                }
+	                total
+	            }
+            }
+        ';
+        $request = $this->createGraphqlRequestRequest($query);
+        $response = $this->apiController->query($request, $this->context);
+        static::assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+        static::assertArrayNotHasKey('errors', $data, print_r($data, true));
+        static::assertCount(1, $data['data']['products']['edges']);
+
+        $productResult = $data['data']['products']['edges'][0]['node'];
+        static::assertCount(3, $productResult);
+        static::assertEquals('product', $productResult['name']);
+        static::assertEquals($productId, $productResult['id']);
+        static::assertCount(1, $productResult['priceRules']['edges']);
+
+        $priceRule =  $productResult['priceRules']['edges'][0]['node'];
+        static::assertCount(1, $priceRule);
+        static::assertEquals(5,  $priceRule['quantityStart']);
 
         static::assertEquals(1, $data['data']['products']['total']);
     }

@@ -226,6 +226,10 @@ class TypeRegistry
             $type = $this->getFieldType($field);
             if ($type) {
                 $fields[$field->getPropertyName()]['type'] = $type;
+
+                if ($type->name && substr($type->name, -10) === 'Connection') {
+                    $fields[$field->getPropertyName()]['args'] = $this->getConnectionArgs();
+                }
             }
         }
 
