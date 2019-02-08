@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\Type;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
 use SwagGraphQL\CustomFields\GraphQLField;
+use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 
 class GenerateIntegrationKeyAction implements GraphQLField
 {
@@ -26,9 +27,9 @@ class GenerateIntegrationKeyAction implements GraphQLField
         ]);
     }
 
-    public function defineArgs(): array
+    public function defineArgs(): FieldBuilderCollection
     {
-        return [];
+        return FieldBuilderCollection::create();
     }
 
     public function description(): string

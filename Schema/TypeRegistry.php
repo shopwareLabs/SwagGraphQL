@@ -38,6 +38,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 use SwagGraphQL\CustomFields\GraphQLField;
 use SwagGraphQL\Resolver\QueryResolvingException;
+use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
+use SwagGraphQL\Schema\SchemaBuilder\FieldBuilder;
+use SwagGraphQL\Schema\SchemaBuilder\ObjectBuilder;
 
 class TypeRegistry
 {
@@ -86,12 +89,12 @@ class TypeRegistry
     public function getObjectForDefinition(string $definition): ObjectType
     {
         if (!isset($this->types[$definition::getEntityName()])) {
-            $this->types[$definition::getEntityName()] = new ObjectType([
-                'name' => Inflector::classify($definition::getEntityName()),
-                'fields' => function () use ($definition) {
+            $this->types[$definition::getEntityName()] =
+                ObjectBuilder::create(Inflector::classify($definition::getEntityName()))
+                ->addLazyFieldCollection(function () use ($definition) {
                     return $this->getFieldsForDefinition($definition);
-                }
-            ]);
+                })
+                ->build();
         }
 
         return $this->types[$definition::getEntityName()];
@@ -99,51 +102,64 @@ class TypeRegistry
 
     public function getQuery(): ObjectType
     {
-        $fields = $this->customQueries();
+        $query = ObjectBuilder::create('Query');
         foreach ($this->definitionRegistry->getElements() as $definition) {
             if ($this->isTranslationDefinition($definition) || $this->isMappingDefinition($definition)) {
                 continue;
             }
 
             $fieldName = Inflector::camelize($definition::getEntityName());
-            $fields[$fieldName]['args'] = $this->getPrimaryKeyFields($definition);
-            $fields[$fieldName]['type'] = $this->getObjectForDefinition($definition);
 
-            $pluralizedName = Inflector::pluralize($fieldName);
-            $fields[$pluralizedName]['args'] = $this->getConnectionArgs();
-            $fields[$pluralizedName]['type'] = $this->getConnectionTypeForDefinition($definition);
+            $query->addField(
+                FieldBuilder::create(
+                    $fieldName,
+                    $this->getObjectForDefinition($definition)
+                )
+                ->setArguments($this->getPrimaryKeyArgs($definition))
+            );
+
+            $query->addField(
+                FieldBuilder::create(
+                    Inflector::pluralize($fieldName),
+                    $this->getConnectionTypeForDefinition($definition)
+                )
+                ->setArguments($this->getConnectionArgs())
+            );
         }
-
-        return new ObjectType([
-            'name' => 'Query',
-            'fields' => $fields
-        ]);
+        return $query
+            ->addLazyFieldCollection(function () { return $this->customQueries(); })
+            ->build();
     }
 
     public function getMutation(): ObjectType
     {
-        $fields = $this->customMutations();
+        $mutation = ObjectBuilder::create('Mutation');
         foreach ($this->definitionRegistry->getElements() as $definition) {
             if ($this->isTranslationDefinition($definition) || $this->isMappingDefinition($definition)) {
                 continue;
             }
             $createName = new Mutation(Mutation::ACTION_CREATE, $definition::getEntityName());
-            $fields[$createName->getName()]['args'] = $this->getInputFieldsForCreate($definition);
-            $fields[$createName->getName()]['type'] = $this->getObjectForDefinition($definition);
+            $mutation->addField(
+                FieldBuilder::create($createName->getName(), $this->getObjectForDefinition($definition))
+                    ->setArguments($this->getInputFieldsForCreate($definition))
+            );
 
             $updateName = new Mutation(Mutation::ACTION_UPDATE, $definition::getEntityName());
-            $fields[$updateName->getName()]['args'] = $this->getInputFieldsForUpdate($definition);
-            $fields[$updateName->getName()]['type'] = $this->getObjectForDefinition($definition);
+            $mutation->addField(
+                FieldBuilder::create($updateName->getName(), $this->getObjectForDefinition($definition))
+                    ->setArguments($this->getInputFieldsForUpdate($definition))
+            );
 
             $deleteName = new Mutation(Mutation::ACTION_DELETE, $definition::getEntityName());
-            $fields[$deleteName->getName()]['args'] = $this->getPrimaryKeyFields($definition);
-            $fields[$deleteName->getName()]['type'] = Type::id();
+            $mutation->addField(
+                FieldBuilder::create($deleteName->getName(), Type::id())
+                    ->setArguments($this->getPrimaryKeyArgs($definition))
+            );
         }
 
-        return new ObjectType([
-            'name' => 'Mutation',
-            'fields' => $fields
-        ]);
+        return $mutation
+            ->addLazyFieldCollection(function () { return $this->customMutations(); })
+            ->build();
     }
 
     private function isTranslationDefinition($definition): bool
@@ -160,12 +176,12 @@ class TypeRegistry
     private function getInputForDefinition(string $definition): InputObjectType
     {
         if (!isset($this->inputTypes[$definition::getEntityName()])) {
-            $this->inputTypes[$definition::getEntityName()] = new InputObjectType([
-                'name' => 'Input' . Inflector::classify($definition::getEntityName()),
-                'fields' => function () use ($definition) {
+            $this->inputTypes[$definition::getEntityName()] =
+                ObjectBuilder::create('Input' . Inflector::classify($definition::getEntityName()))
+                ->addLazyFieldCollection(function () use ($definition) {
                     return $this->getInputFieldsForDefinition($definition);
-                }
-            ]);
+                })
+                ->buildAsInput();
         }
 
         return $this->inputTypes[$definition::getEntityName()];
@@ -173,18 +189,16 @@ class TypeRegistry
 
     private function getConnectionTypeForDefinition(string $definition): ObjectType
     {
-        $edge = $this->getEdgeTypeForDefinition($definition);
-
         if (!isset($this->types[$definition::getEntityName() . '_connection'])) {
-            $this->types[$definition::getEntityName() . '_connection'] = new ObjectType([
-                'name' => Inflector::classify($definition::getEntityName()) . 'Connection',
-                'fields' => [
-                    'total' => Type::int(),
-                    'edges' => $edge,
-                    'pageInfo' => $this->customTypes->pageInfo(),
-                    'aggregations' => Type::listOf($this->customTypes->aggregationResult())
-                ]
-            ]);
+
+            $this->types[$definition::getEntityName() . '_connection'] =
+                ObjectBuilder::create(Inflector::classify($definition::getEntityName()) . 'Connection')
+                ->addField(FieldBuilder::create('total', Type::int())->setDescription('The total of Items found by the Query'))
+                ->addField(FieldBuilder::create('edges', $this->getEdgeTypeForDefinition($definition))->setDescription('A List of the Items'))
+                ->addField(FieldBuilder::create('pageInfo', $this->customTypes->pageInfo())->setDescription('Additional information for pagination'))
+                ->addField(FieldBuilder::create('aggregations', Type::listOf($this->customTypes->aggregationResult()))->setDescription('the result of aggregations'))
+                ->setDescription('The Result for a search that returns multiple Items')
+                ->build();
         }
 
         return $this->types[$definition::getEntityName() . '_connection'];
@@ -193,52 +207,53 @@ class TypeRegistry
     private function getEdgeTypeForDefinition(string $definition): ListOfType
     {
         if (!isset($this->types[$definition::getEntityName() . '_edge'])) {
-            $this->types[$definition::getEntityName() . '_edge'] = Type::listOf(new ObjectType([
-                'name' => Inflector::classify($definition::getEntityName()) . 'Edge',
-                'fields' => [
-                    'node' => $this->getObjectForDefinition($definition),
-                    'cursor' => Type::id()
-                ]
-            ]));
+            $this->types[$definition::getEntityName() . '_edge'] = Type::listOf(
+                ObjectBuilder::create(Inflector::classify($definition::getEntityName()) . 'Edge')
+                ->addField(FieldBuilder::create('node', $this->getObjectForDefinition($definition))->setDescription('The Node of the Edge that contains the real element'))
+                ->addField(FieldBuilder::create('cursor', Type::id())->setDescription('The cursor to the Item of the Edge'))
+                ->setDescription('Contains the information for one Edge')
+                ->build()
+            );
         }
 
         return $this->types[$definition::getEntityName() . '_edge'];
     }
 
-    private function getConnectionArgs(): array
+    private function getConnectionArgs(): FieldBuilderCollection
     {
-        return [
-            'first' => ['type' => Type::int()],
-            'last' => ['type' => Type::int()],
-            'after' => ['type' => Type::string()],
-            'before' => ['type' => Type::string()],
-            'sortBy' => ['type' => Type::string()],
-            'sortDirection' => ['type' => $this->customTypes->sortDirection()],
-            'query' => ['type' => $this->customTypes->query()],
-            'aggregations' => ['type' => Type::listOf($this->customTypes->aggregation())]
-        ];
+        return FieldBuilderCollection::create()
+            ->addField('first', Type::int(), 'The count of items to be returned')
+            ->addField('last', Type::int(), 'The count of items to be returned')
+            ->addField('after', Type::string(), 'The cursor to the first Result to be fetched')
+            ->addField('before', Type::string(), 'The cursor to the last Result to be fetched')
+            ->addField('sortBy', Type::string(), 'The field used for sorting')
+            ->addField('sortDirection', $this->customTypes->sortDirection(), 'The direction of the sorting')
+            ->addField('query', $this->customTypes->query(), 'The query the DAL should perform')
+            ->addField('aggregations', Type::listOf($this->customTypes->aggregation()), 'The aggregations should perform');
     }
 
-    private function getFieldsForDefinition(string $definition): array
+    private function getFieldsForDefinition(string $definition): FieldBuilderCollection
     {
-        $fields = [];
+        $fields = FieldBuilderCollection::create();
         foreach ($definition::getFields() as $field) {
             $type = $this->getFieldType($field);
             if ($type) {
-                $fields[$field->getPropertyName()]['type'] = $type;
+                $field = FieldBuilder::create($field->getPropertyName(), $type);
 
                 if ($type->name && substr($type->name, -10) === 'Connection') {
-                    $fields[$field->getPropertyName()]['args'] = $this->getConnectionArgs();
+                     $field->setArguments($this->getConnectionArgs());
                 }
+
+                $fields->addFieldBuilder($field);
             }
         }
 
         return $fields;
     }
 
-    private function getPrimaryKeyFields(string $definition): array
+    private function getPrimaryKeyArgs(string $definition): FieldBuilderCollection
     {
-        $fields = [];
+        $args = FieldBuilderCollection::create();
         foreach ($definition::getFields()->filterByFlag(PrimaryKey::class) as $field) {
             /** @var ObjectType|ScalarType|InputObjectType|ListOfType|null $type */
             $type = $this->getFieldType($field, true);
@@ -246,16 +261,21 @@ class TypeRegistry
                 if (!$field instanceof VersionField) {
                     $type = Type::nonNull($type);
                 }
-                $fields[$field->getPropertyName()]['type'] = $type;
+                $args->addField($field->getPropertyName(), $type);
             }
         }
 
-        return $fields;
+        return $args;
     }
 
-    private function getInputFieldsForDefinition(string $definition, \Closure $typeModifier = null): array
+    private function getInputFieldsForDefinition(
+        string $definition,
+        \Closure $typeModifier = null,
+        bool $withDefaults = false
+    ): FieldBuilderCollection
     {
-        $fields = [];
+        $fields = FieldBuilderCollection::create();
+        $defaults = $definition::getDefaults(new EntityExistence($definition, [], false, false, false, []));
         /** @var Field $field */
         foreach ($definition::getFields() as $field) {
             $type = $this->getFieldType($field, true);
@@ -263,16 +283,21 @@ class TypeRegistry
                 if ($typeModifier) {
                     $type = $typeModifier($type, $field);
                 }
-                $fields[$field->getPropertyName()]['type'] = $type;
+                $builder = FieldBuilder::create($field->getPropertyName(), $type);
+
+                if ($withDefaults && array_key_exists($field->getPropertyName(), $defaults)) {
+                        $builder->setDefault($defaults[$field->getPropertyName()]);
+                }
+                $fields->addFieldBuilder($builder);
             }
         }
 
         return $fields;
     }
 
-    private function getInputFieldsForCreate(string $definition): array
+    private function getInputFieldsForCreate(string $definition): FieldBuilderCollection
     {
-        $fields = $this->getInputFieldsForDefinition($definition, function($type, Field $field) {
+        return $this->getInputFieldsForDefinition($definition, function($type, Field $field) {
             // We wrap all required Fields as NonNullable
             // Except IDs because we assume that those will be generate or come from the ID field of the association Object
             // also CreatedAt and UpdatedAt are marked as required in the DAL but they are not necessary
@@ -285,12 +310,10 @@ class TypeRegistry
             }
 
             return $type;
-        });
-
-        return $this->getDefaults($definition, $fields);
+        }, true);
     }
 
-    private function getInputFieldsForUpdate(string $definition): array
+    private function getInputFieldsForUpdate(string $definition): FieldBuilderCollection
     {
         return $this->getInputFieldsForDefinition($definition, function($type, Field $field) {
             // we make PKs required for Update
@@ -358,29 +381,16 @@ class TypeRegistry
         return $type;
     }
 
-    private function getDefaults(string $definition, array $fields): array
+    private function customQueries(): FieldBuilderCollection
     {
-        $defaults = $definition::getDefaults(new EntityExistence($definition, [], false, false, false, []));
-        foreach ($defaults as $propertyName => $default) {
-            if (array_key_exists($propertyName, $fields)) {
-                $fields[$propertyName]['defaultValue'] = $default;
-            }
-        }
-
-        return $fields;
-    }
-
-    private function customQueries(): array
-    {
-        $fields = [];
-
+        $fields = FieldBuilderCollection::create();
         /** @var GraphQLField $query */
         foreach ($this->queries->getFields() as $name => $query) {
-            $fields[$name] = [
-                'type' => $query->returnType(),
-                'args' => $query->defineArgs(),
-                'description' => $query->description(),
-                'resolve' => function($rootValue, $args, Context $context, ResolveInfo $info) use ($query) {
+            $fields->addFieldBuilder(
+                FieldBuilder::create($name, $query->returnType())
+                ->setArguments($query->defineArgs())
+                ->setDescription($query->description())
+                ->setResolver(function($rootValue, $args, Context $context, ResolveInfo $info) use ($query) {
                     try {
                         return $query->resolve($rootValue, $args, $context, $info);
                     } catch (\Throwable $e) {
@@ -388,33 +398,33 @@ class TypeRegistry
                         // therefore throw own Exception
                         throw new QueryResolvingException($e->getMessage(), 0, $e);
                     }
-                }
-            ];
+                })
+            );
         }
 
         return $fields;
     }
 
-    private function customMutations(): array
+    private function customMutations(): FieldBuilderCollection
     {
-        $fields = [];
+        $fields = FieldBuilderCollection::create();
 
         /** @var GraphQLField $mutation */
         foreach ($this->mutations->getFields() as $name => $mutation) {
-            $fields[$name] = [
-                'type' => $mutation->returnType(),
-                'args' => $mutation->defineArgs(),
-                'description' => $mutation->description(),
-                'resolve' => function($rootValue, $args, Context $context, ResolveInfo $info) use ($mutation) {
-                    try {
-                        return $mutation->resolve($rootValue, $args, $context, $info);
-                    } catch (\Throwable $e) {
-                        // default error-handler will just show "internal server error"
-                        // therefore throw own Exception
-                        throw new QueryResolvingException($e->getMessage(), 0, $e);
-                    }
-                }
-            ];
+            $fields->addFieldBuilder(
+                FieldBuilder::create($name, $mutation->returnType())
+                    ->setArguments($mutation->defineArgs())
+                    ->setDescription($mutation->description())
+                    ->setResolver(function($rootValue, $args, Context $context, ResolveInfo $info) use ($mutation) {
+                        try {
+                            return $mutation->resolve($rootValue, $args, $context, $info);
+                        } catch (\Throwable $e) {
+                            // default error-handler will just show "internal server error"
+                            // therefore throw own Exception
+                            throw new QueryResolvingException($e->getMessage(), 0, $e);
+                        }
+                    })
+            );
         }
 
         return $fields;

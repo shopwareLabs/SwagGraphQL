@@ -17,6 +17,7 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\StringType;
+use GraphQL\Type\Definition\UnionType;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
@@ -71,7 +72,7 @@ trait SchemaTestTrait
     {
         static::assertEquals('AggregationResult', $object->name);
         static::assertInstanceOf(StringType::class, $object->getField('type')->getType());
-        static::assertInstanceOf(FloatType::class, $object->getField('result')->getType());
+        static::assertInstanceOf(StringType::class, $object->getField('result')->getType());
     }
 
     private function assertEdges(array $expectedFields, ObjectType $object): void

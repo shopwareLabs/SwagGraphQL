@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\Type;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
 use SwagGraphQL\CustomFields\GraphQLField;
+use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 
 class GenerateSalesChannelKeyAction implements GraphQLField
 {
@@ -15,9 +16,9 @@ class GenerateSalesChannelKeyAction implements GraphQLField
         return Type::nonNull(Type::id());
     }
 
-    public function defineArgs(): array
+    public function defineArgs(): FieldBuilderCollection
     {
-        return [];
+        return FieldBuilderCollection::create();
     }
 
     public function description(): string

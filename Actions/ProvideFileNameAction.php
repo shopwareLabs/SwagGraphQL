@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\Type;
 use Shopware\Core\Content\Media\File\FileNameProvider;
 use Shopware\Core\Framework\Context;
 use SwagGraphQL\CustomFields\GraphQLField;
+use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 
 class ProvideFileNameAction implements GraphQLField
 {
@@ -29,13 +30,12 @@ class ProvideFileNameAction implements GraphQLField
         return Type::nonNull(Type::string());
     }
 
-    public function defineArgs(): array
+    public function defineArgs(): FieldBuilderCollection
     {
-        return [
-            self::FILE_NAME_ARGUMENT => Type::nonNull(Type::string()),
-            self::FILE_EXTENSION_ARGUMENT => Type::nonNull(Type::string()),
-            self::MEDIA_ID_ARGUMENT => Type::id()
-        ];
+        return FieldBuilderCollection::create()
+            ->addField(self::FILE_NAME_ARGUMENT, Type::nonNull(Type::string()))
+            ->addField(self::FILE_EXTENSION_ARGUMENT, Type::nonNull(Type::string()))
+            ->addField(self::MEDIA_ID_ARGUMENT, Type::id());
     }
 
     public function description(): string

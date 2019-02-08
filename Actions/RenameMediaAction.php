@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagGraphQL\CustomFields\GraphQLField;
 use SwagGraphQL\Resolver\AssociationResolver;
+use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 use SwagGraphQL\Schema\TypeRegistry;
 
 class RenameMediaAction implements GraphQLField
@@ -49,12 +50,11 @@ class RenameMediaAction implements GraphQLField
         return $this->typeRegistry->getObjectForDefinition(MediaDefinition::class);
     }
 
-    public function defineArgs(): array
+    public function defineArgs(): FieldBuilderCollection
     {
-        return [
-            self::MEDIA_ID_ARGUMENT => Type::nonNull(Type::id()),
-            self::FILENAME_ARGUMENT => Type::nonNull(Type::string())
-        ];
+        return FieldBuilderCollection::create()
+            ->addField(self::MEDIA_ID_ARGUMENT, Type::nonNull(Type::id()))
+            ->addField(self::FILENAME_ARGUMENT, Type::nonNull(Type::string()));
     }
 
     public function description(): string

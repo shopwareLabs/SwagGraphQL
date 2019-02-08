@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\Type;
 use Shopware\Core\Content\Media\MediaFolderService;
 use Shopware\Core\Framework\Context;
 use SwagGraphQL\CustomFields\GraphQLField;
+use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 
 class DissolveMediaFolderAction implements GraphQLField
 {
@@ -26,11 +27,10 @@ class DissolveMediaFolderAction implements GraphQLField
         return Type::nonNull(Type::id());
     }
 
-    public function defineArgs(): array
+    public function defineArgs(): FieldBuilderCollection
     {
-        return [
-            self::FOLDER_ID_ARGUMENT => Type::nonNull(Type::id())
-        ];
+        return FieldBuilderCollection::create()
+            ->addField(self::FOLDER_ID_ARGUMENT, Type::nonNull(Type::id()));
     }
 
     public function description(): string

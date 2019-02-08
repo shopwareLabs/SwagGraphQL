@@ -5,6 +5,7 @@ namespace SwagGraphQL\CustomFields;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Shopware\Core\Framework\Context;
+use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 
 /**
  * Mörder wäre es wenn wir hier das meiste über Annotations abfrühstücken könnten
@@ -20,9 +21,9 @@ interface GraphQLField
     public function returnType(): Type;
 
     /**
-     * @return array the arguments this field accepts
+     * @return FieldBuilderCollection the arguments this field accepts
      */
-    public function defineArgs(): array;
+    public function defineArgs(): FieldBuilderCollection;
 
     /**
      * @return string description of the field

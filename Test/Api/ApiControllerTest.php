@@ -614,7 +614,7 @@ class ApiControllerTest extends TestCase
         $response = $this->apiController->query($request, $this->context);
         static::assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        static::assertArrayNotHasKey('errors', $data);
+        static::assertArrayNotHasKey('errors', $data, print_r($data, true));
 
         static::assertEquals(4, $data['data']['products']['total']);
 
