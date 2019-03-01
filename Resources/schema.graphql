@@ -8,6 +8,27 @@ input Aggregation {
 
   """The field used to aggregate"""
   field: String!
+
+  """The fields used to group the result"""
+  groupByFields: [String]
+}
+
+"""Contains the result of a single aggregation"""
+type AggregationBucket {
+  """The Keys of this aggregation bucket"""
+  keys: [AggregationKey]
+
+  """The result of the aggregation"""
+  results: [AggregationResult]
+}
+
+"""A key of the Aggregation Bucket"""
+type AggregationKey {
+  """The field used to group the result"""
+  field: String
+
+  """The value for the groupByKey"""
+  value: String
 }
 
 """Contains the result of a single aggregation"""
@@ -21,11 +42,11 @@ type AggregationResult {
 
 """Contains the results of the aggregations"""
 type AggregationResults {
-  """Name of the AggregationResults"""
+  """Name of the aggregation"""
   name: String
 
   """Contains an aggregationResult"""
-  results: [AggregationResult]
+  buckets: [AggregationBucket]
 }
 
 """The AggregationTypes the DAL can perform"""
@@ -92,6 +113,7 @@ type AttributeEdge {
 
 type AttributeSet {
   id: ID!
+  name: String!
   config: Json
   attributes(
     """The count of items to be returned"""
@@ -204,221 +226,19 @@ type AttributeSetRelationEdge {
   cursor: ID
 }
 
-type Catalog {
+type CalculatedPriceFieldTest {
   id: ID!
-  name: String
-  createdAt: Date!
-  updatedAt: Date!
-  categories(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): CategoryConnection
-  categoryTranslations(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): CategoryTranslationConnection
-  products(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): ProductConnection
-  productManufacturers(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): ProductManufacturerConnection
-  productManufacturerTranslations(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): ProductManufacturerTranslationConnection
-  productMedia(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): ProductMediaConnection
-  productTranslations(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): ProductTranslationConnection
-  translations: CatalogTranslationConnection!
-  salesChannels(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): SalesChannelConnection
+  versionId: ID!
+  price: Json!
 }
 
 """The Result for a search that returns multiple Items"""
-type CatalogConnection {
+type CalculatedPriceFieldTestConnection {
   """The total of Items found by the Query"""
   total: Int
 
   """A List of the Items"""
-  edges: [CatalogEdge]
+  edges: [CalculatedPriceFieldTestEdge]
 
   """Additional information for pagination"""
   pageInfo: PageInfo
@@ -428,43 +248,9 @@ type CatalogConnection {
 }
 
 """Contains the information for one Edge"""
-type CatalogEdge {
+type CalculatedPriceFieldTestEdge {
   """The Node of the Edge that contains the real element"""
-  node: Catalog
-
-  """The cursor to the Item of the Edge"""
-  cursor: ID
-}
-
-type CatalogTranslation {
-  name: String!
-  catalogId: ID!
-  languageId: ID!
-  createdAt: Date!
-  updatedAt: Date!
-  catalog: Catalog
-  language: Language
-}
-
-"""The Result for a search that returns multiple Items"""
-type CatalogTranslationConnection {
-  """The total of Items found by the Query"""
-  total: Int
-
-  """A List of the Items"""
-  edges: [CatalogTranslationEdge]
-
-  """Additional information for pagination"""
-  pageInfo: PageInfo
-
-  """the result of aggregations"""
-  aggregations: [AggregationResults]
-}
-
-"""Contains the information for one Edge"""
-type CatalogTranslationEdge {
-  """The Node of the Edge that contains the real element"""
-  node: CatalogTranslation
+  node: CalculatedPriceFieldTest
 
   """The cursor to the Item of the Edge"""
   cursor: ID
@@ -473,14 +259,14 @@ type CatalogTranslationEdge {
 type Category {
   id: ID!
   versionId: ID!
-  catalogId: ID!
   parentId: ID
   parentVersionId: ID!
+  afterCategoryId: ID
+  afterCategoryVersionId: ID!
   mediaId: ID
   displayNestedProducts: Boolean!
   autoIncrement: Int
   path: String
-  position: Int
   level: Int
   template: String
   active: Boolean
@@ -501,6 +287,7 @@ type Category {
   metaDescription: String
   cmsHeadline: String
   cmsDescription: String
+  attributes: String
   parent: Category
   media: Media
   children(
@@ -554,7 +341,6 @@ type Category {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): ProductConnection
-  catalog: Catalog
   nestedProducts(
     """The count of items to be returned"""
     first: Int
@@ -580,6 +366,31 @@ type Category {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): ProductConnection
+  navigations(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): NavigationConnection
   canonicalUrl: SeoUrl
 }
 
@@ -614,8 +425,7 @@ type CategoryTranslation {
   metaDescription: String
   cmsHeadline: String
   cmsDescription: String
-  catalogId: ID!
-  catalog: Catalog
+  attributes: Json
   categoryId: ID!
   languageId: ID!
   createdAt: Date!
@@ -682,6 +492,7 @@ type CmsBlock {
   ): CmsSlotConnection
   createdAt: Date!
   updatedAt: Date!
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -713,6 +524,7 @@ type CmsPage {
   name: String
   type: String!
   entity: String
+  attributes: String
   blocks(
     """The count of items to be returned"""
     first: Int
@@ -763,6 +575,31 @@ type CmsPage {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): CmsPageTranslationConnection
+  navigations(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): NavigationConnection
   createdAt: Date!
   updatedAt: Date!
 }
@@ -793,6 +630,7 @@ type CmsPageEdge {
 
 type CmsPageTranslation {
   name: String!
+  attributes: Json
   cmsPageId: ID!
   languageId: ID!
   createdAt: Date!
@@ -831,6 +669,8 @@ type CmsSlot {
   type: String!
   slot: String!
   config: String
+  attributes: String
+  data: Json
   blockId: ID!
   block: CmsBlock
   translations: CmsSlotTranslationConnection!
@@ -864,6 +704,7 @@ type CmsSlotEdge {
 
 type CmsSlotTranslation {
   config: Json!
+  attributes: Json
   cmsSlotId: ID!
   languageId: ID!
   createdAt: Date!
@@ -906,6 +747,7 @@ type ConfigurationGroup {
   comparable: Boolean
   displayType: String!
   sortingType: String!
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   options(
@@ -967,6 +809,7 @@ type ConfigurationGroupOption {
   position: String
   colorHexCode: String
   mediaId: ID
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   media: Media
@@ -1101,6 +944,7 @@ type ConfigurationGroupOptionEdge {
 type ConfigurationGroupOptionTranslation {
   name: String!
   position: Int
+  attributes: Json
   configurationGroupOptionId: ID!
   languageId: ID!
   createdAt: Date!
@@ -1136,6 +980,7 @@ type ConfigurationGroupOptionTranslationEdge {
 type ConfigurationGroupTranslation {
   name: String!
   description: String
+  attributes: Json
   configurationGroupId: ID!
   languageId: ID!
   createdAt: Date!
@@ -1181,6 +1026,7 @@ type Country {
   iso3: String
   displayStateInRegistration: Boolean
   forceStateInRegistration: Boolean
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   salesChannelDefaultAssignments(
@@ -1342,6 +1188,7 @@ type CountryState {
   name: String
   position: Int
   active: Boolean
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   country: Country
@@ -1424,6 +1271,7 @@ type CountryStateEdge {
 
 type CountryStateTranslation {
   name: String!
+  attributes: Json
   countryStateId: ID!
   languageId: ID!
   createdAt: Date!
@@ -1458,6 +1306,7 @@ type CountryStateTranslationEdge {
 
 type CountryTranslation {
   name: String!
+  attributes: Json
   countryId: ID!
   languageId: ID!
   createdAt: Date!
@@ -1499,6 +1348,7 @@ type Currency {
   isDefault: Boolean
   placedInFront: Boolean
   position: Int
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   salesChannelDefaultAssignments(
@@ -1656,6 +1506,7 @@ type CurrencyEdge {
 type CurrencyTranslation {
   shortName: String!
   name: String!
+  attributes: Json
   currencyId: ID!
   languageId: ID!
   createdAt: Date!
@@ -1693,6 +1544,7 @@ type Customer {
   groupId: ID!
   defaultPaymentMethodId: ID!
   salesChannelId: ID!
+  languageId: ID!
   lastPaymentMethodId: ID
   defaultBillingAddressId: ID!
   defaultShippingAddressId: ID!
@@ -1701,6 +1553,7 @@ type Customer {
   salutation: String
   firstName: String!
   lastName: String!
+  company: String
   email: String!
   title: String
   encoder: String
@@ -1718,11 +1571,13 @@ type Customer {
   failedLogins: Int
   lockedUntil: Date
   birthday: Date
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   group: CustomerGroup
   defaultPaymentMethod: PaymentMethod
   salesChannel: SalesChannel
+  language: Language
   lastPaymentMethod: PaymentMethod
   defaultBillingAddress: CustomerAddress
   defaultShippingAddress: CustomerAddress
@@ -1821,6 +1676,7 @@ type CustomerAddress {
   phoneNumber: String
   additionalAddressLine1: String
   additionalAddressLine2: String
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   customer: Customer
@@ -1885,6 +1741,7 @@ type CustomerGroup {
   percentageGlobalDiscount: Float
   minimumOrderAmount: Float
   minimumOrderAmountSurcharge: Float
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   customers(
@@ -1960,6 +1817,7 @@ type CustomerGroupDiscount {
   customerGroupId: ID!
   percentageDiscount: Float!
   minimumCartAmount: Float!
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   customerGroup: CustomerGroup
@@ -2000,6 +1858,7 @@ type CustomerGroupEdge {
 
 type CustomerGroupTranslation {
   name: String!
+  attributes: Json
   customerGroupId: ID!
   languageId: ID!
   createdAt: Date!
@@ -2037,7 +1896,6 @@ scalar Date
 type DeadMessage {
   id: ID!
   originalMessageClass: String!
-  serializedOriginalMessage: String!
   handlerClass: String!
   encrypted: Boolean!
   errorCount: Int!
@@ -2080,9 +1938,9 @@ type DiscountSurcharge {
   id: ID!
   name: String
   ruleId: ID!
-  filterRule: Json!
   type: String!
   amount: Float!
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   translations: DiscountSurchargeTranslationConnection!
@@ -2115,6 +1973,7 @@ type DiscountSurchargeEdge {
 
 type DiscountSurchargeTranslation {
   name: String!
+  attributes: Json
   discountSurchargeId: ID!
   languageId: ID!
   createdAt: Date!
@@ -2147,6 +2006,74 @@ type DiscountSurchargeTranslationEdge {
   cursor: ID
 }
 
+type Document {
+  id: ID!
+  type: String!
+  orderId: ID!
+  orderVersionId: ID!
+  config: Json
+  sent: Int
+  createdAt: Date!
+  order: Order
+}
+
+"""The Result for a search that returns multiple Items"""
+type DocumentConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [DocumentEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type DocumentEdge {
+  """The Node of the Edge that contains the real element"""
+  node: Document
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type EventAction {
+  id: ID!
+  eventName: String!
+  actionName: String!
+  config: Json
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+"""The Result for a search that returns multiple Items"""
+type EventActionConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [EventActionEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type EventActionEdge {
+  """The Node of the Edge that contains the real element"""
+  node: EventAction
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
 input InputAttribute {
   id: ID
   name: String
@@ -2160,6 +2087,7 @@ input InputAttribute {
 
 input InputAttributeSet {
   id: ID
+  name: String
   config: Json
   attributes: [InputAttribute]
   relations: [InputAttributeSetRelation]
@@ -2176,43 +2104,17 @@ input InputAttributeSetRelation {
   updatedAt: Date
 }
 
-input InputCatalog {
-  id: ID
-  name: String
-  createdAt: Date
-  updatedAt: Date
-  categories: [InputCategory]
-  categoryTranslations: [InputCategoryTranslation]
-  products: [InputProduct]
-  productManufacturers: [InputProductManufacturer]
-  productManufacturerTranslations: [InputProductManufacturerTranslation]
-  productMedia: [InputProductMedia]
-  productTranslations: [InputProductTranslation]
-  translations: [InputCatalogTranslation]
-  salesChannels: [InputSalesChannel]
-}
-
-input InputCatalogTranslation {
-  name: String
-  catalogId: ID
-  languageId: ID
-  createdAt: Date
-  updatedAt: Date
-  catalog: InputCatalog
-  language: InputLanguage
-}
-
 input InputCategory {
   id: ID
   versionId: ID
-  catalogId: ID
   parentId: ID
   parentVersionId: ID
+  afterCategoryId: ID
+  afterCategoryVersionId: ID
   mediaId: ID
   displayNestedProducts: Boolean
   autoIncrement: Int
   path: String
-  position: Int
   level: Int
   template: String
   active: Boolean
@@ -2233,13 +2135,14 @@ input InputCategory {
   metaDescription: String
   cmsHeadline: String
   cmsDescription: String
+  attributes: String
   parent: InputCategory
   media: InputMedia
   children: [InputCategory]
   translations: [InputCategoryTranslation]
   products: [InputProduct]
-  catalog: InputCatalog
   nestedProducts: [InputProduct]
+  navigations: [InputNavigation]
   canonicalUrl: InputSeoUrl
 }
 
@@ -2250,8 +2153,7 @@ input InputCategoryTranslation {
   metaDescription: String
   cmsHeadline: String
   cmsDescription: String
-  catalogId: ID
-  catalog: InputCatalog
+  attributes: Json
   categoryId: ID
   languageId: ID
   createdAt: Date
@@ -2270,6 +2172,7 @@ input InputCmsBlock {
   slots: [InputCmsSlot]
   createdAt: Date
   updatedAt: Date
+  attributes: Json
 }
 
 input InputCmsPage {
@@ -2277,14 +2180,17 @@ input InputCmsPage {
   name: String
   type: String
   entity: String
+  attributes: String
   blocks: [InputCmsBlock]
   translations: [InputCmsPageTranslation]
+  navigations: [InputNavigation]
   createdAt: Date
   updatedAt: Date
 }
 
 input InputCmsPageTranslation {
   name: String
+  attributes: Json
   cmsPageId: ID
   languageId: ID
   createdAt: Date
@@ -2299,6 +2205,8 @@ input InputCmsSlot {
   type: String
   slot: String
   config: String
+  attributes: String
+  data: Json
   blockId: ID
   block: InputCmsBlock
   translations: [InputCmsSlotTranslation]
@@ -2308,6 +2216,7 @@ input InputCmsSlot {
 
 input InputCmsSlotTranslation {
   config: Json
+  attributes: Json
   cmsSlotId: ID
   languageId: ID
   createdAt: Date
@@ -2326,6 +2235,7 @@ input InputConfigurationGroup {
   comparable: Boolean
   displayType: String
   sortingType: String
+  attributes: String
   createdAt: Date
   updatedAt: Date
   options: [InputConfigurationGroupOption]
@@ -2339,6 +2249,7 @@ input InputConfigurationGroupOption {
   position: String
   colorHexCode: String
   mediaId: ID
+  attributes: String
   createdAt: Date
   updatedAt: Date
   media: InputMedia
@@ -2353,6 +2264,7 @@ input InputConfigurationGroupOption {
 input InputConfigurationGroupOptionTranslation {
   name: String
   position: Int
+  attributes: Json
   configurationGroupOptionId: ID
   languageId: ID
   createdAt: Date
@@ -2364,6 +2276,7 @@ input InputConfigurationGroupOptionTranslation {
 input InputConfigurationGroupTranslation {
   name: String
   description: String
+  attributes: Json
   configurationGroupId: ID
   languageId: ID
   createdAt: Date
@@ -2385,6 +2298,7 @@ input InputCountry {
   iso3: String
   displayStateInRegistration: Boolean
   forceStateInRegistration: Boolean
+  attributes: String
   createdAt: Date
   updatedAt: Date
   salesChannelDefaultAssignments: [InputSalesChannel]
@@ -2402,6 +2316,7 @@ input InputCountryState {
   name: String
   position: Int
   active: Boolean
+  attributes: String
   createdAt: Date
   updatedAt: Date
   country: InputCountry
@@ -2412,6 +2327,7 @@ input InputCountryState {
 
 input InputCountryStateTranslation {
   name: String
+  attributes: Json
   countryStateId: ID
   languageId: ID
   createdAt: Date
@@ -2422,6 +2338,7 @@ input InputCountryStateTranslation {
 
 input InputCountryTranslation {
   name: String
+  attributes: Json
   countryId: ID
   languageId: ID
   createdAt: Date
@@ -2439,6 +2356,7 @@ input InputCurrency {
   isDefault: Boolean
   placedInFront: Boolean
   position: Int
+  attributes: String
   createdAt: Date
   updatedAt: Date
   salesChannelDefaultAssignments: [InputSalesChannel]
@@ -2452,6 +2370,7 @@ input InputCurrency {
 input InputCurrencyTranslation {
   shortName: String
   name: String
+  attributes: Json
   currencyId: ID
   languageId: ID
   createdAt: Date
@@ -2465,6 +2384,7 @@ input InputCustomer {
   groupId: ID
   defaultPaymentMethodId: ID
   salesChannelId: ID
+  languageId: ID
   lastPaymentMethodId: ID
   defaultBillingAddressId: ID
   defaultShippingAddressId: ID
@@ -2473,6 +2393,7 @@ input InputCustomer {
   salutation: String
   firstName: String
   lastName: String
+  company: String
   email: String
   title: String
   encoder: String
@@ -2490,11 +2411,13 @@ input InputCustomer {
   failedLogins: Int
   lockedUntil: Date
   birthday: Date
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   group: InputCustomerGroup
   defaultPaymentMethod: InputPaymentMethod
   salesChannel: InputSalesChannel
+  language: InputLanguage
   lastPaymentMethod: InputPaymentMethod
   defaultBillingAddress: InputCustomerAddress
   defaultShippingAddress: InputCustomerAddress
@@ -2521,6 +2444,7 @@ input InputCustomerAddress {
   phoneNumber: String
   additionalAddressLine1: String
   additionalAddressLine2: String
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   customer: InputCustomer
@@ -2537,6 +2461,7 @@ input InputCustomerGroup {
   percentageGlobalDiscount: Float
   minimumOrderAmount: Float
   minimumOrderAmountSurcharge: Float
+  attributes: String
   createdAt: Date
   updatedAt: Date
   customers: [InputCustomer]
@@ -2549,6 +2474,7 @@ input InputCustomerGroupDiscount {
   customerGroupId: ID
   percentageDiscount: Float
   minimumCartAmount: Float
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   customerGroup: InputCustomerGroup
@@ -2556,6 +2482,7 @@ input InputCustomerGroupDiscount {
 
 input InputCustomerGroupTranslation {
   name: String
+  attributes: Json
   customerGroupId: ID
   languageId: ID
   createdAt: Date
@@ -2567,7 +2494,6 @@ input InputCustomerGroupTranslation {
 input InputDeadMessage {
   id: ID
   originalMessageClass: String
-  serializedOriginalMessage: String
   handlerClass: String
   encrypted: Boolean
   errorCount: Int
@@ -2586,9 +2512,9 @@ input InputDiscountSurcharge {
   id: ID
   name: String
   ruleId: ID
-  filterRule: Json
   type: String
   amount: Float
+  attributes: String
   createdAt: Date
   updatedAt: Date
   translations: [InputDiscountSurchargeTranslation]
@@ -2597,6 +2523,7 @@ input InputDiscountSurcharge {
 
 input InputDiscountSurchargeTranslation {
   name: String
+  attributes: Json
   discountSurchargeId: ID
   languageId: ID
   createdAt: Date
@@ -2605,12 +2532,24 @@ input InputDiscountSurchargeTranslation {
   language: InputLanguage
 }
 
+input InputDocument {
+  id: ID
+  type: String
+  orderId: ID
+  orderVersionId: ID
+  config: Json
+  sent: Int
+  createdAt: Date
+  order: InputOrder
+}
+
 input InputLanguage {
   id: ID
   parentId: ID
   localeId: ID
   translationCodeId: ID
   name: String
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   parent: InputLanguage
@@ -2620,7 +2559,7 @@ input InputLanguage {
   salesChannels: [InputSalesChannel]
   salesChannelDefaultAssignments: [InputSalesChannel]
   salesChannelDomains: [InputSalesChannelDomain]
-  catalogTranslations: [InputCatalogTranslation]
+  customers: [InputCustomer]
   categoryTranslations: [InputCategoryTranslation]
   countryStateTranslations: [InputCountryStateTranslation]
   countryTranslations: [InputCountryTranslation]
@@ -2647,6 +2586,7 @@ input InputLanguage {
   stateMachineStateTranslations: [InputStateMachineStateTranslation]
   cmsPageTranslations: [InputCmsPageTranslation]
   cmsSlotTranslations: [InputCmsSlotTranslation]
+  navigationTranslations: [InputNavigationTranslation]
 }
 
 input InputListingFacet {
@@ -2658,6 +2598,7 @@ input InputListingFacet {
   displayInCategories: Boolean
   deletable: Boolean
   position: Int
+  attributes: String
   createdAt: Date
   updatedAt: Date
   translations: [InputListingFacetTranslation]
@@ -2665,6 +2606,7 @@ input InputListingFacet {
 
 input InputListingFacetTranslation {
   name: String
+  attributes: Json
   listingFacetId: ID
   languageId: ID
   createdAt: Date
@@ -2675,12 +2617,12 @@ input InputListingFacetTranslation {
 
 input InputListingSorting {
   id: ID
-  payload: Json
   label: String
   uniqueKey: String
   active: Boolean
   displayInCategories: Boolean
   position: Int
+  attributes: String
   createdAt: Date
   updatedAt: Date
   translations: [InputListingSortingTranslation]
@@ -2688,6 +2630,7 @@ input InputListingSorting {
 
 input InputListingSortingTranslation {
   label: String
+  attributes: Json
   listingSortingId: ID
   languageId: ID
   createdAt: Date
@@ -2701,6 +2644,7 @@ input InputLocale {
   code: String
   name: String
   territory: String
+  attributes: String
   createdAt: Date
   updatedAt: Date
   languages: [InputLanguage]
@@ -2711,6 +2655,7 @@ input InputLocale {
 input InputLocaleTranslation {
   name: String
   territory: String
+  attributes: Json
   localeId: ID
   languageId: ID
   createdAt: Date
@@ -2735,6 +2680,7 @@ input InputMedia {
   alt: String
   title: String
   url: String
+  attributes: String
   user: InputUser
   categories: [InputCategory]
   productManufacturers: [InputProductManufacturer]
@@ -2746,30 +2692,21 @@ input InputMedia {
   configurationGroupOptions: [InputConfigurationGroupOption]
 }
 
-input InputMediaDefaultFolder {
-  id: ID
-  associations: Json
-  entity: String
-  folderId: ID
-  folder: InputMediaFolder
-  createdAt: Date
-  updatedAt: Date
-}
-
 input InputMediaFolder {
   id: ID
   useParentConfiguration: Boolean
   configurationId: ID
+  defaultFolderId: ID
   parentId: ID
   parent: InputMediaFolder
   children: [InputMediaFolder]
   childCount: Int
   media: [InputMedia]
-  defaultFolders: [InputMediaDefaultFolder]
   configuration: InputMediaFolderConfiguration
   name: String
   createdAt: Date
   updatedAt: Date
+  attributes: Json
 }
 
 input InputMediaFolderConfiguration {
@@ -2781,6 +2718,7 @@ input InputMediaFolderConfiguration {
   mediaThumbnailSizes: [InputMediaThumbnailSize]
   createdAt: Date
   updatedAt: Date
+  attributes: Json
 }
 
 input InputMediaThumbnail {
@@ -2792,6 +2730,7 @@ input InputMediaThumbnail {
   height: Int
   url: String
   media: InputMedia
+  attributes: Json
 }
 
 input InputMediaThumbnailSize {
@@ -2799,11 +2738,15 @@ input InputMediaThumbnailSize {
   width: Int
   height: Int
   mediaFolderConfigurations: [InputMediaFolderConfiguration]
+  attributes: Json
+  createdAt: Date
+  updatedAt: Date
 }
 
 input InputMediaTranslation {
   title: String
   alt: String
+  attributes: Json
   mediaId: ID
   languageId: ID
   createdAt: Date
@@ -2823,6 +2766,41 @@ input InputNamedOptionalGroup {
   id: ID
   name: String
   nameds: [InputNamed]
+}
+
+input InputNavigation {
+  id: ID
+  versionId: ID
+  parentId: ID
+  parentVersionId: ID
+  categoryId: ID
+  categoryVersionId: ID
+  category: InputCategory
+  cmsPageId: ID
+  cmsPage: InputCmsPage
+  name: String
+  slotConfig: String
+  level: Int
+  path: String
+  childCount: Int
+  createdAt: Date
+  updatedAt: Date
+  translations: [InputNavigationTranslation]
+  children: [InputNavigation]
+  parent: InputNavigation
+  salesChannelNavigations: [InputSalesChannel]
+}
+
+input InputNavigationTranslation {
+  name: String
+  slotConfig: Json
+  navigationId: ID
+  languageId: ID
+  createdAt: Date
+  updatedAt: Date
+  navigation: InputNavigation
+  language: InputLanguage
+  navigationVersionId: ID
 }
 
 input InputOrder {
@@ -2848,6 +2826,7 @@ input InputOrder {
   deepLinkCode: String
   stateId: ID
   stateMachineState: InputStateMachineState
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   orderCustomer: InputOrderCustomer
@@ -2858,6 +2837,7 @@ input InputOrder {
   deliveries: [InputOrderDelivery]
   lineItems: [InputOrderLineItem]
   transactions: [InputOrderTransaction]
+  documents: [InputDocument]
   searchKeywords: [InputSearchDocument]
 }
 
@@ -2881,6 +2861,7 @@ input InputOrderAddress {
   phoneNumber: String
   additionalAddressLine1: String
   additionalAddressLine2: String
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   country: InputCountry
@@ -2899,6 +2880,7 @@ input InputOrderCustomer {
   salutation: String
   title: String
   customerNumber: String
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   customer: InputCustomer
@@ -2919,6 +2901,7 @@ input InputOrderDelivery {
   shippingDateEarliest: Date
   shippingDateLatest: Date
   shippingCosts: Json
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   order: InputOrder
@@ -2938,6 +2921,7 @@ input InputOrderDeliveryPosition {
   unitPrice: Float
   totalPrice: Float
   quantity: Int
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   orderDelivery: InputOrderDelivery
@@ -2965,6 +2949,7 @@ input InputOrderLineItem {
   totalPrice: Float
   description: String
   type: String
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   order: InputOrder
@@ -2983,6 +2968,7 @@ input InputOrderTransaction {
   stateId: ID
   stateMachineState: InputStateMachineState
   details: Json
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   order: InputOrder
@@ -3003,6 +2989,7 @@ input InputPaymentMethod {
   position: Int
   active: Boolean
   riskRules: String
+  attributes: String
   createdAt: Date
   updatedAt: Date
   salesChannelDefaultAssignments: [InputSalesChannel]
@@ -3017,6 +3004,7 @@ input InputPaymentMethod {
 input InputPaymentMethodTranslation {
   name: String
   additionalDescription: String
+  attributes: Json
   paymentMethodId: ID
   languageId: ID
   createdAt: Date
@@ -3028,7 +3016,9 @@ input InputPaymentMethodTranslation {
 input InputPlugin {
   id: ID
   name: String
+  composerName: String
   active: Boolean
+  path: String
   author: String
   copyright: String
   license: String
@@ -3041,6 +3031,7 @@ input InputPlugin {
   manufacturerLink: String
   supportLink: String
   changelog: String
+  attributes: String
   createdAt: Date
   updatedAt: Date
   translations: [InputPluginTranslation]
@@ -3053,6 +3044,7 @@ input InputPluginTranslation {
   manufacturerLink: String
   supportLink: String
   changelog: Json
+  attributes: Json
   pluginId: ID
   languageId: ID
   createdAt: Date
@@ -3064,7 +3056,6 @@ input InputPluginTranslation {
 input InputProduct {
   id: ID
   versionId: ID
-  catalogId: ID
   parentId: ID
   parentVersionId: ID
   blacklistIds: Json
@@ -3115,6 +3106,7 @@ input InputProduct {
   descriptionLong: String
   metaTitle: String
   packUnit: String
+  attributes: String
   parent: InputProduct
   children: [InputProduct]
   tax: InputTax
@@ -3131,7 +3123,7 @@ input InputProduct {
   translations: [InputProductTranslation]
   configurators: [InputProductConfigurator]
   variations: [InputConfigurationGroupOption]
-  catalog: InputCatalog
+  visibilities: [InputProductVisibility]
   canonicalUrl: InputSeoUrl
 }
 
@@ -3147,12 +3139,12 @@ input InputProductConfigurator {
   updatedAt: Date
   product: InputProduct
   option: InputConfigurationGroupOption
+  attributes: Json
 }
 
 input InputProductManufacturer {
   id: ID
   versionId: ID
-  catalogId: ID
   mediaId: ID
   link: String
   updatedAt: Date
@@ -3162,10 +3154,10 @@ input InputProductManufacturer {
   metaTitle: String
   metaDescription: String
   metaKeywords: String
+  attributes: String
   media: InputMedia
   products: [InputProduct]
   translations: [InputProductManufacturerTranslation]
-  catalog: InputCatalog
 }
 
 input InputProductManufacturerTranslation {
@@ -3174,8 +3166,7 @@ input InputProductManufacturerTranslation {
   metaTitle: String
   metaDescription: String
   metaKeywords: String
-  catalogId: ID
-  catalog: InputCatalog
+  attributes: Json
   productManufacturerId: ID
   languageId: ID
   createdAt: Date
@@ -3188,7 +3179,6 @@ input InputProductManufacturerTranslation {
 input InputProductMedia {
   id: ID
   versionId: ID
-  catalogId: ID
   productId: ID
   productVersionId: ID
   mediaId: ID
@@ -3197,7 +3187,7 @@ input InputProductMedia {
   updatedAt: Date
   product: InputProduct
   media: InputMedia
-  catalog: InputCatalog
+  attributes: Json
 }
 
 input InputProductPriceRule {
@@ -3215,6 +3205,7 @@ input InputProductPriceRule {
   product: InputProduct
   currency: InputCurrency
   rule: InputRule
+  attributes: Json
 }
 
 input InputProductService {
@@ -3231,6 +3222,7 @@ input InputProductService {
   product: InputProduct
   option: InputConfigurationGroupOption
   tax: InputTax
+  attributes: Json
 }
 
 input InputProductStream {
@@ -3241,28 +3233,33 @@ input InputProductStream {
   updatedAt: Date
   name: String
   description: String
+  attributes: String
   translations: [InputProductStreamTranslation]
   filters: [InputProductStreamFilter]
 }
 
 input InputProductStreamFilter {
   id: ID
+  productStreamId: ID
+  parentId: ID
   type: String
   field: String
   operator: String
   value: String
   parameters: Json
   position: Int
-  productStreamId: ID
-  parentId: ID
+  createdAt: Date
+  updatedAt: Date
   productStream: InputProductStream
   parent: InputProductStreamFilter
   queries: [InputProductStreamFilter]
+  attributes: Json
 }
 
 input InputProductStreamTranslation {
   name: String
   description: String
+  attributes: Json
   productStreamId: ID
   languageId: ID
   createdAt: Date
@@ -3279,8 +3276,7 @@ input InputProductTranslation {
   descriptionLong: String
   metaTitle: String
   packUnit: String
-  catalogId: ID
-  catalog: InputCatalog
+  attributes: Json
   productId: ID
   languageId: ID
   createdAt: Date
@@ -3290,13 +3286,44 @@ input InputProductTranslation {
   productVersionId: ID
 }
 
+input InputProductVisibility {
+  id: ID
+  productId: ID
+  productVersionId: ID
+  salesChannelId: ID
+  visibility: Int
+  salesChannel: InputSalesChannel
+  product: InputProduct
+  createdAt: Date
+  updatedAt: Date
+}
+
+input InputRootSub {
+  id: ID
+  versionId: ID
+  name: String
+  stock: Int
+  rootId: ID
+  rootVersionId: ID
+  manies: [InputRootSubMany]
+}
+
+input InputRootSubMany {
+  id: ID
+  versionId: ID
+  name: String
+  subId: ID
+  rootSubVersionId: ID
+  sub: InputRootSub
+}
+
 input InputRule {
   id: ID
   name: String
   priority: Int
   description: String
-  payload: Json
   invalid: Boolean
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   conditions: [InputRuleCondition]
@@ -3314,6 +3341,7 @@ input InputRuleCondition {
   rule: InputRule
   parent: InputRuleCondition
   children: [InputRuleCondition]
+  attributes: Json
 }
 
 input InputSalesChannel {
@@ -3324,16 +3352,18 @@ input InputSalesChannel {
   paymentMethodId: ID
   shippingMethodId: ID
   countryId: ID
+  navigationId: ID
+  navigationVersionId: ID
   type: InputSalesChannelType
   name: String
   accessKey: String
   configuration: Json
   active: Boolean
   taxCalculationType: String
+  attributes: String
   createdAt: Date
   updatedAt: Date
   translations: [InputSalesChannelTranslation]
-  catalogs: [InputCatalog]
   currencies: [InputCurrency]
   languages: [InputLanguage]
   countries: [InputCountry]
@@ -3348,6 +3378,8 @@ input InputSalesChannel {
   customers: [InputCustomer]
   domains: [InputSalesChannelDomain]
   systemConfigs: [InputSystemConfig]
+  navigation: InputNavigation
+  productVisibilities: [InputProductVisibility]
   seoUrls: [InputSeoUrl]
 }
 
@@ -3364,10 +3396,12 @@ input InputSalesChannelDomain {
   language: InputLanguage
   currency: InputCurrency
   snippetSet: InputSnippetSet
+  attributes: Json
 }
 
 input InputSalesChannelTranslation {
   name: String
+  attributes: Json
   salesChannelId: ID
   languageId: ID
   createdAt: Date
@@ -3385,6 +3419,7 @@ input InputSalesChannelType {
   manufacturer: String
   description: String
   descriptionLong: String
+  attributes: String
   createdAt: Date
   updatedAt: Date
   translations: [InputSalesChannelTypeTranslation]
@@ -3396,6 +3431,7 @@ input InputSalesChannelTypeTranslation {
   manufacturer: String
   description: String
   descriptionLong: String
+  attributes: Json
   salesChannelTypeId: ID
   languageId: ID
   createdAt: Date
@@ -3422,6 +3458,7 @@ input InputSearchDocument {
   entity: String
   keyword: String
   ranking: Float
+  attributes: Json
   language: InputLanguage
 }
 
@@ -3434,6 +3471,7 @@ input InputSeoUrl {
   seoPathInfo: String
   isCanonical: Boolean
   isModified: Boolean
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   salesChannel: InputSalesChannel
@@ -3466,6 +3504,7 @@ input InputShippingMethod {
   bindSql: String
   statusLink: String
   calculationSql: String
+  attributes: String
   createdAt: Date
   updatedAt: Date
   salesChannelDefaultAssignments: [InputSalesChannel]
@@ -3483,6 +3522,7 @@ input InputShippingMethodPrice {
   quantityFrom: Float
   price: Float
   factor: Float
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   shippingMethod: InputShippingMethod
@@ -3492,6 +3532,7 @@ input InputShippingMethodTranslation {
   name: String
   description: String
   comment: String
+  attributes: Json
   shippingMethodId: ID
   languageId: ID
   createdAt: Date
@@ -3506,6 +3547,7 @@ input InputSnippet {
   translationKey: String
   value: String
   author: String
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   set: InputSnippetSet
@@ -3516,6 +3558,7 @@ input InputSnippetSet {
   name: String
   baseFile: String
   iso: String
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   snippets: [InputSnippet]
@@ -3526,6 +3569,7 @@ input InputStateMachine {
   id: ID
   technicalName: String
   name: String
+  attributes: String
   states: [InputStateMachineState]
   transitions: [InputStateMachineTransition]
   initialStateId: ID
@@ -3563,6 +3607,7 @@ input InputStateMachineState {
   orderTransactions: [InputOrderTransaction]
   orderDeliveries: [InputOrderDelivery]
   orders: [InputOrder]
+  attributes: String
   createdAt: Date
   updatedAt: Date
   toStateMachineHistoryEntries: [InputStateMachineHistory]
@@ -3571,6 +3616,7 @@ input InputStateMachineState {
 
 input InputStateMachineStateTranslation {
   name: String
+  attributes: Json
   stateMachineStateId: ID
   languageId: ID
   createdAt: Date
@@ -3590,10 +3636,12 @@ input InputStateMachineTransition {
   toStateMachineState: InputStateMachineState
   createdAt: Date
   updatedAt: Date
+  attributes: Json
 }
 
 input InputStateMachineTranslation {
   name: String
+  attributes: Json
   stateMachineId: ID
   languageId: ID
   createdAt: Date
@@ -3617,6 +3665,7 @@ input InputTax {
   id: ID
   taxRate: Float
   name: String
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   products: [InputProduct]
@@ -3627,6 +3676,7 @@ input InputUnit {
   id: ID
   shortCode: String
   name: String
+  attributes: String
   createdAt: Date
   updatedAt: Date
   products: [InputProduct]
@@ -3636,6 +3686,7 @@ input InputUnit {
 input InputUnitTranslation {
   shortCode: String
   name: String
+  attributes: Json
   unitId: ID
   languageId: ID
   createdAt: Date
@@ -3647,6 +3698,7 @@ input InputUnitTranslation {
 input InputUser {
   id: ID
   localeId: ID
+  avatarId: ID
   username: String
   name: String
   email: String
@@ -3654,6 +3706,7 @@ input InputUser {
   active: Boolean
   failedLogins: Int
   lockedUntil: Date
+  attributes: Json
   createdAt: Date
   updatedAt: Date
   locale: InputLocale
@@ -3667,8 +3720,9 @@ input InputUserAccessKey {
   userId: ID
   accessKey: String
   writeAccess: Boolean
-  createdAt: Date
   lastUsageAt: Date
+  attributes: Json
+  createdAt: Date
   user: InputUser
 }
 
@@ -3713,6 +3767,7 @@ type Integration {
   accessKey: String!
   writeAccess: Boolean
   lastUsageAt: Date
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
 }
@@ -3759,6 +3814,7 @@ type Language {
   localeId: ID!
   translationCodeId: ID
   name: String!
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   parent: Language
@@ -3864,7 +3920,7 @@ type Language {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): SalesChannelDomainConnection
-  catalogTranslations(
+  customers(
     """The count of items to be returned"""
     first: Int
 
@@ -3888,7 +3944,7 @@ type Language {
 
     """The aggregations should perform"""
     aggregations: [Aggregation]
-  ): CatalogTranslationConnection
+  ): CustomerConnection
   categoryTranslations(
     """The count of items to be returned"""
     first: Int
@@ -4539,6 +4595,31 @@ type Language {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): CmsSlotTranslationConnection
+  navigationTranslations(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): NavigationTranslationConnection
 }
 
 """The Result for a search that returns multiple Items"""
@@ -4574,6 +4655,7 @@ type ListingFacet {
   displayInCategories: Boolean
   deletable: Boolean
   position: Int
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   translations: ListingFacetTranslationConnection!
@@ -4605,6 +4687,7 @@ type ListingFacetEdge {
 
 type ListingFacetTranslation {
   name: String!
+  attributes: Json
   listingFacetId: ID!
   languageId: ID!
   createdAt: Date!
@@ -4639,12 +4722,12 @@ type ListingFacetTranslationEdge {
 
 type ListingSorting {
   id: ID!
-  payload: Json!
   label: String
   uniqueKey: String!
   active: Boolean
   displayInCategories: Boolean
   position: Int
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   translations: ListingSortingTranslationConnection!
@@ -4676,6 +4759,7 @@ type ListingSortingEdge {
 
 type ListingSortingTranslation {
   label: String!
+  attributes: Json
   listingSortingId: ID!
   languageId: ID!
   createdAt: Date!
@@ -4713,6 +4797,7 @@ type Locale {
   code: String!
   name: String
   territory: String
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   languages(
@@ -4795,6 +4880,7 @@ type LocaleEdge {
 type LocaleTranslation {
   name: String!
   territory: String!
+  attributes: Json
   localeId: ID!
   languageId: ID!
   createdAt: Date!
@@ -4843,6 +4929,7 @@ type Media {
   alt: String
   title: String
   url: String
+  attributes: String
   user: User
   categories(
     """The count of items to be returned"""
@@ -4991,12 +5078,12 @@ type MediaConnection {
 
 type MediaDefaultFolder {
   id: ID!
-  associations: Json!
+  associationFields: Json!
+  thumbnailSizes: Json!
   entity: String!
-  folderId: ID
-  folder: MediaFolder
   createdAt: Date!
   updatedAt: Date!
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -5036,6 +5123,7 @@ type MediaFolder {
   id: ID!
   useParentConfiguration: Boolean
   configurationId: ID!
+  defaultFolderId: ID
   parentId: ID
   parent: MediaFolder
   children(
@@ -5089,35 +5177,11 @@ type MediaFolder {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): MediaConnection
-  defaultFolders(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): MediaDefaultFolderConnection
   configuration: MediaFolderConfiguration
   name: String!
   createdAt: Date!
   updatedAt: Date!
+  attributes: Json
 }
 
 type MediaFolderConfiguration {
@@ -5177,6 +5241,7 @@ type MediaFolderConfiguration {
   ): MediaThumbnailSizeConnection
   createdAt: Date!
   updatedAt: Date!
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -5236,6 +5301,7 @@ type MediaThumbnail {
   height: Int!
   url: String
   media: Media
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -5291,6 +5357,9 @@ type MediaThumbnailSize {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): MediaFolderConfigurationConnection
+  attributes: Json
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 """The Result for a search that returns multiple Items"""
@@ -5320,6 +5389,7 @@ type MediaThumbnailSizeEdge {
 type MediaTranslation {
   title: String
   alt: String
+  attributes: Json
   mediaId: ID!
   languageId: ID!
   createdAt: Date!
@@ -5383,98 +5453,104 @@ type MessageQueueStatsEdge {
 }
 
 type Mutation {
-  createSeoUrl(id: ID, salesChannelId: ID, name: String!, foreignKey: ID, pathInfo: String!, seoPathInfo: String!, isCanonical: Boolean, isModified: Boolean, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, url: String): SeoUrl
-  updateSeoUrl(id: ID!, salesChannelId: ID, name: String, foreignKey: ID, pathInfo: String, seoPathInfo: String, isCanonical: Boolean, isModified: Boolean, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, url: String): SeoUrl
+  createSeoUrl(id: ID, salesChannelId: ID, name: String!, foreignKey: ID, pathInfo: String!, seoPathInfo: String!, isCanonical: Boolean, isModified: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, url: String): SeoUrl
+  updateSeoUrl(id: ID!, salesChannelId: ID, name: String, foreignKey: ID, pathInfo: String, seoPathInfo: String, isCanonical: Boolean, isModified: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, url: String): SeoUrl
   deleteSeoUrl(id: ID!): ID
   createAttribute(id: ID, name: String!, type: String!, config: Json, attributeSetId: ID, attributeSet: InputAttributeSet, createdAt: Date, updatedAt: Date): Attribute
   updateAttribute(id: ID!, name: String, type: String, config: Json, attributeSetId: ID, attributeSet: InputAttributeSet, createdAt: Date, updatedAt: Date): Attribute
   deleteAttribute(id: ID!): ID
-  createAttributeSet(id: ID, config: Json, attributes: [InputAttribute], relations: [InputAttributeSetRelation], createdAt: Date, updatedAt: Date): AttributeSet
-  updateAttributeSet(id: ID!, config: Json, attributes: [InputAttribute], relations: [InputAttributeSetRelation], createdAt: Date, updatedAt: Date): AttributeSet
+  createAttributeSet(id: ID, name: String!, config: Json, attributes: [InputAttribute], relations: [InputAttributeSetRelation], createdAt: Date, updatedAt: Date): AttributeSet
+  updateAttributeSet(id: ID!, name: String, config: Json, attributes: [InputAttribute], relations: [InputAttributeSetRelation], createdAt: Date, updatedAt: Date): AttributeSet
   deleteAttributeSet(id: ID!): ID
   createAttributeSetRelation(id: ID, attributeSetId: ID, entityName: String!, attributeSet: InputAttributeSet, createdAt: Date, updatedAt: Date): AttributeSetRelation
   updateAttributeSetRelation(id: ID!, attributeSetId: ID, entityName: String, attributeSet: InputAttributeSet, createdAt: Date, updatedAt: Date): AttributeSetRelation
   deleteAttributeSetRelation(id: ID!): ID
-  createVersion(id: ID, name: String! = "Draft (2019-02-08 17:40:28.000)", createdAt: Date = "2019-02-08T17:40:28+01:00", updatedAt: Date, commits: [InputVersionCommit]): Version
+  createVersion(id: ID, name: String! = "Draft (2019-03-01 16:12:43.000)", createdAt: Date = "2019-03-01T16:12:43+01:00", updatedAt: Date, commits: [InputVersionCommit]): Version
   updateVersion(id: ID!, name: String, createdAt: Date, updatedAt: Date, commits: [InputVersionCommit]): Version
   deleteVersion(id: ID!): ID
-  createVersionCommit(id: ID, versionId: ID, userId: ID, integrationId: ID, autoIncrement: Int, isMerge: Boolean, message: String, createdAt: Date = "2019-02-08T17:40:28+01:00", data: [InputVersionCommitData], version: InputVersion): VersionCommit
+  createVersionCommit(id: ID, versionId: ID, userId: ID, integrationId: ID, autoIncrement: Int, isMerge: Boolean, message: String, createdAt: Date = "2019-03-01T16:12:43+01:00", data: [InputVersionCommitData], version: InputVersion): VersionCommit
   updateVersionCommit(id: ID!, versionId: ID, userId: ID, integrationId: ID, autoIncrement: Int, isMerge: Boolean, message: String, createdAt: Date, data: [InputVersionCommitData], version: InputVersion): VersionCommit
   deleteVersionCommit(id: ID!): ID
   createVersionCommitData(id: ID, versionCommitId: ID, commit: InputVersionCommit, userId: ID, integrationId: ID, autoIncrement: Int, entityName: String!, entityId: Json!, action: String!, payload: Json!, createdAt: Date): VersionCommitData
   updateVersionCommitData(id: ID!, versionCommitId: ID, commit: InputVersionCommit, userId: ID, integrationId: ID, autoIncrement: Int, entityName: String, entityId: Json, action: String, payload: Json, createdAt: Date): VersionCommitData
   deleteVersionCommitData(id: ID!): ID
-  createDeadMessage(id: ID, originalMessageClass: String!, serializedOriginalMessage: String!, handlerClass: String!, encrypted: Boolean! = false, errorCount: Int! = 1, nextExecutionTime: Date!, exception: String!, exceptionMessage: String!, exceptionFile: String!, exceptionLine: Int!, scheduledTaskId: ID, createdAt: Date, updatedAt: Date, scheduledTask: InputScheduledTask): DeadMessage
-  updateDeadMessage(id: ID!, originalMessageClass: String, serializedOriginalMessage: String, handlerClass: String, encrypted: Boolean, errorCount: Int, nextExecutionTime: Date, exception: String, exceptionMessage: String, exceptionFile: String, exceptionLine: Int, scheduledTaskId: ID, createdAt: Date, updatedAt: Date, scheduledTask: InputScheduledTask): DeadMessage
+  createEventAction(id: ID, eventName: String!, actionName: String!, config: Json, createdAt: Date, updatedAt: Date): EventAction
+  updateEventAction(id: ID!, eventName: String, actionName: String, config: Json, createdAt: Date, updatedAt: Date): EventAction
+  deleteEventAction(id: ID!): ID
+  createDeadMessage(id: ID, originalMessageClass: String!, handlerClass: String!, encrypted: Boolean! = false, errorCount: Int! = 1, nextExecutionTime: Date!, exception: String!, exceptionMessage: String!, exceptionFile: String!, exceptionLine: Int!, scheduledTaskId: ID, createdAt: Date, updatedAt: Date, scheduledTask: InputScheduledTask): DeadMessage
+  updateDeadMessage(id: ID!, originalMessageClass: String, handlerClass: String, encrypted: Boolean, errorCount: Int, nextExecutionTime: Date, exception: String, exceptionMessage: String, exceptionFile: String, exceptionLine: Int, scheduledTaskId: ID, createdAt: Date, updatedAt: Date, scheduledTask: InputScheduledTask): DeadMessage
   deleteDeadMessage(id: ID!): ID
   createMessageQueueStats(id: ID, name: String!, size: Int! = 0): MessageQueueStats
   updateMessageQueueStats(id: ID!, name: String, size: Int): MessageQueueStats
   deleteMessageQueueStats(id: ID!): ID
-  createPlugin(id: ID, name: String!, active: Boolean!, author: String, copyright: String, license: String, version: String!, upgradeVersion: String, installedAt: Date, upgradedAt: Date, label: String, description: String, manufacturerLink: String, supportLink: String, changelog: String, createdAt: Date, updatedAt: Date, translations: [InputPluginTranslation], paymentMethods: [InputPaymentMethod]): Plugin
-  updatePlugin(id: ID!, name: String, active: Boolean, author: String, copyright: String, license: String, version: String, upgradeVersion: String, installedAt: Date, upgradedAt: Date, label: String, description: String, manufacturerLink: String, supportLink: String, changelog: String, createdAt: Date, updatedAt: Date, translations: [InputPluginTranslation], paymentMethods: [InputPaymentMethod]): Plugin
+  createPlugin(id: ID, name: String!, composerName: String, active: Boolean!, path: String, author: String, copyright: String, license: String, version: String!, upgradeVersion: String, installedAt: Date, upgradedAt: Date, label: String, description: String, manufacturerLink: String, supportLink: String, changelog: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputPluginTranslation], paymentMethods: [InputPaymentMethod]): Plugin
+  updatePlugin(id: ID!, name: String, composerName: String, active: Boolean, path: String, author: String, copyright: String, license: String, version: String, upgradeVersion: String, installedAt: Date, upgradedAt: Date, label: String, description: String, manufacturerLink: String, supportLink: String, changelog: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputPluginTranslation], paymentMethods: [InputPaymentMethod]): Plugin
   deletePlugin(id: ID!): ID
-  createScheduledTask(id: ID, name: String!, scheduledTaskClass: String!, runInterval: Int!, status: String!, lastExecutionTime: Date, nextExecutionTime: Date! = "2019-02-08T17:40:28+01:00", deadMessages: [InputDeadMessage]): ScheduledTask
+  createScheduledTask(id: ID, name: String!, scheduledTaskClass: String!, runInterval: Int!, status: String!, lastExecutionTime: Date, nextExecutionTime: Date! = "2019-03-01T16:12:43+01:00", deadMessages: [InputDeadMessage]): ScheduledTask
   updateScheduledTask(id: ID!, name: String, scheduledTaskClass: String, runInterval: Int, status: String, lastExecutionTime: Date, nextExecutionTime: Date, deadMessages: [InputDeadMessage]): ScheduledTask
   deleteScheduledTask(id: ID!): ID
-  createSalesChannel(id: ID, typeId: ID, languageId: ID, currencyId: ID, paymentMethodId: ID, shippingMethodId: ID, countryId: ID, type: InputSalesChannelType, name: String, accessKey: String!, configuration: Json, active: Boolean, taxCalculationType: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTranslation], catalogs: [InputCatalog], currencies: [InputCurrency], languages: [InputLanguage], countries: [InputCountry], paymentMethods: [InputPaymentMethod], shippingMethods: [InputShippingMethod], language: InputLanguage, currency: InputCurrency, paymentMethod: InputPaymentMethod, shippingMethod: InputShippingMethod, country: InputCountry, orders: [InputOrder], customers: [InputCustomer], domains: [InputSalesChannelDomain], systemConfigs: [InputSystemConfig], seoUrls: [InputSeoUrl]): SalesChannel
-  updateSalesChannel(id: ID!, typeId: ID, languageId: ID, currencyId: ID, paymentMethodId: ID, shippingMethodId: ID, countryId: ID, type: InputSalesChannelType, name: String, accessKey: String, configuration: Json, active: Boolean, taxCalculationType: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTranslation], catalogs: [InputCatalog], currencies: [InputCurrency], languages: [InputLanguage], countries: [InputCountry], paymentMethods: [InputPaymentMethod], shippingMethods: [InputShippingMethod], language: InputLanguage, currency: InputCurrency, paymentMethod: InputPaymentMethod, shippingMethod: InputShippingMethod, country: InputCountry, orders: [InputOrder], customers: [InputCustomer], domains: [InputSalesChannelDomain], systemConfigs: [InputSystemConfig], seoUrls: [InputSeoUrl]): SalesChannel
+  createSalesChannel(id: ID, typeId: ID, languageId: ID, currencyId: ID, paymentMethodId: ID, shippingMethodId: ID, countryId: ID, navigationId: ID, navigationVersionId: ID, type: InputSalesChannelType, name: String, accessKey: String!, configuration: Json, active: Boolean, taxCalculationType: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTranslation], currencies: [InputCurrency], languages: [InputLanguage], countries: [InputCountry], paymentMethods: [InputPaymentMethod], shippingMethods: [InputShippingMethod], language: InputLanguage, currency: InputCurrency, paymentMethod: InputPaymentMethod, shippingMethod: InputShippingMethod, country: InputCountry, orders: [InputOrder], customers: [InputCustomer], domains: [InputSalesChannelDomain], systemConfigs: [InputSystemConfig], navigation: InputNavigation, productVisibilities: [InputProductVisibility], seoUrls: [InputSeoUrl]): SalesChannel
+  updateSalesChannel(id: ID!, typeId: ID, languageId: ID, currencyId: ID, paymentMethodId: ID, shippingMethodId: ID, countryId: ID, navigationId: ID, navigationVersionId: ID, type: InputSalesChannelType, name: String, accessKey: String, configuration: Json, active: Boolean, taxCalculationType: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTranslation], currencies: [InputCurrency], languages: [InputLanguage], countries: [InputCountry], paymentMethods: [InputPaymentMethod], shippingMethods: [InputShippingMethod], language: InputLanguage, currency: InputCurrency, paymentMethod: InputPaymentMethod, shippingMethod: InputShippingMethod, country: InputCountry, orders: [InputOrder], customers: [InputCustomer], domains: [InputSalesChannelDomain], systemConfigs: [InputSystemConfig], navigation: InputNavigation, productVisibilities: [InputProductVisibility], seoUrls: [InputSeoUrl]): SalesChannel
   deleteSalesChannel(id: ID!): ID
-  createSalesChannelDomain(id: ID, url: String!, salesChannelId: ID, languageId: ID, currencyId: ID, snippetSetId: ID, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, language: InputLanguage, currency: InputCurrency, snippetSet: InputSnippetSet): SalesChannelDomain
-  updateSalesChannelDomain(id: ID!, url: String, salesChannelId: ID, languageId: ID, currencyId: ID, snippetSetId: ID, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, language: InputLanguage, currency: InputCurrency, snippetSet: InputSnippetSet): SalesChannelDomain
+  createSalesChannelDomain(id: ID, url: String!, salesChannelId: ID, languageId: ID, currencyId: ID, snippetSetId: ID, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, language: InputLanguage, currency: InputCurrency, snippetSet: InputSnippetSet, attributes: Json): SalesChannelDomain
+  updateSalesChannelDomain(id: ID!, url: String, salesChannelId: ID, languageId: ID, currencyId: ID, snippetSetId: ID, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, language: InputLanguage, currency: InputCurrency, snippetSet: InputSnippetSet, attributes: Json): SalesChannelDomain
   deleteSalesChannelDomain(id: ID!): ID
-  createSalesChannelType(id: ID, coverUrl: String, iconName: String, screenshotUrls: Json, name: String, manufacturer: String, description: String, descriptionLong: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTypeTranslation], salesChannels: [InputSalesChannel]): SalesChannelType
-  updateSalesChannelType(id: ID!, coverUrl: String, iconName: String, screenshotUrls: Json, name: String, manufacturer: String, description: String, descriptionLong: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTypeTranslation], salesChannels: [InputSalesChannel]): SalesChannelType
+  createSalesChannelType(id: ID, coverUrl: String, iconName: String, screenshotUrls: Json, name: String, manufacturer: String, description: String, descriptionLong: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTypeTranslation], salesChannels: [InputSalesChannel]): SalesChannelType
+  updateSalesChannelType(id: ID!, coverUrl: String, iconName: String, screenshotUrls: Json, name: String, manufacturer: String, description: String, descriptionLong: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTypeTranslation], salesChannels: [InputSalesChannel]): SalesChannelType
   deleteSalesChannelType(id: ID!): ID
-  createCountry(id: ID, name: String, iso: String, position: Int, shippingFree: Boolean, taxFree: Boolean, taxfreeForVatId: Boolean, taxfreeVatidChecked: Boolean, active: Boolean, iso3: String, displayStateInRegistration: Boolean, forceStateInRegistration: Boolean, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], states: [InputCountryState], translations: [InputCountryTranslation], customerAddresses: [InputCustomerAddress], orderAddresses: [InputOrderAddress], salesChannels: [InputSalesChannel]): Country
-  updateCountry(id: ID!, name: String, iso: String, position: Int, shippingFree: Boolean, taxFree: Boolean, taxfreeForVatId: Boolean, taxfreeVatidChecked: Boolean, active: Boolean, iso3: String, displayStateInRegistration: Boolean, forceStateInRegistration: Boolean, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], states: [InputCountryState], translations: [InputCountryTranslation], customerAddresses: [InputCustomerAddress], orderAddresses: [InputOrderAddress], salesChannels: [InputSalesChannel]): Country
+  createCountry(id: ID, name: String, iso: String, position: Int, shippingFree: Boolean, taxFree: Boolean, taxfreeForVatId: Boolean, taxfreeVatidChecked: Boolean, active: Boolean, iso3: String, displayStateInRegistration: Boolean, forceStateInRegistration: Boolean, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], states: [InputCountryState], translations: [InputCountryTranslation], customerAddresses: [InputCustomerAddress], orderAddresses: [InputOrderAddress], salesChannels: [InputSalesChannel]): Country
+  updateCountry(id: ID!, name: String, iso: String, position: Int, shippingFree: Boolean, taxFree: Boolean, taxfreeForVatId: Boolean, taxfreeVatidChecked: Boolean, active: Boolean, iso3: String, displayStateInRegistration: Boolean, forceStateInRegistration: Boolean, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], states: [InputCountryState], translations: [InputCountryTranslation], customerAddresses: [InputCustomerAddress], orderAddresses: [InputOrderAddress], salesChannels: [InputSalesChannel]): Country
   deleteCountry(id: ID!): ID
-  createCountryState(id: ID, countryId: ID, shortCode: String!, name: String, position: Int, active: Boolean, createdAt: Date, updatedAt: Date, country: InputCountry, translations: [InputCountryStateTranslation], customerAddresses: [InputCustomerAddress], orderAddresses: [InputOrderAddress]): CountryState
-  updateCountryState(id: ID!, countryId: ID, shortCode: String, name: String, position: Int, active: Boolean, createdAt: Date, updatedAt: Date, country: InputCountry, translations: [InputCountryStateTranslation], customerAddresses: [InputCustomerAddress], orderAddresses: [InputOrderAddress]): CountryState
+  createCountryState(id: ID, countryId: ID, shortCode: String!, name: String, position: Int, active: Boolean, attributes: String, createdAt: Date, updatedAt: Date, country: InputCountry, translations: [InputCountryStateTranslation], customerAddresses: [InputCustomerAddress], orderAddresses: [InputOrderAddress]): CountryState
+  updateCountryState(id: ID!, countryId: ID, shortCode: String, name: String, position: Int, active: Boolean, attributes: String, createdAt: Date, updatedAt: Date, country: InputCountry, translations: [InputCountryStateTranslation], customerAddresses: [InputCustomerAddress], orderAddresses: [InputOrderAddress]): CountryState
   deleteCountryState(id: ID!): ID
-  createCurrency(id: ID, factor: Float!, symbol: String!, shortName: String, name: String, isDefault: Boolean, placedInFront: Boolean, position: Int, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], translations: [InputCurrencyTranslation], orders: [InputOrder], productPriceRules: [InputProductPriceRule], salesChannels: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain]): Currency
-  updateCurrency(id: ID!, factor: Float, symbol: String, shortName: String, name: String, isDefault: Boolean, placedInFront: Boolean, position: Int, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], translations: [InputCurrencyTranslation], orders: [InputOrder], productPriceRules: [InputProductPriceRule], salesChannels: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain]): Currency
+  createCurrency(id: ID, factor: Float!, symbol: String!, shortName: String, name: String, isDefault: Boolean, placedInFront: Boolean, position: Int, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], translations: [InputCurrencyTranslation], orders: [InputOrder], productPriceRules: [InputProductPriceRule], salesChannels: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain]): Currency
+  updateCurrency(id: ID!, factor: Float, symbol: String, shortName: String, name: String, isDefault: Boolean, placedInFront: Boolean, position: Int, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], translations: [InputCurrencyTranslation], orders: [InputOrder], productPriceRules: [InputProductPriceRule], salesChannels: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain]): Currency
   deleteCurrency(id: ID!): ID
-  createLocale(id: ID, code: String!, name: String, territory: String, createdAt: Date, updatedAt: Date, languages: [InputLanguage], translations: [InputLocaleTranslation], users: [InputUser]): Locale
-  updateLocale(id: ID!, code: String, name: String, territory: String, createdAt: Date, updatedAt: Date, languages: [InputLanguage], translations: [InputLocaleTranslation], users: [InputUser]): Locale
+  createLocale(id: ID, code: String!, name: String, territory: String, attributes: String, createdAt: Date, updatedAt: Date, languages: [InputLanguage], translations: [InputLocaleTranslation], users: [InputUser]): Locale
+  updateLocale(id: ID!, code: String, name: String, territory: String, attributes: String, createdAt: Date, updatedAt: Date, languages: [InputLanguage], translations: [InputLocaleTranslation], users: [InputUser]): Locale
   deleteLocale(id: ID!): ID
-  createListingFacet(id: ID, uniqueKey: String!, payload: String!, name: String, active: Boolean, displayInCategories: Boolean, deletable: Boolean, position: Int, createdAt: Date, updatedAt: Date, translations: [InputListingFacetTranslation]): ListingFacet
-  updateListingFacet(id: ID!, uniqueKey: String, payload: String, name: String, active: Boolean, displayInCategories: Boolean, deletable: Boolean, position: Int, createdAt: Date, updatedAt: Date, translations: [InputListingFacetTranslation]): ListingFacet
+  createListingFacet(id: ID, uniqueKey: String!, payload: String!, name: String, active: Boolean, displayInCategories: Boolean, deletable: Boolean, position: Int, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputListingFacetTranslation]): ListingFacet
+  updateListingFacet(id: ID!, uniqueKey: String, payload: String, name: String, active: Boolean, displayInCategories: Boolean, deletable: Boolean, position: Int, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputListingFacetTranslation]): ListingFacet
   deleteListingFacet(id: ID!): ID
-  createListingSorting(id: ID, payload: Json!, label: String, uniqueKey: String!, active: Boolean, displayInCategories: Boolean, position: Int, createdAt: Date, updatedAt: Date, translations: [InputListingSortingTranslation]): ListingSorting
-  updateListingSorting(id: ID!, payload: Json, label: String, uniqueKey: String, active: Boolean, displayInCategories: Boolean, position: Int, createdAt: Date, updatedAt: Date, translations: [InputListingSortingTranslation]): ListingSorting
+  createListingSorting(id: ID, label: String, uniqueKey: String!, active: Boolean, displayInCategories: Boolean, position: Int, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputListingSortingTranslation]): ListingSorting
+  updateListingSorting(id: ID!, label: String, uniqueKey: String, active: Boolean, displayInCategories: Boolean, position: Int, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputListingSortingTranslation]): ListingSorting
   deleteListingSorting(id: ID!): ID
-  createSnippetSet(id: ID, name: String!, baseFile: String!, iso: String!, createdAt: Date, updatedAt: Date, snippets: [InputSnippet], salesChannelDomains: [InputSalesChannelDomain]): SnippetSet
-  updateSnippetSet(id: ID!, name: String, baseFile: String, iso: String, createdAt: Date, updatedAt: Date, snippets: [InputSnippet], salesChannelDomains: [InputSalesChannelDomain]): SnippetSet
+  createSnippetSet(id: ID, name: String!, baseFile: String!, iso: String!, attributes: Json, createdAt: Date, updatedAt: Date, snippets: [InputSnippet], salesChannelDomains: [InputSalesChannelDomain]): SnippetSet
+  updateSnippetSet(id: ID!, name: String, baseFile: String, iso: String, attributes: Json, createdAt: Date, updatedAt: Date, snippets: [InputSnippet], salesChannelDomains: [InputSalesChannelDomain]): SnippetSet
   deleteSnippetSet(id: ID!): ID
-  createSnippet(id: ID, setId: ID, translationKey: String!, value: String!, author: String!, createdAt: Date, updatedAt: Date, set: InputSnippetSet): Snippet
-  updateSnippet(id: ID!, setId: ID, translationKey: String, value: String, author: String, createdAt: Date, updatedAt: Date, set: InputSnippetSet): Snippet
+  createSnippet(id: ID, setId: ID, translationKey: String!, value: String!, author: String!, attributes: Json, createdAt: Date, updatedAt: Date, set: InputSnippetSet): Snippet
+  updateSnippet(id: ID!, setId: ID, translationKey: String, value: String, author: String, attributes: Json, createdAt: Date, updatedAt: Date, set: InputSnippetSet): Snippet
   deleteSnippet(id: ID!): ID
-  createTax(id: ID, taxRate: Float!, name: String!, createdAt: Date, updatedAt: Date, products: [InputProduct], productServices: [InputProductService]): Tax
-  updateTax(id: ID!, taxRate: Float, name: String, createdAt: Date, updatedAt: Date, products: [InputProduct], productServices: [InputProductService]): Tax
+  createTax(id: ID, taxRate: Float!, name: String!, attributes: Json, createdAt: Date, updatedAt: Date, products: [InputProduct], productServices: [InputProductService]): Tax
+  updateTax(id: ID!, taxRate: Float, name: String, attributes: Json, createdAt: Date, updatedAt: Date, products: [InputProduct], productServices: [InputProductService]): Tax
   deleteTax(id: ID!): ID
-  createUnit(id: ID, shortCode: String, name: String, createdAt: Date, updatedAt: Date, products: [InputProduct], translations: [InputUnitTranslation]): Unit
-  updateUnit(id: ID!, shortCode: String, name: String, createdAt: Date, updatedAt: Date, products: [InputProduct], translations: [InputUnitTranslation]): Unit
+  createUnit(id: ID, shortCode: String, name: String, attributes: String, createdAt: Date, updatedAt: Date, products: [InputProduct], translations: [InputUnitTranslation]): Unit
+  updateUnit(id: ID!, shortCode: String, name: String, attributes: String, createdAt: Date, updatedAt: Date, products: [InputProduct], translations: [InputUnitTranslation]): Unit
   deleteUnit(id: ID!): ID
-  createUser(id: ID, localeId: ID, username: String!, name: String!, email: String!, lastLogin: Date, active: Boolean, failedLogins: Int, lockedUntil: Date, createdAt: Date, updatedAt: Date, locale: InputLocale, media: [InputMedia], accessKeys: [InputUserAccessKey], stateMachineHistoryEntries: [InputStateMachineHistory]): User
-  updateUser(id: ID!, localeId: ID, username: String, name: String, email: String, lastLogin: Date, active: Boolean, failedLogins: Int, lockedUntil: Date, createdAt: Date, updatedAt: Date, locale: InputLocale, media: [InputMedia], accessKeys: [InputUserAccessKey], stateMachineHistoryEntries: [InputStateMachineHistory]): User
+  createUser(id: ID, localeId: ID, avatarId: ID, username: String!, name: String!, email: String!, lastLogin: Date, active: Boolean, failedLogins: Int, lockedUntil: Date, attributes: Json, createdAt: Date, updatedAt: Date, locale: InputLocale, media: [InputMedia], accessKeys: [InputUserAccessKey], stateMachineHistoryEntries: [InputStateMachineHistory]): User
+  updateUser(id: ID!, localeId: ID, avatarId: ID, username: String, name: String, email: String, lastLogin: Date, active: Boolean, failedLogins: Int, lockedUntil: Date, attributes: Json, createdAt: Date, updatedAt: Date, locale: InputLocale, media: [InputMedia], accessKeys: [InputUserAccessKey], stateMachineHistoryEntries: [InputStateMachineHistory]): User
   deleteUser(id: ID!): ID
-  createUserAccessKey(id: ID, userId: ID, accessKey: String!, writeAccess: Boolean, createdAt: Date, lastUsageAt: Date, user: InputUser): UserAccessKey
-  updateUserAccessKey(id: ID!, userId: ID, accessKey: String, writeAccess: Boolean, createdAt: Date, lastUsageAt: Date, user: InputUser): UserAccessKey
+  createUserAccessKey(id: ID, userId: ID, accessKey: String!, writeAccess: Boolean, lastUsageAt: Date, attributes: Json, createdAt: Date, user: InputUser): UserAccessKey
+  updateUserAccessKey(id: ID!, userId: ID, accessKey: String, writeAccess: Boolean, lastUsageAt: Date, attributes: Json, createdAt: Date, user: InputUser): UserAccessKey
   deleteUserAccessKey(id: ID!): ID
-  createLanguage(id: ID, parentId: ID, localeId: ID, translationCodeId: ID, name: String!, createdAt: Date, updatedAt: Date, parent: InputLanguage, locale: InputLocale, translationCode: InputLocale, children: [InputLanguage], salesChannels: [InputSalesChannel], salesChannelDefaultAssignments: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain], catalogTranslations: [InputCatalogTranslation], categoryTranslations: [InputCategoryTranslation], countryStateTranslations: [InputCountryStateTranslation], countryTranslations: [InputCountryTranslation], currencyTranslations: [InputCurrencyTranslation], customerGroupTranslations: [InputCustomerGroupTranslation], listingFacetTranslations: [InputListingFacetTranslation], listingSortingTranslations: [InputListingSortingTranslation], localeTranslations: [InputLocaleTranslation], mediaTranslations: [InputMediaTranslation], paymentMethodTranslations: [InputPaymentMethodTranslation], productManufacturerTranslations: [InputProductManufacturerTranslation], productTranslations: [InputProductTranslation], shippingMethodTranslations: [InputShippingMethodTranslation], unitTranslations: [InputUnitTranslation], configurationGroupTranslations: [InputConfigurationGroupTranslation], configurationGroupOptionTranslations: [InputConfigurationGroupOptionTranslation], discountSurchargeTranslations: [InputDiscountSurchargeTranslation], salesChannelTranslations: [InputSalesChannelTranslation], salesChannelTypeTranslations: [InputSalesChannelTypeTranslation], searchDocuments: [InputSearchDocument], pluginTranslations: [InputPluginTranslation], productStreamTranslations: [InputProductStreamTranslation], stateMachineTranslations: [InputStateMachineTranslation], stateMachineStateTranslations: [InputStateMachineStateTranslation], cmsPageTranslations: [InputCmsPageTranslation], cmsSlotTranslations: [InputCmsSlotTranslation]): Language
-  updateLanguage(id: ID!, parentId: ID, localeId: ID, translationCodeId: ID, name: String, createdAt: Date, updatedAt: Date, parent: InputLanguage, locale: InputLocale, translationCode: InputLocale, children: [InputLanguage], salesChannels: [InputSalesChannel], salesChannelDefaultAssignments: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain], catalogTranslations: [InputCatalogTranslation], categoryTranslations: [InputCategoryTranslation], countryStateTranslations: [InputCountryStateTranslation], countryTranslations: [InputCountryTranslation], currencyTranslations: [InputCurrencyTranslation], customerGroupTranslations: [InputCustomerGroupTranslation], listingFacetTranslations: [InputListingFacetTranslation], listingSortingTranslations: [InputListingSortingTranslation], localeTranslations: [InputLocaleTranslation], mediaTranslations: [InputMediaTranslation], paymentMethodTranslations: [InputPaymentMethodTranslation], productManufacturerTranslations: [InputProductManufacturerTranslation], productTranslations: [InputProductTranslation], shippingMethodTranslations: [InputShippingMethodTranslation], unitTranslations: [InputUnitTranslation], configurationGroupTranslations: [InputConfigurationGroupTranslation], configurationGroupOptionTranslations: [InputConfigurationGroupOptionTranslation], discountSurchargeTranslations: [InputDiscountSurchargeTranslation], salesChannelTranslations: [InputSalesChannelTranslation], salesChannelTypeTranslations: [InputSalesChannelTypeTranslation], searchDocuments: [InputSearchDocument], pluginTranslations: [InputPluginTranslation], productStreamTranslations: [InputProductStreamTranslation], stateMachineTranslations: [InputStateMachineTranslation], stateMachineStateTranslations: [InputStateMachineStateTranslation], cmsPageTranslations: [InputCmsPageTranslation], cmsSlotTranslations: [InputCmsSlotTranslation]): Language
+  createUserRecovery(id: ID, hash: String!, userId: ID, createdAt: Date): UserRecovery
+  updateUserRecovery(id: ID!, hash: String, userId: ID, createdAt: Date): UserRecovery
+  deleteUserRecovery(id: ID!): ID
+  createLanguage(id: ID, parentId: ID, localeId: ID, translationCodeId: ID, name: String!, attributes: Json, createdAt: Date, updatedAt: Date, parent: InputLanguage, locale: InputLocale, translationCode: InputLocale, children: [InputLanguage], salesChannels: [InputSalesChannel], salesChannelDefaultAssignments: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain], customers: [InputCustomer], categoryTranslations: [InputCategoryTranslation], countryStateTranslations: [InputCountryStateTranslation], countryTranslations: [InputCountryTranslation], currencyTranslations: [InputCurrencyTranslation], customerGroupTranslations: [InputCustomerGroupTranslation], listingFacetTranslations: [InputListingFacetTranslation], listingSortingTranslations: [InputListingSortingTranslation], localeTranslations: [InputLocaleTranslation], mediaTranslations: [InputMediaTranslation], paymentMethodTranslations: [InputPaymentMethodTranslation], productManufacturerTranslations: [InputProductManufacturerTranslation], productTranslations: [InputProductTranslation], shippingMethodTranslations: [InputShippingMethodTranslation], unitTranslations: [InputUnitTranslation], configurationGroupTranslations: [InputConfigurationGroupTranslation], configurationGroupOptionTranslations: [InputConfigurationGroupOptionTranslation], discountSurchargeTranslations: [InputDiscountSurchargeTranslation], salesChannelTranslations: [InputSalesChannelTranslation], salesChannelTypeTranslations: [InputSalesChannelTypeTranslation], searchDocuments: [InputSearchDocument], pluginTranslations: [InputPluginTranslation], productStreamTranslations: [InputProductStreamTranslation], stateMachineTranslations: [InputStateMachineTranslation], stateMachineStateTranslations: [InputStateMachineStateTranslation], cmsPageTranslations: [InputCmsPageTranslation], cmsSlotTranslations: [InputCmsSlotTranslation], navigationTranslations: [InputNavigationTranslation]): Language
+  updateLanguage(id: ID!, parentId: ID, localeId: ID, translationCodeId: ID, name: String, attributes: Json, createdAt: Date, updatedAt: Date, parent: InputLanguage, locale: InputLocale, translationCode: InputLocale, children: [InputLanguage], salesChannels: [InputSalesChannel], salesChannelDefaultAssignments: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain], customers: [InputCustomer], categoryTranslations: [InputCategoryTranslation], countryStateTranslations: [InputCountryStateTranslation], countryTranslations: [InputCountryTranslation], currencyTranslations: [InputCurrencyTranslation], customerGroupTranslations: [InputCustomerGroupTranslation], listingFacetTranslations: [InputListingFacetTranslation], listingSortingTranslations: [InputListingSortingTranslation], localeTranslations: [InputLocaleTranslation], mediaTranslations: [InputMediaTranslation], paymentMethodTranslations: [InputPaymentMethodTranslation], productManufacturerTranslations: [InputProductManufacturerTranslation], productTranslations: [InputProductTranslation], shippingMethodTranslations: [InputShippingMethodTranslation], unitTranslations: [InputUnitTranslation], configurationGroupTranslations: [InputConfigurationGroupTranslation], configurationGroupOptionTranslations: [InputConfigurationGroupOptionTranslation], discountSurchargeTranslations: [InputDiscountSurchargeTranslation], salesChannelTranslations: [InputSalesChannelTranslation], salesChannelTypeTranslations: [InputSalesChannelTypeTranslation], searchDocuments: [InputSearchDocument], pluginTranslations: [InputPluginTranslation], productStreamTranslations: [InputProductStreamTranslation], stateMachineTranslations: [InputStateMachineTranslation], stateMachineStateTranslations: [InputStateMachineStateTranslation], cmsPageTranslations: [InputCmsPageTranslation], cmsSlotTranslations: [InputCmsSlotTranslation], navigationTranslations: [InputNavigationTranslation]): Language
   deleteLanguage(id: ID!): ID
-  createIntegration(id: ID, label: String!, accessKey: String!, writeAccess: Boolean, lastUsageAt: Date, createdAt: Date, updatedAt: Date): Integration
-  updateIntegration(id: ID!, label: String, accessKey: String, writeAccess: Boolean, lastUsageAt: Date, createdAt: Date, updatedAt: Date): Integration
+  createIntegration(id: ID, label: String!, accessKey: String!, writeAccess: Boolean, lastUsageAt: Date, attributes: Json, createdAt: Date, updatedAt: Date): Integration
+  updateIntegration(id: ID!, label: String, accessKey: String, writeAccess: Boolean, lastUsageAt: Date, attributes: Json, createdAt: Date, updatedAt: Date): Integration
   deleteIntegration(id: ID!): ID
-  createStateMachine(id: ID, technicalName: String!, name: String, states: [InputStateMachineState], transitions: [InputStateMachineTransition], initialStateId: ID, translations: [InputStateMachineTranslation], createdAt: Date, updatedAt: Date, historyEntries: [InputStateMachineHistory]): StateMachine
-  updateStateMachine(id: ID!, technicalName: String, name: String, states: [InputStateMachineState], transitions: [InputStateMachineTransition], initialStateId: ID, translations: [InputStateMachineTranslation], createdAt: Date, updatedAt: Date, historyEntries: [InputStateMachineHistory]): StateMachine
+  createStateMachine(id: ID, technicalName: String!, name: String, attributes: String, states: [InputStateMachineState], transitions: [InputStateMachineTransition], initialStateId: ID, translations: [InputStateMachineTranslation], createdAt: Date, updatedAt: Date, historyEntries: [InputStateMachineHistory]): StateMachine
+  updateStateMachine(id: ID!, technicalName: String, name: String, attributes: String, states: [InputStateMachineState], transitions: [InputStateMachineTransition], initialStateId: ID, translations: [InputStateMachineTranslation], createdAt: Date, updatedAt: Date, historyEntries: [InputStateMachineHistory]): StateMachine
   deleteStateMachine(id: ID!): ID
-  createStateMachineState(id: ID, technicalName: String!, name: String, stateMachineId: ID, stateMachine: InputStateMachine, fromStateMachineTransitions: [InputStateMachineTransition], toStateMachineTransitions: [InputStateMachineTransition], translations: [InputStateMachineStateTranslation], orderTransactions: [InputOrderTransaction], orderDeliveries: [InputOrderDelivery], orders: [InputOrder], createdAt: Date, updatedAt: Date, toStateMachineHistoryEntries: [InputStateMachineHistory], fromStateMachineHistoryEntries: [InputStateMachineHistory]): StateMachineState
-  updateStateMachineState(id: ID!, technicalName: String, name: String, stateMachineId: ID, stateMachine: InputStateMachine, fromStateMachineTransitions: [InputStateMachineTransition], toStateMachineTransitions: [InputStateMachineTransition], translations: [InputStateMachineStateTranslation], orderTransactions: [InputOrderTransaction], orderDeliveries: [InputOrderDelivery], orders: [InputOrder], createdAt: Date, updatedAt: Date, toStateMachineHistoryEntries: [InputStateMachineHistory], fromStateMachineHistoryEntries: [InputStateMachineHistory]): StateMachineState
+  createStateMachineState(id: ID, technicalName: String!, name: String, stateMachineId: ID, stateMachine: InputStateMachine, fromStateMachineTransitions: [InputStateMachineTransition], toStateMachineTransitions: [InputStateMachineTransition], translations: [InputStateMachineStateTranslation], orderTransactions: [InputOrderTransaction], orderDeliveries: [InputOrderDelivery], orders: [InputOrder], attributes: String, createdAt: Date, updatedAt: Date, toStateMachineHistoryEntries: [InputStateMachineHistory], fromStateMachineHistoryEntries: [InputStateMachineHistory]): StateMachineState
+  updateStateMachineState(id: ID!, technicalName: String, name: String, stateMachineId: ID, stateMachine: InputStateMachine, fromStateMachineTransitions: [InputStateMachineTransition], toStateMachineTransitions: [InputStateMachineTransition], translations: [InputStateMachineStateTranslation], orderTransactions: [InputOrderTransaction], orderDeliveries: [InputOrderDelivery], orders: [InputOrder], attributes: String, createdAt: Date, updatedAt: Date, toStateMachineHistoryEntries: [InputStateMachineHistory], fromStateMachineHistoryEntries: [InputStateMachineHistory]): StateMachineState
   deleteStateMachineState(id: ID!): ID
-  createStateMachineTransition(id: ID, actionName: String!, stateMachineId: ID, stateMachine: InputStateMachine, fromStateId: ID, fromStateMachineState: InputStateMachineState, toStateId: ID, toStateMachineState: InputStateMachineState, createdAt: Date, updatedAt: Date): StateMachineTransition
-  updateStateMachineTransition(id: ID!, actionName: String, stateMachineId: ID, stateMachine: InputStateMachine, fromStateId: ID, fromStateMachineState: InputStateMachineState, toStateId: ID, toStateMachineState: InputStateMachineState, createdAt: Date, updatedAt: Date): StateMachineTransition
+  createStateMachineTransition(id: ID, actionName: String!, stateMachineId: ID, stateMachine: InputStateMachine, fromStateId: ID, fromStateMachineState: InputStateMachineState, toStateId: ID, toStateMachineState: InputStateMachineState, createdAt: Date, updatedAt: Date, attributes: Json): StateMachineTransition
+  updateStateMachineTransition(id: ID!, actionName: String, stateMachineId: ID, stateMachine: InputStateMachine, fromStateId: ID, fromStateMachineState: InputStateMachineState, toStateId: ID, toStateMachineState: InputStateMachineState, createdAt: Date, updatedAt: Date, attributes: Json): StateMachineTransition
   deleteStateMachineTransition(id: ID!): ID
   createStateMachineHistory(id: ID, stateMachineId: ID, stateMachine: InputStateMachine, entityName: String!, entityId: Json!, fromStateId: ID, fromStateMachineState: InputStateMachineState, toStateId: ID, toStateMachineState: InputStateMachineState, transitionActionName: String, userId: ID, user: InputUser, createdAt: Date): StateMachineHistory
   updateStateMachineHistory(id: ID!, stateMachineId: ID, stateMachine: InputStateMachine, entityName: String, entityId: Json, fromStateId: ID, fromStateMachineState: InputStateMachineState, toStateId: ID, toStateMachineState: InputStateMachineState, transitionActionName: String, userId: ID, user: InputUser, createdAt: Date): StateMachineHistory
@@ -5482,122 +5558,125 @@ type Mutation {
   createSystemConfig(id: ID, namespace: String!, configurationKey: String!, configurationValue: String!, createdAt: Date, updatedAt: Date, salesChannelId: ID, salesChannel: InputSalesChannel): SystemConfig
   updateSystemConfig(id: ID!, namespace: String, configurationKey: String, configurationValue: String, createdAt: Date, updatedAt: Date, salesChannelId: ID, salesChannel: InputSalesChannel): SystemConfig
   deleteSystemConfig(id: ID!): ID
-  createCatalog(id: ID, name: String, createdAt: Date, updatedAt: Date, categories: [InputCategory], categoryTranslations: [InputCategoryTranslation], products: [InputProduct], productManufacturers: [InputProductManufacturer], productManufacturerTranslations: [InputProductManufacturerTranslation], productMedia: [InputProductMedia], productTranslations: [InputProductTranslation], translations: [InputCatalogTranslation], salesChannels: [InputSalesChannel]): Catalog
-  updateCatalog(id: ID!, name: String, createdAt: Date, updatedAt: Date, categories: [InputCategory], categoryTranslations: [InputCategoryTranslation], products: [InputProduct], productManufacturers: [InputProductManufacturer], productManufacturerTranslations: [InputProductManufacturerTranslation], productMedia: [InputProductMedia], productTranslations: [InputProductTranslation], translations: [InputCatalogTranslation], salesChannels: [InputSalesChannel]): Catalog
-  deleteCatalog(id: ID!): ID
-  createCategory(id: ID, versionId: ID, catalogId: ID, parentId: ID, parentVersionId: ID, mediaId: ID, displayNestedProducts: Boolean! = true, autoIncrement: Int, path: String, position: Int, level: Int, template: String, active: Boolean, isBlog: Boolean, external: String, hideFilter: Boolean, hideTop: Boolean, productBoxLayout: String, hideSortings: Boolean, sortingIds: String, facetIds: String, childCount: Int, createdAt: Date, updatedAt: Date, name: String, metaKeywords: String, metaTitle: String, metaDescription: String, cmsHeadline: String, cmsDescription: String, parent: InputCategory, media: InputMedia, children: [InputCategory], translations: [InputCategoryTranslation], products: [InputProduct], catalog: InputCatalog, nestedProducts: [InputProduct], canonicalUrl: InputSeoUrl): Category
-  updateCategory(id: ID!, versionId: ID, catalogId: ID, parentId: ID, parentVersionId: ID, mediaId: ID, displayNestedProducts: Boolean, autoIncrement: Int, path: String, position: Int, level: Int, template: String, active: Boolean, isBlog: Boolean, external: String, hideFilter: Boolean, hideTop: Boolean, productBoxLayout: String, hideSortings: Boolean, sortingIds: String, facetIds: String, childCount: Int, createdAt: Date, updatedAt: Date, name: String, metaKeywords: String, metaTitle: String, metaDescription: String, cmsHeadline: String, cmsDescription: String, parent: InputCategory, media: InputMedia, children: [InputCategory], translations: [InputCategoryTranslation], products: [InputProduct], catalog: InputCatalog, nestedProducts: [InputProduct], canonicalUrl: InputSeoUrl): Category
+  createCategory(id: ID, versionId: ID, parentId: ID, parentVersionId: ID, afterCategoryId: ID, afterCategoryVersionId: ID, mediaId: ID, displayNestedProducts: Boolean! = true, autoIncrement: Int, path: String, level: Int, template: String, active: Boolean, isBlog: Boolean, external: String, hideFilter: Boolean, hideTop: Boolean, productBoxLayout: String, hideSortings: Boolean, sortingIds: String, facetIds: String, childCount: Int, createdAt: Date, updatedAt: Date, name: String, metaKeywords: String, metaTitle: String, metaDescription: String, cmsHeadline: String, cmsDescription: String, attributes: String, parent: InputCategory, media: InputMedia, children: [InputCategory], translations: [InputCategoryTranslation], products: [InputProduct], nestedProducts: [InputProduct], navigations: [InputNavigation], canonicalUrl: InputSeoUrl): Category
+  updateCategory(id: ID!, versionId: ID, parentId: ID, parentVersionId: ID, afterCategoryId: ID, afterCategoryVersionId: ID, mediaId: ID, displayNestedProducts: Boolean, autoIncrement: Int, path: String, level: Int, template: String, active: Boolean, isBlog: Boolean, external: String, hideFilter: Boolean, hideTop: Boolean, productBoxLayout: String, hideSortings: Boolean, sortingIds: String, facetIds: String, childCount: Int, createdAt: Date, updatedAt: Date, name: String, metaKeywords: String, metaTitle: String, metaDescription: String, cmsHeadline: String, cmsDescription: String, attributes: String, parent: InputCategory, media: InputMedia, children: [InputCategory], translations: [InputCategoryTranslation], products: [InputProduct], nestedProducts: [InputProduct], navigations: [InputNavigation], canonicalUrl: InputSeoUrl): Category
   deleteCategory(id: ID!, versionId: ID): ID
-  createMedia(id: ID, userId: ID, mediaFolderId: ID, mimeType: String, fileExtension: String, uploadedAt: Date, fileName: String, fileSize: Int, metaData: Json, mediaType: Json, createdAt: Date, updatedAt: Date, alt: String, title: String, url: String, user: InputUser, categories: [InputCategory], productManufacturers: [InputProductManufacturer], productMedia: [InputProductMedia], translations: [InputMediaTranslation], thumbnails: [InputMediaThumbnail], hasFile: Boolean, mediaFolder: InputMediaFolder, configurationGroupOptions: [InputConfigurationGroupOption]): Media
-  updateMedia(id: ID!, userId: ID, mediaFolderId: ID, mimeType: String, fileExtension: String, uploadedAt: Date, fileName: String, fileSize: Int, metaData: Json, mediaType: Json, createdAt: Date, updatedAt: Date, alt: String, title: String, url: String, user: InputUser, categories: [InputCategory], productManufacturers: [InputProductManufacturer], productMedia: [InputProductMedia], translations: [InputMediaTranslation], thumbnails: [InputMediaThumbnail], hasFile: Boolean, mediaFolder: InputMediaFolder, configurationGroupOptions: [InputConfigurationGroupOption]): Media
+  createMedia(id: ID, userId: ID, mediaFolderId: ID, mimeType: String, fileExtension: String, uploadedAt: Date, fileName: String, fileSize: Int, metaData: Json, mediaType: Json, createdAt: Date, updatedAt: Date, alt: String, title: String, url: String, attributes: String, user: InputUser, categories: [InputCategory], productManufacturers: [InputProductManufacturer], productMedia: [InputProductMedia], translations: [InputMediaTranslation], thumbnails: [InputMediaThumbnail], hasFile: Boolean, mediaFolder: InputMediaFolder, configurationGroupOptions: [InputConfigurationGroupOption]): Media
+  updateMedia(id: ID!, userId: ID, mediaFolderId: ID, mimeType: String, fileExtension: String, uploadedAt: Date, fileName: String, fileSize: Int, metaData: Json, mediaType: Json, createdAt: Date, updatedAt: Date, alt: String, title: String, url: String, attributes: String, user: InputUser, categories: [InputCategory], productManufacturers: [InputProductManufacturer], productMedia: [InputProductMedia], translations: [InputMediaTranslation], thumbnails: [InputMediaThumbnail], hasFile: Boolean, mediaFolder: InputMediaFolder, configurationGroupOptions: [InputConfigurationGroupOption]): Media
   deleteMedia(id: ID!): ID
-  createMediaDefaultFolder(id: ID, associations: Json!, entity: String!, folderId: ID, folder: InputMediaFolder, createdAt: Date, updatedAt: Date): MediaDefaultFolder
-  updateMediaDefaultFolder(id: ID!, associations: Json, entity: String, folderId: ID, folder: InputMediaFolder, createdAt: Date, updatedAt: Date): MediaDefaultFolder
+  createMediaDefaultFolder(id: ID, associationFields: Json!, thumbnailSizes: Json!, entity: String!, createdAt: Date, updatedAt: Date, attributes: Json): MediaDefaultFolder
+  updateMediaDefaultFolder(id: ID!, associationFields: Json, thumbnailSizes: Json, entity: String, createdAt: Date, updatedAt: Date, attributes: Json): MediaDefaultFolder
   deleteMediaDefaultFolder(id: ID!): ID
-  createMediaThumbnail(id: ID, mediaId: ID, createdAt: Date, updatedAt: Date, width: Int!, height: Int!, url: String, media: InputMedia): MediaThumbnail
-  updateMediaThumbnail(id: ID!, mediaId: ID, createdAt: Date, updatedAt: Date, width: Int, height: Int, url: String, media: InputMedia): MediaThumbnail
+  createMediaThumbnail(id: ID, mediaId: ID, createdAt: Date, updatedAt: Date, width: Int!, height: Int!, url: String, media: InputMedia, attributes: Json): MediaThumbnail
+  updateMediaThumbnail(id: ID!, mediaId: ID, createdAt: Date, updatedAt: Date, width: Int, height: Int, url: String, media: InputMedia, attributes: Json): MediaThumbnail
   deleteMediaThumbnail(id: ID!): ID
-  createMediaFolder(id: ID, useParentConfiguration: Boolean = true, configurationId: ID, parentId: ID, parent: InputMediaFolder, children: [InputMediaFolder], childCount: Int, media: [InputMedia], defaultFolders: [InputMediaDefaultFolder], configuration: InputMediaFolderConfiguration, name: String!, createdAt: Date, updatedAt: Date): MediaFolder
-  updateMediaFolder(id: ID!, useParentConfiguration: Boolean, configurationId: ID, parentId: ID, parent: InputMediaFolder, children: [InputMediaFolder], childCount: Int, media: [InputMedia], defaultFolders: [InputMediaDefaultFolder], configuration: InputMediaFolderConfiguration, name: String, createdAt: Date, updatedAt: Date): MediaFolder
+  createMediaFolder(id: ID, useParentConfiguration: Boolean = true, configurationId: ID, defaultFolderId: ID, parentId: ID, parent: InputMediaFolder, children: [InputMediaFolder], childCount: Int, media: [InputMedia], configuration: InputMediaFolderConfiguration, name: String!, createdAt: Date, updatedAt: Date, attributes: Json): MediaFolder
+  updateMediaFolder(id: ID!, useParentConfiguration: Boolean, configurationId: ID, defaultFolderId: ID, parentId: ID, parent: InputMediaFolder, children: [InputMediaFolder], childCount: Int, media: [InputMedia], configuration: InputMediaFolderConfiguration, name: String, createdAt: Date, updatedAt: Date, attributes: Json): MediaFolder
   deleteMediaFolder(id: ID!): ID
-  createMediaThumbnailSize(id: ID, width: Int!, height: Int!, mediaFolderConfigurations: [InputMediaFolderConfiguration]): MediaThumbnailSize
-  updateMediaThumbnailSize(id: ID!, width: Int, height: Int, mediaFolderConfigurations: [InputMediaFolderConfiguration]): MediaThumbnailSize
+  createMediaThumbnailSize(id: ID, width: Int!, height: Int!, mediaFolderConfigurations: [InputMediaFolderConfiguration], attributes: Json, createdAt: Date, updatedAt: Date): MediaThumbnailSize
+  updateMediaThumbnailSize(id: ID!, width: Int, height: Int, mediaFolderConfigurations: [InputMediaFolderConfiguration], attributes: Json, createdAt: Date, updatedAt: Date): MediaThumbnailSize
   deleteMediaThumbnailSize(id: ID!): ID
-  createMediaFolderConfiguration(id: ID, createThumbnails: Boolean = true, keepAspectRatio: Boolean = true, thumbnailQuality: Int = 80, mediaFolders: [InputMediaFolder], mediaThumbnailSizes: [InputMediaThumbnailSize], createdAt: Date, updatedAt: Date): MediaFolderConfiguration
-  updateMediaFolderConfiguration(id: ID!, createThumbnails: Boolean, keepAspectRatio: Boolean, thumbnailQuality: Int, mediaFolders: [InputMediaFolder], mediaThumbnailSizes: [InputMediaThumbnailSize], createdAt: Date, updatedAt: Date): MediaFolderConfiguration
+  createMediaFolderConfiguration(id: ID, createThumbnails: Boolean = true, keepAspectRatio: Boolean = true, thumbnailQuality: Int = 80, mediaFolders: [InputMediaFolder], mediaThumbnailSizes: [InputMediaThumbnailSize], createdAt: Date, updatedAt: Date, attributes: Json): MediaFolderConfiguration
+  updateMediaFolderConfiguration(id: ID!, createThumbnails: Boolean, keepAspectRatio: Boolean, thumbnailQuality: Int, mediaFolders: [InputMediaFolder], mediaThumbnailSizes: [InputMediaThumbnailSize], createdAt: Date, updatedAt: Date, attributes: Json): MediaFolderConfiguration
   deleteMediaFolderConfiguration(id: ID!): ID
-  createProduct(id: ID, versionId: ID, catalogId: ID, parentId: ID, parentVersionId: ID, blacklistIds: Json, whitelistIds: Json, autoIncrement: Int, active: Boolean, stock: Int, createdAt: Date, updatedAt: Date, manufacturerId: ID, productManufacturerVersionId: ID, unitId: ID, taxId: ID, coverId: ID, productMediaVersionId: ID, price: Json!, listingPrices: Json, manufacturerNumber: String, ean: String, isCloseout: Boolean = false, minStock: Int, purchaseSteps: Int = 1, maxPurchase: Int, minPurchase: Int = 1, purchaseUnit: Float, referenceUnit: Float, shippingFree: Boolean = false, purchasePrice: Float, markAsTopseller: Boolean, sales: Int = 0, position: Int, weight: Float, width: Float, height: Float, length: Float, allowNotification: Boolean, releaseDate: Date, categoryTree: Json, datasheetIds: Json, variationIds: Json, minDeliveryTime: Int = 1, maxDeliveryTime: Int = 2, restockTime: Int = 1, additionalText: String, name: String, keywords: String, description: String, descriptionLong: String, metaTitle: String, packUnit: String, parent: InputProduct, children: [InputProduct], tax: InputTax, manufacturer: InputProductManufacturer, unit: InputUnit, cover: InputProductMedia, priceRules: [InputProductPriceRule], media: [InputProductMedia], services: [InputProductService], datasheet: [InputConfigurationGroupOption], categories: [InputCategory], searchKeywords: [InputSearchDocument], categoriesRo: [InputCategory], translations: [InputProductTranslation], configurators: [InputProductConfigurator], variations: [InputConfigurationGroupOption], catalog: InputCatalog, canonicalUrl: InputSeoUrl): Product
-  updateProduct(id: ID!, versionId: ID, catalogId: ID, parentId: ID, parentVersionId: ID, blacklistIds: Json, whitelistIds: Json, autoIncrement: Int, active: Boolean, stock: Int, createdAt: Date, updatedAt: Date, manufacturerId: ID, productManufacturerVersionId: ID, unitId: ID, taxId: ID, coverId: ID, productMediaVersionId: ID, price: Json, listingPrices: Json, manufacturerNumber: String, ean: String, isCloseout: Boolean, minStock: Int, purchaseSteps: Int, maxPurchase: Int, minPurchase: Int, purchaseUnit: Float, referenceUnit: Float, shippingFree: Boolean, purchasePrice: Float, markAsTopseller: Boolean, sales: Int, position: Int, weight: Float, width: Float, height: Float, length: Float, allowNotification: Boolean, releaseDate: Date, categoryTree: Json, datasheetIds: Json, variationIds: Json, minDeliveryTime: Int, maxDeliveryTime: Int, restockTime: Int, additionalText: String, name: String, keywords: String, description: String, descriptionLong: String, metaTitle: String, packUnit: String, parent: InputProduct, children: [InputProduct], tax: InputTax, manufacturer: InputProductManufacturer, unit: InputUnit, cover: InputProductMedia, priceRules: [InputProductPriceRule], media: [InputProductMedia], services: [InputProductService], datasheet: [InputConfigurationGroupOption], categories: [InputCategory], searchKeywords: [InputSearchDocument], categoriesRo: [InputCategory], translations: [InputProductTranslation], configurators: [InputProductConfigurator], variations: [InputConfigurationGroupOption], catalog: InputCatalog, canonicalUrl: InputSeoUrl): Product
+  createProduct(id: ID, versionId: ID, parentId: ID, parentVersionId: ID, blacklistIds: Json, whitelistIds: Json, autoIncrement: Int, active: Boolean, stock: Int, createdAt: Date, updatedAt: Date, manufacturerId: ID, productManufacturerVersionId: ID, unitId: ID, taxId: ID, coverId: ID, productMediaVersionId: ID, price: Json!, listingPrices: Json, manufacturerNumber: String, ean: String, isCloseout: Boolean = false, minStock: Int, purchaseSteps: Int = 1, maxPurchase: Int, minPurchase: Int = 1, purchaseUnit: Float, referenceUnit: Float, shippingFree: Boolean = false, purchasePrice: Float, markAsTopseller: Boolean, sales: Int = 0, position: Int, weight: Float, width: Float, height: Float, length: Float, allowNotification: Boolean, releaseDate: Date, categoryTree: Json, datasheetIds: Json, variationIds: Json, minDeliveryTime: Int = 1, maxDeliveryTime: Int = 2, restockTime: Int = 1, additionalText: String, name: String, keywords: String, description: String, descriptionLong: String, metaTitle: String, packUnit: String, attributes: String, parent: InputProduct, children: [InputProduct], tax: InputTax, manufacturer: InputProductManufacturer, unit: InputUnit, cover: InputProductMedia, priceRules: [InputProductPriceRule], media: [InputProductMedia], services: [InputProductService], datasheet: [InputConfigurationGroupOption], categories: [InputCategory], searchKeywords: [InputSearchDocument], categoriesRo: [InputCategory], translations: [InputProductTranslation], configurators: [InputProductConfigurator], variations: [InputConfigurationGroupOption], visibilities: [InputProductVisibility], canonicalUrl: InputSeoUrl): Product
+  updateProduct(id: ID!, versionId: ID, parentId: ID, parentVersionId: ID, blacklistIds: Json, whitelistIds: Json, autoIncrement: Int, active: Boolean, stock: Int, createdAt: Date, updatedAt: Date, manufacturerId: ID, productManufacturerVersionId: ID, unitId: ID, taxId: ID, coverId: ID, productMediaVersionId: ID, price: Json, listingPrices: Json, manufacturerNumber: String, ean: String, isCloseout: Boolean, minStock: Int, purchaseSteps: Int, maxPurchase: Int, minPurchase: Int, purchaseUnit: Float, referenceUnit: Float, shippingFree: Boolean, purchasePrice: Float, markAsTopseller: Boolean, sales: Int, position: Int, weight: Float, width: Float, height: Float, length: Float, allowNotification: Boolean, releaseDate: Date, categoryTree: Json, datasheetIds: Json, variationIds: Json, minDeliveryTime: Int, maxDeliveryTime: Int, restockTime: Int, additionalText: String, name: String, keywords: String, description: String, descriptionLong: String, metaTitle: String, packUnit: String, attributes: String, parent: InputProduct, children: [InputProduct], tax: InputTax, manufacturer: InputProductManufacturer, unit: InputUnit, cover: InputProductMedia, priceRules: [InputProductPriceRule], media: [InputProductMedia], services: [InputProductService], datasheet: [InputConfigurationGroupOption], categories: [InputCategory], searchKeywords: [InputSearchDocument], categoriesRo: [InputCategory], translations: [InputProductTranslation], configurators: [InputProductConfigurator], variations: [InputConfigurationGroupOption], visibilities: [InputProductVisibility], canonicalUrl: InputSeoUrl): Product
   deleteProduct(id: ID!, versionId: ID): ID
-  createProductConfigurator(id: ID, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: InputProduct, option: InputConfigurationGroupOption): ProductConfigurator
-  updateProductConfigurator(id: ID!, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: InputProduct, option: InputConfigurationGroupOption): ProductConfigurator
+  createProductConfigurator(id: ID, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: InputProduct, option: InputConfigurationGroupOption, attributes: Json): ProductConfigurator
+  updateProductConfigurator(id: ID!, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: InputProduct, option: InputConfigurationGroupOption, attributes: Json): ProductConfigurator
   deleteProductConfigurator(id: ID!, versionId: ID): ID
-  createProductPriceRule(id: ID, versionId: ID, productId: ID, productVersionId: ID, currencyId: ID, ruleId: ID, price: Json!, quantityStart: Int!, quantityEnd: Int, createdAt: Date, updatedAt: Date, product: InputProduct, currency: InputCurrency, rule: InputRule): ProductPriceRule
-  updateProductPriceRule(id: ID!, versionId: ID, productId: ID, productVersionId: ID, currencyId: ID, ruleId: ID, price: Json, quantityStart: Int, quantityEnd: Int, createdAt: Date, updatedAt: Date, product: InputProduct, currency: InputCurrency, rule: InputRule): ProductPriceRule
+  createProductPriceRule(id: ID, versionId: ID, productId: ID, productVersionId: ID, currencyId: ID, ruleId: ID, price: Json!, quantityStart: Int!, quantityEnd: Int, createdAt: Date, updatedAt: Date, product: InputProduct, currency: InputCurrency, rule: InputRule, attributes: Json): ProductPriceRule
+  updateProductPriceRule(id: ID!, versionId: ID, productId: ID, productVersionId: ID, currencyId: ID, ruleId: ID, price: Json, quantityStart: Int, quantityEnd: Int, createdAt: Date, updatedAt: Date, product: InputProduct, currency: InputCurrency, rule: InputRule, attributes: Json): ProductPriceRule
   deleteProductPriceRule(id: ID!, versionId: ID): ID
-  createProductManufacturer(id: ID, versionId: ID, catalogId: ID, mediaId: ID, link: String, updatedAt: Date, createdAt: Date, name: String, description: String, metaTitle: String, metaDescription: String, metaKeywords: String, media: InputMedia, products: [InputProduct], translations: [InputProductManufacturerTranslation], catalog: InputCatalog): ProductManufacturer
-  updateProductManufacturer(id: ID!, versionId: ID, catalogId: ID, mediaId: ID, link: String, updatedAt: Date, createdAt: Date, name: String, description: String, metaTitle: String, metaDescription: String, metaKeywords: String, media: InputMedia, products: [InputProduct], translations: [InputProductManufacturerTranslation], catalog: InputCatalog): ProductManufacturer
+  createProductManufacturer(id: ID, versionId: ID, mediaId: ID, link: String, updatedAt: Date, createdAt: Date, name: String, description: String, metaTitle: String, metaDescription: String, metaKeywords: String, attributes: String, media: InputMedia, products: [InputProduct], translations: [InputProductManufacturerTranslation]): ProductManufacturer
+  updateProductManufacturer(id: ID!, versionId: ID, mediaId: ID, link: String, updatedAt: Date, createdAt: Date, name: String, description: String, metaTitle: String, metaDescription: String, metaKeywords: String, attributes: String, media: InputMedia, products: [InputProduct], translations: [InputProductManufacturerTranslation]): ProductManufacturer
   deleteProductManufacturer(id: ID!, versionId: ID): ID
-  createProductMedia(id: ID, versionId: ID, catalogId: ID, productId: ID, productVersionId: ID, mediaId: ID, position: Int, createdAt: Date, updatedAt: Date, product: InputProduct, media: InputMedia, catalog: InputCatalog): ProductMedia
-  updateProductMedia(id: ID!, versionId: ID, catalogId: ID, productId: ID, productVersionId: ID, mediaId: ID, position: Int, createdAt: Date, updatedAt: Date, product: InputProduct, media: InputMedia, catalog: InputCatalog): ProductMedia
+  createProductMedia(id: ID, versionId: ID, productId: ID, productVersionId: ID, mediaId: ID, position: Int, createdAt: Date, updatedAt: Date, product: InputProduct, media: InputMedia, attributes: Json): ProductMedia
+  updateProductMedia(id: ID!, versionId: ID, productId: ID, productVersionId: ID, mediaId: ID, position: Int, createdAt: Date, updatedAt: Date, product: InputProduct, media: InputMedia, attributes: Json): ProductMedia
   deleteProductMedia(id: ID!, versionId: ID): ID
-  createSearchDocument(id: ID, languageId: ID, entityId: ID, entity: String!, keyword: String!, ranking: Float!, language: InputLanguage): SearchDocument
-  updateSearchDocument(id: ID!, languageId: ID!, entityId: ID!, entity: String, keyword: String, ranking: Float, language: InputLanguage): SearchDocument
+  createSearchDocument(id: ID, languageId: ID, entityId: ID, entity: String!, keyword: String!, ranking: Float!, attributes: Json, language: InputLanguage): SearchDocument
+  updateSearchDocument(id: ID!, languageId: ID!, entityId: ID!, entity: String, keyword: String, ranking: Float, attributes: Json, language: InputLanguage): SearchDocument
   deleteSearchDocument(id: ID!, languageId: ID!, entityId: ID!): ID
-  createProductService(id: ID, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, taxId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: InputProduct, option: InputConfigurationGroupOption, tax: InputTax): ProductService
-  updateProductService(id: ID!, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, taxId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: InputProduct, option: InputConfigurationGroupOption, tax: InputTax): ProductService
+  createProductService(id: ID, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, taxId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: InputProduct, option: InputConfigurationGroupOption, tax: InputTax, attributes: Json): ProductService
+  updateProductService(id: ID!, versionId: ID, productId: ID, productVersionId: ID, optionId: ID, taxId: ID, price: Json, prices: Json, createdAt: Date, updatedAt: Date, product: InputProduct, option: InputConfigurationGroupOption, tax: InputTax, attributes: Json): ProductService
   deleteProductService(id: ID!, versionId: ID): ID
-  createRule(id: ID, name: String!, priority: Int!, description: String, payload: Json, invalid: Boolean, createdAt: Date, updatedAt: Date, conditions: [InputRuleCondition], discountSurcharges: [InputDiscountSurcharge], productPriceRules: [InputProductPriceRule]): Rule
-  updateRule(id: ID!, name: String, priority: Int, description: String, payload: Json, invalid: Boolean, createdAt: Date, updatedAt: Date, conditions: [InputRuleCondition], discountSurcharges: [InputDiscountSurcharge], productPriceRules: [InputProductPriceRule]): Rule
+  createProductVisibility(id: ID, productId: ID, productVersionId: ID, salesChannelId: ID, visibility: Int!, salesChannel: InputSalesChannel, product: InputProduct, createdAt: Date, updatedAt: Date): ProductVisibility
+  updateProductVisibility(id: ID!, productId: ID, productVersionId: ID, salesChannelId: ID, visibility: Int, salesChannel: InputSalesChannel, product: InputProduct, createdAt: Date, updatedAt: Date): ProductVisibility
+  deleteProductVisibility(id: ID!): ID
+  createNavigation(id: ID, versionId: ID, parentId: ID, parentVersionId: ID, categoryId: ID, categoryVersionId: ID, category: InputCategory, cmsPageId: ID, cmsPage: InputCmsPage, name: String, slotConfig: String, level: Int, path: String, childCount: Int, createdAt: Date, updatedAt: Date, translations: [InputNavigationTranslation], children: [InputNavigation], parent: InputNavigation, salesChannelNavigations: [InputSalesChannel]): Navigation
+  updateNavigation(id: ID!, versionId: ID, parentId: ID, parentVersionId: ID, categoryId: ID, categoryVersionId: ID, category: InputCategory, cmsPageId: ID, cmsPage: InputCmsPage, name: String, slotConfig: String, level: Int, path: String, childCount: Int, createdAt: Date, updatedAt: Date, translations: [InputNavigationTranslation], children: [InputNavigation], parent: InputNavigation, salesChannelNavigations: [InputSalesChannel]): Navigation
+  deleteNavigation(id: ID!, versionId: ID): ID
+  createRule(id: ID, name: String!, priority: Int!, description: String, invalid: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, conditions: [InputRuleCondition], discountSurcharges: [InputDiscountSurcharge], productPriceRules: [InputProductPriceRule]): Rule
+  updateRule(id: ID!, name: String, priority: Int, description: String, invalid: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, conditions: [InputRuleCondition], discountSurcharges: [InputDiscountSurcharge], productPriceRules: [InputProductPriceRule]): Rule
   deleteRule(id: ID!): ID
-  createRuleCondition(id: ID, type: String!, ruleId: ID, parentId: ID, value: Json, position: Int, rule: InputRule, parent: InputRuleCondition, children: [InputRuleCondition]): RuleCondition
-  updateRuleCondition(id: ID!, type: String, ruleId: ID, parentId: ID, value: Json, position: Int, rule: InputRule, parent: InputRuleCondition, children: [InputRuleCondition]): RuleCondition
+  createRuleCondition(id: ID, type: String!, ruleId: ID, parentId: ID, value: Json, position: Int, rule: InputRule, parent: InputRuleCondition, children: [InputRuleCondition], attributes: Json): RuleCondition
+  updateRuleCondition(id: ID!, type: String, ruleId: ID, parentId: ID, value: Json, position: Int, rule: InputRule, parent: InputRuleCondition, children: [InputRuleCondition], attributes: Json): RuleCondition
   deleteRuleCondition(id: ID!): ID
-  createProductStream(id: ID, apiFilter: Json, invalid: Boolean, createdAt: Date, updatedAt: Date, name: String, description: String, translations: [InputProductStreamTranslation], filters: [InputProductStreamFilter]): ProductStream
-  updateProductStream(id: ID!, apiFilter: Json, invalid: Boolean, createdAt: Date, updatedAt: Date, name: String, description: String, translations: [InputProductStreamTranslation], filters: [InputProductStreamFilter]): ProductStream
+  createProductStream(id: ID, apiFilter: Json, invalid: Boolean, createdAt: Date, updatedAt: Date, name: String, description: String, attributes: String, translations: [InputProductStreamTranslation], filters: [InputProductStreamFilter]): ProductStream
+  updateProductStream(id: ID!, apiFilter: Json, invalid: Boolean, createdAt: Date, updatedAt: Date, name: String, description: String, attributes: String, translations: [InputProductStreamTranslation], filters: [InputProductStreamFilter]): ProductStream
   deleteProductStream(id: ID!): ID
-  createProductStreamFilter(id: ID, type: String!, field: String, operator: String, value: String, parameters: Json, position: Int, productStreamId: ID, parentId: ID, productStream: InputProductStream, parent: InputProductStreamFilter, queries: [InputProductStreamFilter]): ProductStreamFilter
-  updateProductStreamFilter(id: ID!, type: String, field: String, operator: String, value: String, parameters: Json, position: Int, productStreamId: ID, parentId: ID, productStream: InputProductStream, parent: InputProductStreamFilter, queries: [InputProductStreamFilter]): ProductStreamFilter
+  createProductStreamFilter(id: ID, productStreamId: ID, parentId: ID, type: String!, field: String, operator: String, value: String, parameters: Json, position: Int, createdAt: Date, updatedAt: Date, productStream: InputProductStream, parent: InputProductStreamFilter, queries: [InputProductStreamFilter], attributes: Json): ProductStreamFilter
+  updateProductStreamFilter(id: ID!, productStreamId: ID, parentId: ID, type: String, field: String, operator: String, value: String, parameters: Json, position: Int, createdAt: Date, updatedAt: Date, productStream: InputProductStream, parent: InputProductStreamFilter, queries: [InputProductStreamFilter], attributes: Json): ProductStreamFilter
   deleteProductStreamFilter(id: ID!): ID
-  createConfigurationGroup(id: ID, name: String, description: String, position: Int, filterable: Boolean, comparable: Boolean, displayType: String! = "text", sortingType: String! = "alphanumeric", createdAt: Date, updatedAt: Date, options: [InputConfigurationGroupOption], translations: [InputConfigurationGroupTranslation]): ConfigurationGroup
-  updateConfigurationGroup(id: ID!, name: String, description: String, position: Int, filterable: Boolean, comparable: Boolean, displayType: String, sortingType: String, createdAt: Date, updatedAt: Date, options: [InputConfigurationGroupOption], translations: [InputConfigurationGroupTranslation]): ConfigurationGroup
+  createConfigurationGroup(id: ID, name: String, description: String, position: Int, filterable: Boolean, comparable: Boolean, displayType: String! = "text", sortingType: String! = "alphanumeric", attributes: String, createdAt: Date, updatedAt: Date, options: [InputConfigurationGroupOption], translations: [InputConfigurationGroupTranslation]): ConfigurationGroup
+  updateConfigurationGroup(id: ID!, name: String, description: String, position: Int, filterable: Boolean, comparable: Boolean, displayType: String, sortingType: String, attributes: String, createdAt: Date, updatedAt: Date, options: [InputConfigurationGroupOption], translations: [InputConfigurationGroupTranslation]): ConfigurationGroup
   deleteConfigurationGroup(id: ID!): ID
-  createConfigurationGroupOption(id: ID, groupId: ID, name: String, position: String, colorHexCode: String, mediaId: ID, createdAt: Date, updatedAt: Date, media: InputMedia, group: InputConfigurationGroup, translations: [InputConfigurationGroupOptionTranslation], productConfigurators: [InputProductConfigurator], productServices: [InputProductService], productDatasheets: [InputProduct], productVariations: [InputProduct]): ConfigurationGroupOption
-  updateConfigurationGroupOption(id: ID!, groupId: ID, name: String, position: String, colorHexCode: String, mediaId: ID, createdAt: Date, updatedAt: Date, media: InputMedia, group: InputConfigurationGroup, translations: [InputConfigurationGroupOptionTranslation], productConfigurators: [InputProductConfigurator], productServices: [InputProductService], productDatasheets: [InputProduct], productVariations: [InputProduct]): ConfigurationGroupOption
+  createConfigurationGroupOption(id: ID, groupId: ID, name: String, position: String, colorHexCode: String, mediaId: ID, attributes: String, createdAt: Date, updatedAt: Date, media: InputMedia, group: InputConfigurationGroup, translations: [InputConfigurationGroupOptionTranslation], productConfigurators: [InputProductConfigurator], productServices: [InputProductService], productDatasheets: [InputProduct], productVariations: [InputProduct]): ConfigurationGroupOption
+  updateConfigurationGroupOption(id: ID!, groupId: ID, name: String, position: String, colorHexCode: String, mediaId: ID, attributes: String, createdAt: Date, updatedAt: Date, media: InputMedia, group: InputConfigurationGroup, translations: [InputConfigurationGroupOptionTranslation], productConfigurators: [InputProductConfigurator], productServices: [InputProductService], productDatasheets: [InputProduct], productVariations: [InputProduct]): ConfigurationGroupOption
   deleteConfigurationGroupOption(id: ID!): ID
-  createCmsPage(id: ID, name: String, type: String!, entity: String, blocks: [InputCmsBlock], translations: [InputCmsPageTranslation], createdAt: Date, updatedAt: Date): CmsPage
-  updateCmsPage(id: ID!, name: String, type: String, entity: String, blocks: [InputCmsBlock], translations: [InputCmsPageTranslation], createdAt: Date, updatedAt: Date): CmsPage
+  createCmsPage(id: ID, name: String, type: String!, entity: String, attributes: String, blocks: [InputCmsBlock], translations: [InputCmsPageTranslation], navigations: [InputNavigation], createdAt: Date, updatedAt: Date): CmsPage
+  updateCmsPage(id: ID!, name: String, type: String, entity: String, attributes: String, blocks: [InputCmsBlock], translations: [InputCmsPageTranslation], navigations: [InputNavigation], createdAt: Date, updatedAt: Date): CmsPage
   deleteCmsPage(id: ID!): ID
-  createCmsBlock(id: ID, position: Int!, type: String!, pageId: ID, page: InputCmsPage, slots: [InputCmsSlot], createdAt: Date, updatedAt: Date): CmsBlock
-  updateCmsBlock(id: ID!, position: Int, type: String, pageId: ID, page: InputCmsPage, slots: [InputCmsSlot], createdAt: Date, updatedAt: Date): CmsBlock
+  createCmsBlock(id: ID, position: Int!, type: String!, pageId: ID, page: InputCmsPage, slots: [InputCmsSlot], createdAt: Date, updatedAt: Date, attributes: Json): CmsBlock
+  updateCmsBlock(id: ID!, position: Int, type: String, pageId: ID, page: InputCmsPage, slots: [InputCmsSlot], createdAt: Date, updatedAt: Date, attributes: Json): CmsBlock
   deleteCmsBlock(id: ID!): ID
-  createCmsSlot(id: ID, versionId: ID, type: String!, slot: String!, config: String, blockId: ID, block: InputCmsBlock, translations: [InputCmsSlotTranslation], createdAt: Date, updatedAt: Date): CmsSlot
-  updateCmsSlot(id: ID!, versionId: ID, type: String, slot: String, config: String, blockId: ID, block: InputCmsBlock, translations: [InputCmsSlotTranslation], createdAt: Date, updatedAt: Date): CmsSlot
+  createCmsSlot(id: ID, versionId: ID, type: String!, slot: String!, config: String, attributes: String, data: Json, blockId: ID, block: InputCmsBlock, translations: [InputCmsSlotTranslation], createdAt: Date, updatedAt: Date): CmsSlot
+  updateCmsSlot(id: ID!, versionId: ID, type: String, slot: String, config: String, attributes: String, data: Json, blockId: ID, block: InputCmsBlock, translations: [InputCmsSlotTranslation], createdAt: Date, updatedAt: Date): CmsSlot
   deleteCmsSlot(id: ID!, versionId: ID): ID
-  createCustomer(id: ID, groupId: ID, defaultPaymentMethodId: ID, salesChannelId: ID, lastPaymentMethodId: ID, defaultBillingAddressId: ID, defaultShippingAddressId: ID, autoIncrement: Int, customerNumber: String!, salutation: String, firstName: String!, lastName: String!, email: String!, title: String, encoder: String, active: Boolean, guest: Boolean, confirmationKey: String, firstLogin: Date, lastLogin: Date, sessionId: String, newsletter: Boolean, validation: String, affiliate: Boolean, referer: String, internalComment: String, failedLogins: Int, lockedUntil: Date, birthday: Date, createdAt: Date, updatedAt: Date, group: InputCustomerGroup, defaultPaymentMethod: InputPaymentMethod, salesChannel: InputSalesChannel, lastPaymentMethod: InputPaymentMethod, defaultBillingAddress: InputCustomerAddress, defaultShippingAddress: InputCustomerAddress, addresses: [InputCustomerAddress], orderCustomers: [InputOrderCustomer], searchKeywords: [InputSearchDocument]): Customer
-  updateCustomer(id: ID!, groupId: ID, defaultPaymentMethodId: ID, salesChannelId: ID, lastPaymentMethodId: ID, defaultBillingAddressId: ID, defaultShippingAddressId: ID, autoIncrement: Int, customerNumber: String, salutation: String, firstName: String, lastName: String, email: String, title: String, encoder: String, active: Boolean, guest: Boolean, confirmationKey: String, firstLogin: Date, lastLogin: Date, sessionId: String, newsletter: Boolean, validation: String, affiliate: Boolean, referer: String, internalComment: String, failedLogins: Int, lockedUntil: Date, birthday: Date, createdAt: Date, updatedAt: Date, group: InputCustomerGroup, defaultPaymentMethod: InputPaymentMethod, salesChannel: InputSalesChannel, lastPaymentMethod: InputPaymentMethod, defaultBillingAddress: InputCustomerAddress, defaultShippingAddress: InputCustomerAddress, addresses: [InputCustomerAddress], orderCustomers: [InputOrderCustomer], searchKeywords: [InputSearchDocument]): Customer
+  createCustomer(id: ID, groupId: ID, defaultPaymentMethodId: ID, salesChannelId: ID, languageId: ID, lastPaymentMethodId: ID, defaultBillingAddressId: ID, defaultShippingAddressId: ID, autoIncrement: Int, customerNumber: String!, salutation: String, firstName: String!, lastName: String!, company: String, email: String!, title: String, encoder: String, active: Boolean, guest: Boolean, confirmationKey: String, firstLogin: Date, lastLogin: Date, sessionId: String, newsletter: Boolean, validation: String, affiliate: Boolean, referer: String, internalComment: String, failedLogins: Int, lockedUntil: Date, birthday: Date, attributes: Json, createdAt: Date, updatedAt: Date, group: InputCustomerGroup, defaultPaymentMethod: InputPaymentMethod, salesChannel: InputSalesChannel, language: InputLanguage, lastPaymentMethod: InputPaymentMethod, defaultBillingAddress: InputCustomerAddress, defaultShippingAddress: InputCustomerAddress, addresses: [InputCustomerAddress], orderCustomers: [InputOrderCustomer], searchKeywords: [InputSearchDocument]): Customer
+  updateCustomer(id: ID!, groupId: ID, defaultPaymentMethodId: ID, salesChannelId: ID, languageId: ID, lastPaymentMethodId: ID, defaultBillingAddressId: ID, defaultShippingAddressId: ID, autoIncrement: Int, customerNumber: String, salutation: String, firstName: String, lastName: String, company: String, email: String, title: String, encoder: String, active: Boolean, guest: Boolean, confirmationKey: String, firstLogin: Date, lastLogin: Date, sessionId: String, newsletter: Boolean, validation: String, affiliate: Boolean, referer: String, internalComment: String, failedLogins: Int, lockedUntil: Date, birthday: Date, attributes: Json, createdAt: Date, updatedAt: Date, group: InputCustomerGroup, defaultPaymentMethod: InputPaymentMethod, salesChannel: InputSalesChannel, language: InputLanguage, lastPaymentMethod: InputPaymentMethod, defaultBillingAddress: InputCustomerAddress, defaultShippingAddress: InputCustomerAddress, addresses: [InputCustomerAddress], orderCustomers: [InputOrderCustomer], searchKeywords: [InputSearchDocument]): Customer
   deleteCustomer(id: ID!): ID
-  createCustomerAddress(id: ID, customerId: ID, countryId: ID, countryStateId: ID, salutation: String, firstName: String!, lastName: String!, zipcode: String!, city: String!, company: String, street: String!, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, createdAt: Date, updatedAt: Date, customer: InputCustomer, country: InputCountry, countryState: InputCountryState): CustomerAddress
-  updateCustomerAddress(id: ID!, customerId: ID, countryId: ID, countryStateId: ID, salutation: String, firstName: String, lastName: String, zipcode: String, city: String, company: String, street: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, createdAt: Date, updatedAt: Date, customer: InputCustomer, country: InputCountry, countryState: InputCountryState): CustomerAddress
+  createCustomerAddress(id: ID, customerId: ID, countryId: ID, countryStateId: ID, salutation: String, firstName: String!, lastName: String!, zipcode: String!, city: String!, company: String, street: String!, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, attributes: Json, createdAt: Date, updatedAt: Date, customer: InputCustomer, country: InputCountry, countryState: InputCountryState): CustomerAddress
+  updateCustomerAddress(id: ID!, customerId: ID, countryId: ID, countryStateId: ID, salutation: String, firstName: String, lastName: String, zipcode: String, city: String, company: String, street: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, attributes: Json, createdAt: Date, updatedAt: Date, customer: InputCustomer, country: InputCountry, countryState: InputCountryState): CustomerAddress
   deleteCustomerAddress(id: ID!): ID
-  createCustomerGroup(id: ID, name: String, displayGross: Boolean, inputGross: Boolean, hasGlobalDiscount: Boolean, percentageGlobalDiscount: Float, minimumOrderAmount: Float, minimumOrderAmountSurcharge: Float, createdAt: Date, updatedAt: Date, customers: [InputCustomer], discounts: [InputCustomerGroupDiscount], translations: [InputCustomerGroupTranslation]): CustomerGroup
-  updateCustomerGroup(id: ID!, name: String, displayGross: Boolean, inputGross: Boolean, hasGlobalDiscount: Boolean, percentageGlobalDiscount: Float, minimumOrderAmount: Float, minimumOrderAmountSurcharge: Float, createdAt: Date, updatedAt: Date, customers: [InputCustomer], discounts: [InputCustomerGroupDiscount], translations: [InputCustomerGroupTranslation]): CustomerGroup
+  createCustomerGroup(id: ID, name: String, displayGross: Boolean, inputGross: Boolean, hasGlobalDiscount: Boolean, percentageGlobalDiscount: Float, minimumOrderAmount: Float, minimumOrderAmountSurcharge: Float, attributes: String, createdAt: Date, updatedAt: Date, customers: [InputCustomer], discounts: [InputCustomerGroupDiscount], translations: [InputCustomerGroupTranslation]): CustomerGroup
+  updateCustomerGroup(id: ID!, name: String, displayGross: Boolean, inputGross: Boolean, hasGlobalDiscount: Boolean, percentageGlobalDiscount: Float, minimumOrderAmount: Float, minimumOrderAmountSurcharge: Float, attributes: String, createdAt: Date, updatedAt: Date, customers: [InputCustomer], discounts: [InputCustomerGroupDiscount], translations: [InputCustomerGroupTranslation]): CustomerGroup
   deleteCustomerGroup(id: ID!): ID
-  createCustomerGroupDiscount(id: ID, customerGroupId: ID, percentageDiscount: Float!, minimumCartAmount: Float!, createdAt: Date, updatedAt: Date, customerGroup: InputCustomerGroup): CustomerGroupDiscount
-  updateCustomerGroupDiscount(id: ID!, customerGroupId: ID, percentageDiscount: Float, minimumCartAmount: Float, createdAt: Date, updatedAt: Date, customerGroup: InputCustomerGroup): CustomerGroupDiscount
+  createCustomerGroupDiscount(id: ID, customerGroupId: ID, percentageDiscount: Float!, minimumCartAmount: Float!, attributes: Json, createdAt: Date, updatedAt: Date, customerGroup: InputCustomerGroup): CustomerGroupDiscount
+  updateCustomerGroupDiscount(id: ID!, customerGroupId: ID, percentageDiscount: Float, minimumCartAmount: Float, attributes: Json, createdAt: Date, updatedAt: Date, customerGroup: InputCustomerGroup): CustomerGroupDiscount
   deleteCustomerGroupDiscount(id: ID!): ID
-  createOrder(id: ID, versionId: ID, autoIncrement: Int, billingAddressId: ID, billingAddressVersionId: ID, orderCustomerId: ID, orderCustomerVersionId: ID, paymentMethodId: ID, currencyId: ID, salesChannelId: ID, date: Date!, price: Json, amountTotal: Float, amountNet: Float, positionPrice: Float, taxStatus: String, shippingCosts: Json, shippingTotal: Float, currencyFactor: Float!, deepLinkCode: String, stateId: ID, stateMachineState: InputStateMachineState, createdAt: Date, updatedAt: Date, orderCustomer: InputOrderCustomer, paymentMethod: InputPaymentMethod, currency: InputCurrency, salesChannel: InputSalesChannel, addresses: [InputOrderAddress], deliveries: [InputOrderDelivery], lineItems: [InputOrderLineItem], transactions: [InputOrderTransaction], searchKeywords: [InputSearchDocument]): Order
-  updateOrder(id: ID!, versionId: ID, autoIncrement: Int, billingAddressId: ID, billingAddressVersionId: ID, orderCustomerId: ID, orderCustomerVersionId: ID, paymentMethodId: ID, currencyId: ID, salesChannelId: ID, date: Date, price: Json, amountTotal: Float, amountNet: Float, positionPrice: Float, taxStatus: String, shippingCosts: Json, shippingTotal: Float, currencyFactor: Float, deepLinkCode: String, stateId: ID, stateMachineState: InputStateMachineState, createdAt: Date, updatedAt: Date, orderCustomer: InputOrderCustomer, paymentMethod: InputPaymentMethod, currency: InputCurrency, salesChannel: InputSalesChannel, addresses: [InputOrderAddress], deliveries: [InputOrderDelivery], lineItems: [InputOrderLineItem], transactions: [InputOrderTransaction], searchKeywords: [InputSearchDocument]): Order
+  createOrder(id: ID, versionId: ID, autoIncrement: Int, billingAddressId: ID, billingAddressVersionId: ID, orderCustomerId: ID, orderCustomerVersionId: ID, paymentMethodId: ID, currencyId: ID, salesChannelId: ID, date: Date!, price: Json, amountTotal: Float, amountNet: Float, positionPrice: Float, taxStatus: String, shippingCosts: Json, shippingTotal: Float, currencyFactor: Float!, deepLinkCode: String, stateId: ID, stateMachineState: InputStateMachineState, attributes: Json, createdAt: Date, updatedAt: Date, orderCustomer: InputOrderCustomer, paymentMethod: InputPaymentMethod, currency: InputCurrency, salesChannel: InputSalesChannel, addresses: [InputOrderAddress], deliveries: [InputOrderDelivery], lineItems: [InputOrderLineItem], transactions: [InputOrderTransaction], documents: [InputDocument], searchKeywords: [InputSearchDocument]): Order
+  updateOrder(id: ID!, versionId: ID, autoIncrement: Int, billingAddressId: ID, billingAddressVersionId: ID, orderCustomerId: ID, orderCustomerVersionId: ID, paymentMethodId: ID, currencyId: ID, salesChannelId: ID, date: Date, price: Json, amountTotal: Float, amountNet: Float, positionPrice: Float, taxStatus: String, shippingCosts: Json, shippingTotal: Float, currencyFactor: Float, deepLinkCode: String, stateId: ID, stateMachineState: InputStateMachineState, attributes: Json, createdAt: Date, updatedAt: Date, orderCustomer: InputOrderCustomer, paymentMethod: InputPaymentMethod, currency: InputCurrency, salesChannel: InputSalesChannel, addresses: [InputOrderAddress], deliveries: [InputOrderDelivery], lineItems: [InputOrderLineItem], transactions: [InputOrderTransaction], documents: [InputDocument], searchKeywords: [InputSearchDocument]): Order
   deleteOrder(id: ID!, versionId: ID): ID
-  createOrderAddress(id: ID, versionId: ID, countryId: ID, countryStateId: ID, orderId: ID, orderVersionId: ID, salutation: String, firstName: String!, lastName: String!, street: String!, zipcode: String!, city: String!, company: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, createdAt: Date, updatedAt: Date, country: InputCountry, countryState: InputCountryState, order: InputOrder, orderDeliveries: [InputOrderDelivery]): OrderAddress
-  updateOrderAddress(id: ID!, versionId: ID, countryId: ID, countryStateId: ID, orderId: ID, orderVersionId: ID, salutation: String, firstName: String, lastName: String, street: String, zipcode: String, city: String, company: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, createdAt: Date, updatedAt: Date, country: InputCountry, countryState: InputCountryState, order: InputOrder, orderDeliveries: [InputOrderDelivery]): OrderAddress
+  createOrderAddress(id: ID, versionId: ID, countryId: ID, countryStateId: ID, orderId: ID, orderVersionId: ID, salutation: String, firstName: String!, lastName: String!, street: String!, zipcode: String!, city: String!, company: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, attributes: Json, createdAt: Date, updatedAt: Date, country: InputCountry, countryState: InputCountryState, order: InputOrder, orderDeliveries: [InputOrderDelivery]): OrderAddress
+  updateOrderAddress(id: ID!, versionId: ID, countryId: ID, countryStateId: ID, orderId: ID, orderVersionId: ID, salutation: String, firstName: String, lastName: String, street: String, zipcode: String, city: String, company: String, department: String, title: String, vatId: String, phoneNumber: String, additionalAddressLine1: String, additionalAddressLine2: String, attributes: Json, createdAt: Date, updatedAt: Date, country: InputCountry, countryState: InputCountryState, order: InputOrder, orderDeliveries: [InputOrderDelivery]): OrderAddress
   deleteOrderAddress(id: ID!, versionId: ID): ID
-  createOrderCustomer(id: ID, versionId: ID, customerId: ID, email: String!, firstName: String!, lastName: String!, salutation: String, title: String, customerNumber: String, createdAt: Date, updatedAt: Date, customer: InputCustomer, orders: [InputOrder]): OrderCustomer
-  updateOrderCustomer(id: ID!, versionId: ID, customerId: ID, email: String, firstName: String, lastName: String, salutation: String, title: String, customerNumber: String, createdAt: Date, updatedAt: Date, customer: InputCustomer, orders: [InputOrder]): OrderCustomer
+  createOrderCustomer(id: ID, versionId: ID, customerId: ID, email: String!, firstName: String!, lastName: String!, salutation: String, title: String, customerNumber: String, attributes: Json, createdAt: Date, updatedAt: Date, customer: InputCustomer, orders: [InputOrder]): OrderCustomer
+  updateOrderCustomer(id: ID!, versionId: ID, customerId: ID, email: String, firstName: String, lastName: String, salutation: String, title: String, customerNumber: String, attributes: Json, createdAt: Date, updatedAt: Date, customer: InputCustomer, orders: [InputOrder]): OrderCustomer
   deleteOrderCustomer(id: ID!, versionId: ID): ID
-  createOrderDelivery(id: ID, versionId: ID, orderId: ID, orderVersionId: ID, shippingOrderAddressId: ID, shippingOrderAddressVersionId: ID, shippingMethodId: ID, stateId: ID, stateMachineState: InputStateMachineState, trackingCode: String, shippingDateEarliest: Date!, shippingDateLatest: Date!, shippingCosts: Json, createdAt: Date, updatedAt: Date, order: InputOrder, shippingOrderAddress: InputOrderAddress, shippingMethod: InputShippingMethod, positions: [InputOrderDeliveryPosition]): OrderDelivery
-  updateOrderDelivery(id: ID!, versionId: ID, orderId: ID, orderVersionId: ID, shippingOrderAddressId: ID, shippingOrderAddressVersionId: ID, shippingMethodId: ID, stateId: ID, stateMachineState: InputStateMachineState, trackingCode: String, shippingDateEarliest: Date, shippingDateLatest: Date, shippingCosts: Json, createdAt: Date, updatedAt: Date, order: InputOrder, shippingOrderAddress: InputOrderAddress, shippingMethod: InputShippingMethod, positions: [InputOrderDeliveryPosition]): OrderDelivery
+  createOrderDelivery(id: ID, versionId: ID, orderId: ID, orderVersionId: ID, shippingOrderAddressId: ID, shippingOrderAddressVersionId: ID, shippingMethodId: ID, stateId: ID, stateMachineState: InputStateMachineState, trackingCode: String, shippingDateEarliest: Date!, shippingDateLatest: Date!, shippingCosts: Json, attributes: Json, createdAt: Date, updatedAt: Date, order: InputOrder, shippingOrderAddress: InputOrderAddress, shippingMethod: InputShippingMethod, positions: [InputOrderDeliveryPosition]): OrderDelivery
+  updateOrderDelivery(id: ID!, versionId: ID, orderId: ID, orderVersionId: ID, shippingOrderAddressId: ID, shippingOrderAddressVersionId: ID, shippingMethodId: ID, stateId: ID, stateMachineState: InputStateMachineState, trackingCode: String, shippingDateEarliest: Date, shippingDateLatest: Date, shippingCosts: Json, attributes: Json, createdAt: Date, updatedAt: Date, order: InputOrder, shippingOrderAddress: InputOrderAddress, shippingMethod: InputShippingMethod, positions: [InputOrderDeliveryPosition]): OrderDelivery
   deleteOrderDelivery(id: ID!, versionId: ID): ID
-  createOrderDeliveryPosition(id: ID, versionId: ID, orderDeliveryId: ID, orderDeliveryVersionId: ID, orderLineItemId: ID, orderLineItemVersionId: ID, price: Json, unitPrice: Float, totalPrice: Float, quantity: Int, createdAt: Date, updatedAt: Date, orderDelivery: InputOrderDelivery, orderLineItem: InputOrderLineItem): OrderDeliveryPosition
-  updateOrderDeliveryPosition(id: ID!, versionId: ID, orderDeliveryId: ID, orderDeliveryVersionId: ID, orderLineItemId: ID, orderLineItemVersionId: ID, price: Json, unitPrice: Float, totalPrice: Float, quantity: Int, createdAt: Date, updatedAt: Date, orderDelivery: InputOrderDelivery, orderLineItem: InputOrderLineItem): OrderDeliveryPosition
+  createOrderDeliveryPosition(id: ID, versionId: ID, orderDeliveryId: ID, orderDeliveryVersionId: ID, orderLineItemId: ID, orderLineItemVersionId: ID, price: Json, unitPrice: Float, totalPrice: Float, quantity: Int, attributes: Json, createdAt: Date, updatedAt: Date, orderDelivery: InputOrderDelivery, orderLineItem: InputOrderLineItem): OrderDeliveryPosition
+  updateOrderDeliveryPosition(id: ID!, versionId: ID, orderDeliveryId: ID, orderDeliveryVersionId: ID, orderLineItemId: ID, orderLineItemVersionId: ID, price: Json, unitPrice: Float, totalPrice: Float, quantity: Int, attributes: Json, createdAt: Date, updatedAt: Date, orderDelivery: InputOrderDelivery, orderLineItem: InputOrderLineItem): OrderDeliveryPosition
   deleteOrderDeliveryPosition(id: ID!, versionId: ID): ID
-  createOrderLineItem(id: ID, versionId: ID, orderId: ID, orderVersionId: ID, parentId: ID, parentVersionId: ID, identifier: String!, quantity: Int!, label: String!, payload: Json, good: Boolean, removable: Boolean, stackable: Boolean, priority: Int, price: Json!, priceDefinition: Json!, unitPrice: Float, totalPrice: Float, description: String, type: String, createdAt: Date, updatedAt: Date, order: InputOrder, orderDeliveryPositions: [InputOrderDeliveryPosition], parent: InputOrderLineItem, children: [InputOrderLineItem]): OrderLineItem
-  updateOrderLineItem(id: ID!, versionId: ID, orderId: ID, orderVersionId: ID, parentId: ID, parentVersionId: ID, identifier: String, quantity: Int, label: String, payload: Json, good: Boolean, removable: Boolean, stackable: Boolean, priority: Int, price: Json, priceDefinition: Json, unitPrice: Float, totalPrice: Float, description: String, type: String, createdAt: Date, updatedAt: Date, order: InputOrder, orderDeliveryPositions: [InputOrderDeliveryPosition], parent: InputOrderLineItem, children: [InputOrderLineItem]): OrderLineItem
+  createOrderLineItem(id: ID, versionId: ID, orderId: ID, orderVersionId: ID, parentId: ID, parentVersionId: ID, identifier: String!, quantity: Int!, label: String!, payload: Json, good: Boolean, removable: Boolean, stackable: Boolean, priority: Int, price: Json!, priceDefinition: Json!, unitPrice: Float, totalPrice: Float, description: String, type: String, attributes: Json, createdAt: Date, updatedAt: Date, order: InputOrder, orderDeliveryPositions: [InputOrderDeliveryPosition], parent: InputOrderLineItem, children: [InputOrderLineItem]): OrderLineItem
+  updateOrderLineItem(id: ID!, versionId: ID, orderId: ID, orderVersionId: ID, parentId: ID, parentVersionId: ID, identifier: String, quantity: Int, label: String, payload: Json, good: Boolean, removable: Boolean, stackable: Boolean, priority: Int, price: Json, priceDefinition: Json, unitPrice: Float, totalPrice: Float, description: String, type: String, attributes: Json, createdAt: Date, updatedAt: Date, order: InputOrder, orderDeliveryPositions: [InputOrderDeliveryPosition], parent: InputOrderLineItem, children: [InputOrderLineItem]): OrderLineItem
   deleteOrderLineItem(id: ID!, versionId: ID): ID
-  createOrderTransaction(id: ID, versionId: ID, orderId: ID, orderVersionId: ID, paymentMethodId: ID, amount: Json!, stateId: ID, stateMachineState: InputStateMachineState, details: Json, createdAt: Date, updatedAt: Date, order: InputOrder, paymentMethod: InputPaymentMethod): OrderTransaction
-  updateOrderTransaction(id: ID!, versionId: ID, orderId: ID, orderVersionId: ID, paymentMethodId: ID, amount: Json, stateId: ID, stateMachineState: InputStateMachineState, details: Json, createdAt: Date, updatedAt: Date, order: InputOrder, paymentMethod: InputPaymentMethod): OrderTransaction
+  createOrderTransaction(id: ID, versionId: ID, orderId: ID, orderVersionId: ID, paymentMethodId: ID, amount: Json!, stateId: ID, stateMachineState: InputStateMachineState, details: Json, attributes: Json, createdAt: Date, updatedAt: Date, order: InputOrder, paymentMethod: InputPaymentMethod): OrderTransaction
+  updateOrderTransaction(id: ID!, versionId: ID, orderId: ID, orderVersionId: ID, paymentMethodId: ID, amount: Json, stateId: ID, stateMachineState: InputStateMachineState, details: Json, attributes: Json, createdAt: Date, updatedAt: Date, order: InputOrder, paymentMethod: InputPaymentMethod): OrderTransaction
   deleteOrderTransaction(id: ID!, versionId: ID): ID
-  createPaymentMethod(id: ID, pluginId: ID, technicalName: String!, name: String, additionalDescription: String, template: String, class: String, percentageSurcharge: Float, absoluteSurcharge: Float, surchargeString: String, position: Int, active: Boolean, riskRules: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], plugin: InputPlugin, customers: [InputCustomer], orders: [InputOrder], orderTransactions: [InputOrderTransaction], translations: [InputPaymentMethodTranslation], salesChannels: [InputSalesChannel]): PaymentMethod
-  updatePaymentMethod(id: ID!, pluginId: ID, technicalName: String, name: String, additionalDescription: String, template: String, class: String, percentageSurcharge: Float, absoluteSurcharge: Float, surchargeString: String, position: Int, active: Boolean, riskRules: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], plugin: InputPlugin, customers: [InputCustomer], orders: [InputOrder], orderTransactions: [InputOrderTransaction], translations: [InputPaymentMethodTranslation], salesChannels: [InputSalesChannel]): PaymentMethod
+  createPaymentMethod(id: ID, pluginId: ID, technicalName: String!, name: String, additionalDescription: String, template: String, class: String, percentageSurcharge: Float, absoluteSurcharge: Float, surchargeString: String, position: Int, active: Boolean, riskRules: String, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], plugin: InputPlugin, customers: [InputCustomer], orders: [InputOrder], orderTransactions: [InputOrderTransaction], translations: [InputPaymentMethodTranslation], salesChannels: [InputSalesChannel]): PaymentMethod
+  updatePaymentMethod(id: ID!, pluginId: ID, technicalName: String, name: String, additionalDescription: String, template: String, class: String, percentageSurcharge: Float, absoluteSurcharge: Float, surchargeString: String, position: Int, active: Boolean, riskRules: String, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], plugin: InputPlugin, customers: [InputCustomer], orders: [InputOrder], orderTransactions: [InputOrderTransaction], translations: [InputPaymentMethodTranslation], salesChannels: [InputSalesChannel]): PaymentMethod
   deletePaymentMethod(id: ID!): ID
-  createShippingMethod(id: ID, type: Int!, bindShippingfree: Boolean!, bindLaststock: Boolean, name: String, active: Boolean, position: Int, calculation: Int, surchargeCalculation: Int, taxCalculation: Int, minDeliveryTime: Int, maxDeliveryTime: Int, shippingFree: Float, bindTimeFrom: Int, bindTimeTo: Int, bindInstock: Boolean, bindWeekdayFrom: Int, bindWeekdayTo: Int, bindWeightFrom: Float, bindWeightTo: Float, bindPriceFrom: Float, bindPriceTo: Float, bindSql: String, statusLink: String, calculationSql: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], description: String, comment: String, orderDeliveries: [InputOrderDelivery], prices: [InputShippingMethodPrice], translations: [InputShippingMethodTranslation], salesChannels: [InputSalesChannel]): ShippingMethod
-  updateShippingMethod(id: ID!, type: Int, bindShippingfree: Boolean, bindLaststock: Boolean, name: String, active: Boolean, position: Int, calculation: Int, surchargeCalculation: Int, taxCalculation: Int, minDeliveryTime: Int, maxDeliveryTime: Int, shippingFree: Float, bindTimeFrom: Int, bindTimeTo: Int, bindInstock: Boolean, bindWeekdayFrom: Int, bindWeekdayTo: Int, bindWeightFrom: Float, bindWeightTo: Float, bindPriceFrom: Float, bindPriceTo: Float, bindSql: String, statusLink: String, calculationSql: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], description: String, comment: String, orderDeliveries: [InputOrderDelivery], prices: [InputShippingMethodPrice], translations: [InputShippingMethodTranslation], salesChannels: [InputSalesChannel]): ShippingMethod
+  createShippingMethod(id: ID, type: Int!, bindShippingfree: Boolean!, bindLaststock: Boolean, name: String, active: Boolean, position: Int, calculation: Int, surchargeCalculation: Int, taxCalculation: Int, minDeliveryTime: Int, maxDeliveryTime: Int, shippingFree: Float, bindTimeFrom: Int, bindTimeTo: Int, bindInstock: Boolean, bindWeekdayFrom: Int, bindWeekdayTo: Int, bindWeightFrom: Float, bindWeightTo: Float, bindPriceFrom: Float, bindPriceTo: Float, bindSql: String, statusLink: String, calculationSql: String, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], description: String, comment: String, orderDeliveries: [InputOrderDelivery], prices: [InputShippingMethodPrice], translations: [InputShippingMethodTranslation], salesChannels: [InputSalesChannel]): ShippingMethod
+  updateShippingMethod(id: ID!, type: Int, bindShippingfree: Boolean, bindLaststock: Boolean, name: String, active: Boolean, position: Int, calculation: Int, surchargeCalculation: Int, taxCalculation: Int, minDeliveryTime: Int, maxDeliveryTime: Int, shippingFree: Float, bindTimeFrom: Int, bindTimeTo: Int, bindInstock: Boolean, bindWeekdayFrom: Int, bindWeekdayTo: Int, bindWeightFrom: Float, bindWeightTo: Float, bindPriceFrom: Float, bindPriceTo: Float, bindSql: String, statusLink: String, calculationSql: String, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], description: String, comment: String, orderDeliveries: [InputOrderDelivery], prices: [InputShippingMethodPrice], translations: [InputShippingMethodTranslation], salesChannels: [InputSalesChannel]): ShippingMethod
   deleteShippingMethod(id: ID!): ID
-  createShippingMethodPrice(id: ID, shippingMethodId: ID, quantityFrom: Float!, price: Float!, factor: Float!, createdAt: Date, updatedAt: Date, shippingMethod: InputShippingMethod): ShippingMethodPrice
-  updateShippingMethodPrice(id: ID!, shippingMethodId: ID, quantityFrom: Float, price: Float, factor: Float, createdAt: Date, updatedAt: Date, shippingMethod: InputShippingMethod): ShippingMethodPrice
+  createShippingMethodPrice(id: ID, shippingMethodId: ID, quantityFrom: Float!, price: Float!, factor: Float!, attributes: Json, createdAt: Date, updatedAt: Date, shippingMethod: InputShippingMethod): ShippingMethodPrice
+  updateShippingMethodPrice(id: ID!, shippingMethodId: ID, quantityFrom: Float, price: Float, factor: Float, attributes: Json, createdAt: Date, updatedAt: Date, shippingMethod: InputShippingMethod): ShippingMethodPrice
   deleteShippingMethodPrice(id: ID!): ID
-  createDiscountSurcharge(id: ID, name: String, ruleId: ID, filterRule: Json!, type: String!, amount: Float!, createdAt: Date, updatedAt: Date, translations: [InputDiscountSurchargeTranslation], rule: InputRule): DiscountSurcharge
-  updateDiscountSurcharge(id: ID!, name: String, ruleId: ID, filterRule: Json, type: String, amount: Float, createdAt: Date, updatedAt: Date, translations: [InputDiscountSurchargeTranslation], rule: InputRule): DiscountSurcharge
+  createDiscountSurcharge(id: ID, name: String, ruleId: ID, type: String!, amount: Float!, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputDiscountSurchargeTranslation], rule: InputRule): DiscountSurcharge
+  updateDiscountSurcharge(id: ID!, name: String, ruleId: ID, type: String, amount: Float, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputDiscountSurchargeTranslation], rule: InputRule): DiscountSurcharge
   deleteDiscountSurcharge(id: ID!): ID
   createNamed(id: ID, name: String!, optionalGroupId: ID, optionalGroup: InputNamedOptionalGroup): Named
   updateNamed(id: ID!, name: String, optionalGroupId: ID, optionalGroup: InputNamedOptionalGroup): Named
@@ -5605,6 +5684,18 @@ type Mutation {
   createNamedOptionalGroup(id: ID, name: String!, nameds: [InputNamed]): NamedOptionalGroup
   updateNamedOptionalGroup(id: ID!, name: String, nameds: [InputNamed]): NamedOptionalGroup
   deleteNamedOptionalGroup(id: ID!): ID
+  createCalculatedPriceFieldTest(id: ID, versionId: ID, price: Json!): CalculatedPriceFieldTest
+  updateCalculatedPriceFieldTest(id: ID!, versionId: ID, price: Json): CalculatedPriceFieldTest
+  deleteCalculatedPriceFieldTest(id: ID!, versionId: ID): ID
+  createRoot(id: ID, versionId: ID, name: String): Root
+  updateRoot(id: ID!, versionId: ID, name: String): Root
+  deleteRoot(id: ID!, versionId: ID): ID
+  createRootSub(id: ID, versionId: ID, name: String, stock: Int, rootId: ID, rootVersionId: ID, manies: [InputRootSubMany]): RootSub
+  updateRootSub(id: ID!, versionId: ID, name: String, stock: Int, rootId: ID, rootVersionId: ID, manies: [InputRootSubMany]): RootSub
+  deleteRootSub(id: ID!, versionId: ID): ID
+  createRootSubMany(id: ID, versionId: ID, name: String, subId: ID, rootSubVersionId: ID, sub: InputRootSub): RootSubMany
+  updateRootSubMany(id: ID!, versionId: ID, name: String, subId: ID, rootSubVersionId: ID, sub: InputRootSub): RootSubMany
+  deleteRootSubMany(id: ID!, versionId: ID): ID
 
   """Dissolves a media folder and puts the content one level higher."""
   dissolveMediaFolder(mediaFolderId: ID!): ID!
@@ -5701,6 +5792,137 @@ type NamedOptionalGroupEdge {
   cursor: ID
 }
 
+type Navigation {
+  id: ID!
+  versionId: ID!
+  parentId: ID
+  parentVersionId: ID!
+  categoryId: ID
+  categoryVersionId: ID
+  category: Category
+  cmsPageId: ID
+  cmsPage: CmsPage
+  name: String
+  slotConfig: String
+  level: Int
+  path: String
+  childCount: Int
+  createdAt: Date!
+  updatedAt: Date!
+  translations: NavigationTranslationConnection!
+  children(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): NavigationConnection
+  parent: Navigation
+  salesChannelNavigations(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): SalesChannelConnection
+}
+
+"""The Result for a search that returns multiple Items"""
+type NavigationConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [NavigationEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type NavigationEdge {
+  """The Node of the Edge that contains the real element"""
+  node: Navigation
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type NavigationTranslation {
+  name: String!
+  slotConfig: Json
+  navigationId: ID!
+  languageId: ID!
+  createdAt: Date!
+  updatedAt: Date!
+  navigation: Navigation
+  language: Language
+  navigationVersionId: ID!
+}
+
+"""The Result for a search that returns multiple Items"""
+type NavigationTranslationConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [NavigationTranslationEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type NavigationTranslationEdge {
+  """The Node of the Edge that contains the real element"""
+  node: NavigationTranslation
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
 type Order {
   id: ID!
   versionId: ID!
@@ -5724,6 +5946,7 @@ type Order {
   deepLinkCode: String
   stateId: ID!
   stateMachineState: StateMachineState
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   orderCustomer: OrderCustomer
@@ -5830,6 +6053,31 @@ type Order {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): OrderTransactionConnection
+  documents(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): DocumentConnection
   searchKeywords(
     """The count of items to be returned"""
     first: Int
@@ -5877,6 +6125,7 @@ type OrderAddress {
   phoneNumber: String
   additionalAddressLine1: String
   additionalAddressLine2: String
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   country: Country
@@ -5958,6 +6207,7 @@ type OrderCustomer {
   salutation: String
   title: String
   customerNumber: String
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   customer: Customer
@@ -6026,6 +6276,7 @@ type OrderDelivery {
   shippingDateEarliest: Date!
   shippingDateLatest: Date!
   shippingCosts: Json
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   order: Order
@@ -6093,6 +6344,7 @@ type OrderDeliveryPosition {
   unitPrice: Float
   totalPrice: Float
   quantity: Int
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   orderDelivery: OrderDelivery
@@ -6153,6 +6405,7 @@ type OrderLineItem {
   totalPrice: Float
   description: String
   type: String
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   order: Order
@@ -6243,6 +6496,7 @@ type OrderTransaction {
   stateId: ID!
   stateMachineState: StateMachineState
   details: Json
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   order: Order
@@ -6312,6 +6566,7 @@ type PaymentMethod {
   position: Int
   active: Boolean
   riskRules: String
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   salesChannelDefaultAssignments(
@@ -6470,6 +6725,7 @@ type PaymentMethodEdge {
 type PaymentMethodTranslation {
   name: String!
   additionalDescription: String
+  attributes: Json
   paymentMethodId: ID!
   languageId: ID!
   createdAt: Date!
@@ -6505,7 +6761,9 @@ type PaymentMethodTranslationEdge {
 type Plugin {
   id: ID!
   name: String!
+  composerName: String
   active: Boolean!
+  path: String
   author: String
   copyright: String
   license: String
@@ -6518,6 +6776,7 @@ type Plugin {
   manufacturerLink: String
   supportLink: String
   changelog: String
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   translations: PluginTranslationConnection!
@@ -6578,6 +6837,7 @@ type PluginTranslation {
   manufacturerLink: String
   supportLink: String
   changelog: Json
+  attributes: Json
   pluginId: ID!
   languageId: ID!
   createdAt: Date!
@@ -6613,7 +6873,6 @@ type PluginTranslationEdge {
 type Product {
   id: ID!
   versionId: ID!
-  catalogId: ID!
   parentId: ID
   parentVersionId: ID!
   blacklistIds: Json
@@ -6664,6 +6923,7 @@ type Product {
   descriptionLong: String
   metaTitle: String
   packUnit: String
+  attributes: String
   parent: Product
   children(
     """The count of items to be returned"""
@@ -6920,7 +7180,31 @@ type Product {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): ConfigurationGroupOptionConnection
-  catalog: Catalog
+  visibilities(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): ProductVisibilityConnection
   canonicalUrl: SeoUrl
 }
 
@@ -6936,6 +7220,7 @@ type ProductConfigurator {
   updatedAt: Date!
   product: Product
   option: ConfigurationGroupOption
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -6989,7 +7274,6 @@ type ProductEdge {
 type ProductManufacturer {
   id: ID!
   versionId: ID!
-  catalogId: ID!
   mediaId: ID
   link: String
   updatedAt: Date!
@@ -6999,6 +7283,7 @@ type ProductManufacturer {
   metaTitle: String
   metaDescription: String
   metaKeywords: String
+  attributes: String
   media: Media
   products(
     """The count of items to be returned"""
@@ -7026,7 +7311,6 @@ type ProductManufacturer {
     aggregations: [Aggregation]
   ): ProductConnection
   translations: ProductManufacturerTranslationConnection!
-  catalog: Catalog
 }
 
 """The Result for a search that returns multiple Items"""
@@ -7059,8 +7343,7 @@ type ProductManufacturerTranslation {
   metaTitle: String
   metaDescription: String
   metaKeywords: String
-  catalogId: ID!
-  catalog: Catalog
+  attributes: Json
   productManufacturerId: ID!
   languageId: ID!
   createdAt: Date!
@@ -7097,7 +7380,6 @@ type ProductManufacturerTranslationEdge {
 type ProductMedia {
   id: ID!
   versionId: ID!
-  catalogId: ID!
   productId: ID!
   productVersionId: ID!
   mediaId: ID!
@@ -7106,7 +7388,7 @@ type ProductMedia {
   updatedAt: Date!
   product: Product
   media: Media
-  catalog: Catalog
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -7148,6 +7430,7 @@ type ProductPriceRule {
   product: Product
   currency: Currency
   rule: Rule
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -7188,6 +7471,7 @@ type ProductService {
   product: Product
   option: ConfigurationGroupOption
   tax: Tax
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -7222,6 +7506,7 @@ type ProductStream {
   updatedAt: Date!
   name: String
   description: String
+  attributes: String
   translations: ProductStreamTranslationConnection!
   filters(
     """The count of items to be returned"""
@@ -7276,14 +7561,16 @@ type ProductStreamEdge {
 
 type ProductStreamFilter {
   id: ID!
+  productStreamId: ID!
+  parentId: ID
   type: String!
   field: String
   operator: String
   value: String
   parameters: Json
   position: Int
-  productStreamId: ID!
-  parentId: ID
+  createdAt: Date!
+  updatedAt: Date!
   productStream: ProductStream
   parent: ProductStreamFilter
   queries(
@@ -7311,6 +7598,7 @@ type ProductStreamFilter {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): ProductStreamFilterConnection
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -7340,6 +7628,7 @@ type ProductStreamFilterEdge {
 type ProductStreamTranslation {
   name: String
   description: String
+  attributes: Json
   productStreamId: ID!
   languageId: ID!
   createdAt: Date!
@@ -7380,8 +7669,7 @@ type ProductTranslation {
   descriptionLong: String
   metaTitle: String
   packUnit: String
-  catalogId: ID!
-  catalog: Catalog
+  attributes: Json
   productId: ID!
   languageId: ID!
   createdAt: Date!
@@ -7410,6 +7698,42 @@ type ProductTranslationConnection {
 type ProductTranslationEdge {
   """The Node of the Edge that contains the real element"""
   node: ProductTranslation
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type ProductVisibility {
+  id: ID!
+  productId: ID!
+  productVersionId: ID!
+  salesChannelId: ID!
+  visibility: Int!
+  salesChannel: SalesChannel
+  product: Product
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+"""The Result for a search that returns multiple Items"""
+type ProductVisibilityConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [ProductVisibilityEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type ProductVisibilityEdge {
+  """The Node of the Edge that contains the real element"""
+  node: ProductVisibility
 
   """The cursor to the Item of the Edge"""
   cursor: ID
@@ -7598,6 +7922,32 @@ type Query {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): VersionCommitDataConnection
+  eventAction(id: ID!): EventAction
+  eventActions(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): EventActionConnection
   deadMessage(id: ID!): DeadMessage
   deadMessages(
     """The count of items to be returned"""
@@ -8091,6 +8441,32 @@ type Query {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): UserAccessKeyConnection
+  userRecovery(id: ID!): UserRecovery
+  userRecoveries(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): UserRecoveryConnection
   language(id: ID!): Language
   languages(
     """The count of items to be returned"""
@@ -8273,32 +8649,6 @@ type Query {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): SystemConfigConnection
-  catalog(id: ID!): Catalog
-  catalogs(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): CatalogConnection
   category(id: ID!, versionId: ID): Category
   categories(
     """The count of items to be returned"""
@@ -8661,6 +9011,58 @@ type Query {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): ProductServiceConnection
+  productVisibility(id: ID!): ProductVisibility
+  productVisibilities(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): ProductVisibilityConnection
+  navigation(id: ID!, versionId: ID): Navigation
+  navigations(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): NavigationConnection
   rule(id: ID!): Rule
   rules(
     """The count of items to be returned"""
@@ -9337,6 +9739,110 @@ type Query {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): NamedOptionalGroupConnection
+  calculatedPriceFieldTest(id: ID!, versionId: ID): CalculatedPriceFieldTest
+  calculatedPriceFieldTests(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): CalculatedPriceFieldTestConnection
+  root(id: ID!, versionId: ID): Root
+  roots(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): RootConnection
+  rootSub(id: ID!, versionId: ID): RootSub
+  rootSubs(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): RootSubConnection
+  rootSubMany(id: ID!, versionId: ID): RootSubMany
+  rootSubManies(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): RootSubManyConnection
 
   """Generates access keys for integrations."""
   generateIntegrationKey: IntegrationAccessKey
@@ -9397,13 +9903,134 @@ enum RangeOperator {
   LT
 }
 
+type Root {
+  id: ID!
+  versionId: ID!
+  name: String
+}
+
+"""The Result for a search that returns multiple Items"""
+type RootConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [RootEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type RootEdge {
+  """The Node of the Edge that contains the real element"""
+  node: Root
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type RootSub {
+  id: ID!
+  versionId: ID!
+  name: String
+  stock: Int
+  rootId: ID!
+  rootVersionId: ID!
+  manies(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): RootSubManyConnection
+}
+
+"""The Result for a search that returns multiple Items"""
+type RootSubConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [RootSubEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type RootSubEdge {
+  """The Node of the Edge that contains the real element"""
+  node: RootSub
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type RootSubMany {
+  id: ID!
+  versionId: ID!
+  name: String
+  subId: ID!
+  rootSubVersionId: ID!
+  sub: RootSub
+}
+
+"""The Result for a search that returns multiple Items"""
+type RootSubManyConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [RootSubManyEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type RootSubManyEdge {
+  """The Node of the Edge that contains the real element"""
+  node: RootSubMany
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
 type Rule {
   id: ID!
   name: String!
   priority: Int!
   description: String
-  payload: Json
   invalid: Boolean
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   conditions(
@@ -9517,6 +10144,7 @@ type RuleCondition {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): RuleConditionConnection
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -9575,40 +10203,18 @@ type SalesChannel {
   paymentMethodId: ID!
   shippingMethodId: ID!
   countryId: ID!
+  navigationId: ID
+  navigationVersionId: ID
   type: SalesChannelType
   name: String
   accessKey: String!
   configuration: Json
   active: Boolean
   taxCalculationType: String
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   translations: SalesChannelTranslationConnection!
-  catalogs(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): CatalogConnection
   currencies(
     """The count of items to be returned"""
     first: Int
@@ -9839,6 +10445,32 @@ type SalesChannel {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): SystemConfigConnection
+  navigation: Navigation
+  productVisibilities(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): ProductVisibilityConnection
   seoUrls(
     """The count of items to be returned"""
     first: Int
@@ -9894,6 +10526,7 @@ type SalesChannelDomain {
   language: Language
   currency: Currency
   snippetSet: SnippetSet
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -9931,6 +10564,7 @@ type SalesChannelEdge {
 
 type SalesChannelTranslation {
   name: String!
+  attributes: Json
   salesChannelId: ID!
   languageId: ID!
   createdAt: Date!
@@ -9972,6 +10606,7 @@ type SalesChannelType {
   manufacturer: String
   description: String
   descriptionLong: String
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   translations: SalesChannelTypeTranslationConnection!
@@ -10031,6 +10666,7 @@ type SalesChannelTypeTranslation {
   manufacturer: String
   description: String
   descriptionLong: String
+  attributes: Json
   salesChannelTypeId: ID!
   languageId: ID!
   createdAt: Date!
@@ -10129,6 +10765,7 @@ type SearchDocument {
   entity: String!
   keyword: String!
   ranking: Float!
+  attributes: Json
   language: Language
 }
 
@@ -10188,6 +10825,7 @@ type SeoUrl {
   seoPathInfo: String!
   isCanonical: Boolean
   isModified: Boolean
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   salesChannel: SalesChannel
@@ -10244,6 +10882,7 @@ type ShippingMethod {
   bindSql: String
   statusLink: String
   calculationSql: String
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   salesChannelDefaultAssignments(
@@ -10381,6 +11020,7 @@ type ShippingMethodPrice {
   quantityFrom: Float!
   price: Float!
   factor: Float!
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   shippingMethod: ShippingMethod
@@ -10414,6 +11054,7 @@ type ShippingMethodTranslation {
   name: String!
   description: String
   comment: String
+  attributes: Json
   shippingMethodId: ID!
   languageId: ID!
   createdAt: Date!
@@ -10452,6 +11093,7 @@ type Snippet {
   translationKey: String!
   value: String!
   author: String!
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   set: SnippetSet
@@ -10486,6 +11128,7 @@ type SnippetSet {
   name: String!
   baseFile: String!
   iso: String!
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   snippets(
@@ -10577,6 +11220,7 @@ type StateMachine {
   id: ID!
   technicalName: String!
   name: String
+  attributes: String
   states(
     """The count of items to be returned"""
     first: Int
@@ -10854,6 +11498,7 @@ type StateMachineState {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): OrderConnection
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   toStateMachineHistoryEntries(
@@ -10934,6 +11579,7 @@ type StateMachineStateEdge {
 
 type StateMachineStateTranslation {
   name: String!
+  attributes: Json
   stateMachineStateId: ID!
   languageId: ID!
   createdAt: Date!
@@ -10977,6 +11623,7 @@ type StateMachineTransition {
   toStateMachineState: StateMachineState
   createdAt: Date!
   updatedAt: Date!
+  attributes: Json
 }
 
 """The Result for a search that returns multiple Items"""
@@ -11005,6 +11652,7 @@ type StateMachineTransitionEdge {
 
 type StateMachineTranslation {
   name: String!
+  attributes: Json
   stateMachineId: ID!
   languageId: ID!
   createdAt: Date!
@@ -11076,6 +11724,7 @@ type Tax {
   id: ID!
   taxRate: Float!
   name: String!
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   products(
@@ -11158,6 +11807,7 @@ type Unit {
   id: ID!
   shortCode: String
   name: String
+  attributes: String
   createdAt: Date!
   updatedAt: Date!
   products(
@@ -11215,6 +11865,7 @@ type UnitEdge {
 type UnitTranslation {
   shortCode: String!
   name: String!
+  attributes: Json
   unitId: ID!
   languageId: ID!
   createdAt: Date!
@@ -11250,6 +11901,7 @@ type UnitTranslationEdge {
 type User {
   id: ID!
   localeId: ID!
+  avatarId: ID
   username: String!
   name: String!
   email: String!
@@ -11257,6 +11909,7 @@ type User {
   active: Boolean
   failedLogins: Int
   lockedUntil: Date
+  attributes: Json
   createdAt: Date!
   updatedAt: Date!
   locale: Locale
@@ -11342,8 +11995,9 @@ type UserAccessKey {
   userId: ID!
   accessKey: String!
   writeAccess: Boolean
-  createdAt: Date!
   lastUsageAt: Date
+  attributes: Json
+  createdAt: Date!
   user: User
 }
 
@@ -11390,6 +12044,37 @@ type UserConnection {
 type UserEdge {
   """The Node of the Edge that contains the real element"""
   node: User
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type UserRecovery {
+  id: ID!
+  hash: String!
+  userId: ID!
+  createdAt: Date!
+}
+
+"""The Result for a search that returns multiple Items"""
+type UserRecoveryConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [UserRecoveryEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type UserRecoveryEdge {
+  """The Node of the Edge that contains the real element"""
+  node: UserRecovery
 
   """The cursor to the Item of the Edge"""
   cursor: ID

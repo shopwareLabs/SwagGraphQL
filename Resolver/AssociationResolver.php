@@ -15,7 +15,9 @@ class AssociationResolver
         'node',
         'pageInfo',
         'aggregations',
-        'results'
+        'results',
+        'buckets',
+        'keys'
     ];
 
     /**

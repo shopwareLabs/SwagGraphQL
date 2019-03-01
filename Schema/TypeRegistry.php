@@ -103,7 +103,7 @@ class TypeRegistry
     public function getQuery(): ObjectType
     {
         $query = ObjectBuilder::create('Query');
-        foreach ($this->definitionRegistry->getElements() as $definition) {
+        foreach ($this->definitionRegistry->getDefinitions() as $definition) {
             if ($this->isTranslationDefinition($definition) || $this->isMappingDefinition($definition)) {
                 continue;
             }
@@ -134,7 +134,7 @@ class TypeRegistry
     public function getMutation(): ObjectType
     {
         $mutation = ObjectBuilder::create('Mutation');
-        foreach ($this->definitionRegistry->getElements() as $definition) {
+        foreach ($this->definitionRegistry->getDefinitions() as $definition) {
             if ($this->isTranslationDefinition($definition) || $this->isMappingDefinition($definition)) {
                 continue;
             }

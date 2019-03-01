@@ -4,15 +4,12 @@ namespace SwagGraphQL\Test\Resolver\Struct;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductEntity;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\AggregationResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\AggregationResultCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\AvgAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\AvgAggregationResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\MaxAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\MaxAggregationResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use SwagGraphQL\Resolver\Struct\ConnectionStruct;
@@ -33,8 +30,8 @@ class ConnectionStructTest extends TestCase
             100,
             new EntityCollection([$entity1, $entity2]),
             new AggregationResultCollection([
-                new MaxAggregationResult(new MaxAggregation('field', 'max'), 20),
-                new AvgAggregationResult(new AvgAggregation('field', 'avg'), 14)
+                new AggregationResult(new MaxAggregation('field', 'max'), [['key' => null, 'max' => 20]]),
+                new AggregationResult(new AvgAggregation('field', 'avg'), [['key' => null, 'avg' => 14]])
             ]),
             $criteria,
             Context::createDefaultContext()
@@ -49,15 +46,23 @@ class ConnectionStructTest extends TestCase
         static::assertEquals($entity2, $connection->getEdges()[1]->getNode());
         static::assertEquals(base64_encode('7'), $connection->getEdges()[1]->getCursor());
 
-        static::assertCount(2, $connection->getAggregations());
-        static::assertEquals('max', $connection->getAggregations()[0]->getName());
-        static::assertCount(1, $connection->getAggregations()[0]->getResults());
-        static::assertEquals('max', $connection->getAggregations()[0]->getResults()[0]->getType());
-        static::assertEquals(20, $connection->getAggregations()[0]->getResults()[0]->getResult());
-        static::assertEquals('avg', $connection->getAggregations()[1]->getName());
-        static::assertCount(1, $connection->getAggregations()[1]->getResults());
-        static::assertEquals('avg', $connection->getAggregations()[1]->getResults()[0]->getType());
-        static::assertEquals(14, $connection->getAggregations()[1]->getResults()[0]->getResult());
+        $aggregations = $connection->getAggregations();
+        static::assertCount(2, $aggregations);
+        static::assertEquals('max', $aggregations[0]->getName());
+        static::assertCount(1, $aggregations[0]->getBuckets());
+        $bucket = $aggregations[0]->getBuckets()[0];
+        static::assertEquals([], $bucket->getKeys());
+        static::assertCount(1, $bucket->getResults());
+        static::assertEquals('max', $bucket->getResults()[0]->getType());
+        static::assertEquals(20, $bucket->getResults()[0]->getResult());
+
+        static::assertEquals('avg', $aggregations[1]->getName());
+        static::assertCount(1, $aggregations[1]->getBuckets());
+        $bucket = $aggregations[1]->getBuckets()[0];
+        static::assertEquals([], $bucket->getKeys());
+        static::assertCount(1, $bucket->getResults());
+        static::assertEquals('avg', $bucket->getResults()[0]->getType());
+        static::assertEquals(14, $bucket->getResults()[0]->getResult());
 
         static::assertTrue($connection->getPageInfo()->getHasNextPage());
         static::assertEquals(base64_encode('15'), $connection->getPageInfo()->getEndCursor());

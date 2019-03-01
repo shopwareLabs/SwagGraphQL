@@ -4,9 +4,7 @@ namespace SwagGraphQL\Test\Schema;
 
 use GraphQL\Type\Schema;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagGraphQL\Schema\CustomTypes;
 use SwagGraphQL\Schema\SchemaFactory;
 use SwagGraphQL\Schema\TypeRegistry;
 

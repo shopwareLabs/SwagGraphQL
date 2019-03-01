@@ -3,7 +3,6 @@
 namespace SwagGraphQL\Types;
 
 use GraphQL\Error\Error;
-use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Type\Definition\ScalarType;
@@ -22,12 +21,11 @@ class DateType extends ScalarType
     public function serialize($value)
     {
         if (!$value instanceof \DateTimeInterface) {
-            $date = \DateTime::createFromFormat(DATE_ATOM, $value);
-            if ($date === false) {
+            try {
+                $value = new \DateTime($value);
+            } catch (\Exception $e) {
                 throw new Error("Could not serialize following Date: " . $value);
             }
-
-            return $value;
         }
 
         return $value->format(DATE_ATOM);

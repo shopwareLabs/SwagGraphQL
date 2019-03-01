@@ -27,7 +27,7 @@ class DissolveMediaFolderActionTest extends TestCase
     /** @var EntityRepositoryInterface */
     private $repository;
 
-    public function setUp()
+    public function setUp(): void
     {
         $registry = $this->getContainer()->get(DefinitionRegistry::class);
         $schema = SchemaFactory::createSchema($this->getContainer()->get(TypeRegistry::class));

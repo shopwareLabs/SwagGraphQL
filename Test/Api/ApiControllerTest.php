@@ -32,7 +32,7 @@ class ApiControllerTest extends TestCase
     /** @var EntityRepository */
     private $repository;
 
-    public function setUp()
+    public function setUp(): void
     {
         $registry = $this->getContainer()->get(DefinitionRegistry::class);
         $schema = SchemaFactory::createSchema($this->getContainer()->get(TypeRegistry::class));
@@ -602,9 +602,15 @@ class ApiControllerTest extends TestCase
 	                total
 	                aggregations {
 	                    name
-	                    results {
-	                        type
-	                        result
+	                    buckets {
+	                        keys {
+	                            field
+	                            value
+	                        }
+	                        results {
+	                            type
+	                            result
+	                        }
 	                    }
 	                }
 	            }
@@ -622,13 +628,117 @@ class ApiControllerTest extends TestCase
 
         $firstAggregation = $data['data']['products']['aggregations'][0];
         static::assertEquals('tax_sum', $firstAggregation['name']);
-        static::assertEquals('sum', $firstAggregation['results'][0]['type']);
-        static::assertEquals(52, $firstAggregation['results'][0]['result']);
+        static::assertCount(1, $firstAggregation['buckets']);
+        $bucket = $firstAggregation['buckets'][0];
+        static::assertCount(0, $bucket['keys']);
+        static::assertEquals('sum', $bucket['results'][0]['type']);
+        static::assertEquals(52, $bucket['results'][0]['result']);
 
         $secondAggregation = $data['data']['products']['aggregations'][1];
         static::assertEquals('tax_avg', $secondAggregation['name']);
-        static::assertEquals('avg', $secondAggregation['results'][0]['type']);
-        static::assertEquals(13, $secondAggregation['results'][0]['result']);
+        static::assertCount(1, $secondAggregation['buckets']);
+        $bucket = $secondAggregation['buckets'][0];
+        static::assertCount(0, $bucket['keys']);
+        static::assertEquals('avg', $bucket['results'][0]['type']);
+        static::assertEquals(13, $bucket['results'][0]['result']);
+    }
+
+    public function testQueryProductsWithGroupByAggregation()
+    {
+        $ids = [Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex()];
+        sort($ids);
+        $firstProductId = $ids[0];
+        $secondProductId = $ids[1];
+        $thirdProductId = $ids[2];
+        $fourthProductId = $ids[3];
+        $taxId = Uuid::uuid4()->getHex();
+
+        $products = [
+            [
+                'id' => $firstProductId,
+                'price' => ['gross' => 10, 'net' => 9],
+                'manufacturer' => ['name' => 'manufacturer1'],
+                'name' => 'z product',
+                'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+            ],
+            [
+                'id' => $secondProductId,
+                'price' => ['gross' => 10, 'net' => 9],
+                'manufacturer' => ['name' => 'manufacturer2'],
+                'name' => 'b product',
+                'tax' => ['id' => $taxId],
+            ],
+            [
+                'id' => $thirdProductId,
+                'price' => ['gross' => 10, 'net' => 9],
+                'manufacturer' => ['name' => 'manufacturer1'],
+                'name' => 'c product',
+                'tax' => ['id' => $taxId],
+            ],
+            [
+                'id' => $fourthProductId,
+                'price' => ['gross' => 10, 'net' => 9],
+                'manufacturer' => ['name' => 'manufacturer2'],
+                'name' => 'a product',
+                'tax' => ['id' => $taxId],
+            ],
+        ];
+
+        $this->repository->create($products, Context::createDefaultContext());
+
+        $query = '
+            query {
+	            products (
+	                aggregations: [
+	                    {
+	                        type: sum
+	                        field: "tax.taxRate"
+	                        name: "tax_sum"
+	                        groupByFields: ["product.manufacturer.name"]
+	                    }
+	                ]
+	            ) {
+	                total
+	                aggregations {
+	                    name
+	                    buckets {
+	                        keys {
+	                            field
+	                            value
+	                        }
+	                        results {
+	                            type
+	                            result
+	                        }
+	                    }
+	                }
+	            }
+            }
+        ';
+        $request = $this->createGraphqlRequestRequest($query);
+        $response = $this->apiController->query($request, $this->context);
+        static::assertEquals(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+        static::assertArrayNotHasKey('errors', $data, print_r($data, true));
+
+        static::assertEquals(4, $data['data']['products']['total']);
+
+        static::assertCount(1, $data['data']['products']['aggregations']);
+
+        $firstAggregation = $data['data']['products']['aggregations'][0];
+        static::assertEquals('tax_sum', $firstAggregation['name']);
+        static::assertCount(2, $firstAggregation['buckets']);
+        $firstBucket = $firstAggregation['buckets'][0];
+        static::assertEquals('product.manufacturer.name', $firstBucket['keys'][0]['field']);
+        static::assertEquals('manufacturer1', $firstBucket['keys'][0]['value']);
+        static::assertEquals('sum', $firstBucket['results'][0]['type']);
+        static::assertEquals(26, $firstBucket['results'][0]['result']);
+
+        $secondBucket = $firstAggregation['buckets'][1];
+        static::assertEquals('product.manufacturer.name', $secondBucket['keys'][0]['field']);
+        static::assertEquals('manufacturer2', $secondBucket['keys'][0]['value']);
+        static::assertEquals('sum', $secondBucket['results'][0]['type']);
+        static::assertEquals(26, $secondBucket['results'][0]['result']);
     }
 
     public function testQueryProductsIncludesManyToOne()

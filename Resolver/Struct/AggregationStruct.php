@@ -11,19 +11,25 @@ class AggregationStruct extends Struct
     /** @var string */
     protected $name;
 
-    /** @var AggregationResultStruct[] */
-    protected $results;
+    /** @var AggregationBucketStruct[] */
+    protected $buckets;
 
     public function getName(): string
     {
         return $this->name;
     }
 
-    public function getResults(): array
+    /**
+     * @return AggregationBucketStruct[]
+     */
+    public function getBuckets(): array
     {
-        return $this->results;
+        return $this->buckets;
     }
 
+    /**
+     * @return AggregationStruct[]
+     */
     public static function fromCollection(AggregationResultCollection $collection): array
     {
         $aggregations = [];
@@ -36,24 +42,14 @@ class AggregationStruct extends Struct
 
     public static function fromAggregationResult(AggregationResult $aggregation): AggregationStruct
     {
-        $results = [];
-        foreach ($aggregation->getResult() as $type => $result) {
-            if (is_array($result)) {
-                $results[] = (new AggregationResultStruct())->assign([
-                    'type' => strval($result['key']),
-                    'result' => (float)$result['count']
-                ]);
-                continue;
-            }
-            $results[] = (new AggregationResultStruct())->assign([
-                'type' => $type,
-                'result' => $result
-            ]);
+        $buckets = [];
+        foreach ($aggregation->getResult() as $result) {
+            $buckets[] = AggregationBucketStruct::fromAggregationBucket($result);
         }
 
         return (new AggregationStruct())->assign([
             'name' => $aggregation->getName(),
-            'results' => $results
+            'buckets' => $buckets
         ]);
     }
 }

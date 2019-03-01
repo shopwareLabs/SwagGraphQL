@@ -169,14 +169,27 @@ class CustomTypes
     {
         if (static::$aggregationResult === null) {
             static::$aggregationResult = ObjectBuilder::create('AggregationResults')
-                ->addField(FieldBuilder::create('name', Type::string())->setDescription('Name of the AggregationResults'))
-                ->addField(FieldBuilder::create('results', Type::listOf(
-                    ObjectBuilder::create('AggregationResult')
-                    ->addField(FieldBuilder::create('type', Type::string())->setDescription('The type of the aggregation'))
-                    ->addField(FieldBuilder::create('result', Type::string())->setDescription('The result of the aggregation'))
-                    ->setDescription('Contains the result of a single aggregation')
-                    ->build()
-                ))->setDescription('Contains an aggregationResult'))
+                ->addField(FieldBuilder::create('name', Type::string())->setDescription('Name of the aggregation'))
+                ->addField(FieldBuilder::create('buckets', Type::listOf(
+                    ObjectBuilder::create('AggregationBucket')
+                        ->addField(FieldBuilder::create('keys', Type::listOf(
+                            ObjectBuilder::create('AggregationKey')
+                                ->addField(FieldBuilder::create('field', Type::string())->setDescription('The field used to group the result'))
+                                ->addField(FieldBuilder::create('value', Type::string())->setDescription('The value for the groupByKey'))
+                                ->setDescription('A key of the Aggregation Bucket')
+                                ->build()
+                            ))->setDescription('The Keys of this aggregation bucket'))
+                        ->addField(FieldBuilder::create('results', Type::listOf(
+                            ObjectBuilder::create('AggregationResult')
+                                ->addField(FieldBuilder::create('type', Type::string())->setDescription('The type of the aggregation'))
+                                ->addField(FieldBuilder::create('result', Type::string())->setDescription('The result of the aggregation'))
+                                ->setDescription('Contains the result of a single aggregation')
+                                ->build()
+                        ))->setDescription('The result of the aggregation'))
+                        ->setDescription('Contains the result of a single aggregation')
+                        ->build()
+                ))
+                ->setDescription('Contains an aggregationResult'))
                 ->setDescription('Contains the results of the aggregations')
                 ->build();
         }
@@ -216,7 +229,8 @@ class CustomTypes
                 ->addLazyFieldCollection(function () { return FieldBuilderCollection::create()
                     ->addFieldBuilder(FieldBuilder::create('type', Type::nonNull(static::aggregationTypes()))->setDescription('The aggregation type'))
                     ->addFieldBuilder(FieldBuilder::create('name', Type::nonNull(Type::string()))->setDescription('The name of the aggregation'))
-                    ->addFieldBuilder(FieldBuilder::create('field', Type::nonNull(Type::string()))->setDescription('The field used to aggregate'));
+                    ->addFieldBuilder(FieldBuilder::create('field', Type::nonNull(Type::string()))->setDescription('The field used to aggregate'))
+                    ->addFieldBuilder(FieldBuilder::create('groupByFields', Type::listOf(Type::string()))->setDescription('The fields used to group the result'));
                 })
                 ->setDescription('A Aggregation the DAL should perform')
                 ->buildAsInput();

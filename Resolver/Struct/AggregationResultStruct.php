@@ -9,7 +9,6 @@ class AggregationResultStruct extends Struct
     /** @var string */
     protected $type;
 
-    /** @var float */
     protected $result;
 
     public function getType(): string
@@ -17,7 +16,7 @@ class AggregationResultStruct extends Struct
         return $this->type;
     }
 
-    public function getResult(): float
+    public function getResult()
     {
         return $this->result;
     }

@@ -42,7 +42,7 @@ class TypeRegistryTest extends TestCase
     /** @var TypeRegistry */
     private $typeRegistry;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->definitionRegistry = $this->createMock(DefinitionRegistry::class);
         $this->typeRegistry = new TypeRegistry(
@@ -56,7 +56,7 @@ class TypeRegistryTest extends TestCase
     public function testGetQueryForBaseEntity()
     {
         $this->definitionRegistry->expects($this->once())
-            ->method('getElements')
+            ->method('getDefinitions')
             ->willReturn([BaseEntity::class]);
 
         $query = $this->typeRegistry->getQuery();
@@ -90,7 +90,7 @@ class TypeRegistryTest extends TestCase
     public function testGetQueryForAssociationEntity()
     {
         $this->definitionRegistry->expects($this->once())
-            ->method('getElements')
+            ->method('getDefinitions')
             ->willReturn([AssociationEntity::class, ManyToManyEntity::class, ManyToOneEntity::class, MappingEntity::class]);
 
         $query = $this->typeRegistry->getQuery();
@@ -139,7 +139,7 @@ class TypeRegistryTest extends TestCase
     public function testGetQueryIgnoresTranslationEntity()
     {
         $this->definitionRegistry->expects($this->once())
-            ->method('getElements')
+            ->method('getDefinitions')
             ->willReturn([ProductTranslationDefinition::class]);
 
         $query = $this->typeRegistry->getQuery();
@@ -151,7 +151,7 @@ class TypeRegistryTest extends TestCase
     public function testGetQueryIgnoresMappingEntity()
     {
         $this->definitionRegistry->expects($this->once())
-            ->method('getElements')
+            ->method('getDefinitions')
             ->willReturn([ProductCategoryDefinition::class]);
 
         $query = $this->typeRegistry->getQuery();
@@ -163,7 +163,7 @@ class TypeRegistryTest extends TestCase
     public function testGetMutationForBaseEntity()
     {
         $this->definitionRegistry->expects($this->once())
-            ->method('getElements')
+            ->method('getDefinitions')
             ->willReturn([BaseEntity::class]);
 
         $query = $this->typeRegistry->getMutation();
@@ -225,7 +225,7 @@ class TypeRegistryTest extends TestCase
     public function testGetMutationForAssociationEntity()
     {
         $this->definitionRegistry->expects($this->once())
-            ->method('getElements')
+            ->method('getDefinitions')
             ->willReturn([AssociationEntity::class, ManyToManyEntity::class, ManyToOneEntity::class, MappingEntity::class]);
 
         $query = $this->typeRegistry->getMutation();
@@ -349,7 +349,7 @@ class TypeRegistryTest extends TestCase
     public function testGetMutationIgnoresTranslationEntity()
     {
         $this->definitionRegistry->expects($this->once())
-            ->method('getElements')
+            ->method('getDefinitions')
             ->willReturn([ProductTranslationDefinition::class]);
 
         $query = $this->typeRegistry->getMutation();
@@ -361,7 +361,7 @@ class TypeRegistryTest extends TestCase
     public function testGetMutationIgnoresMappingEntity()
     {
         $this->definitionRegistry->expects($this->once())
-            ->method('getElements')
+            ->method('getDefinitions')
             ->willReturn([ProductCategoryDefinition::class]);
 
         $query = $this->typeRegistry->getMutation();
@@ -373,7 +373,7 @@ class TypeRegistryTest extends TestCase
     public function testGetMutationWithDefault()
     {
         $this->definitionRegistry->expects($this->once())
-            ->method('getElements')
+            ->method('getDefinitions')
             ->willReturn([BaseEntityWithDefaults::class]);
 
         $query = $this->typeRegistry->getMutation();

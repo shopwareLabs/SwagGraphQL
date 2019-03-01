@@ -63,9 +63,21 @@ trait SchemaTestTrait
     {
         static::assertEquals('AggregationResults', $object->name);
         static::assertInstanceOf(StringType::class, $object->getField('name')->getType());
+        static::assertInstanceOf(ListOfType::class, $object->getField('buckets')->getType());
+        static::assertInstanceOf(ObjectType::class, $object->getField('buckets')->getType()->getWrappedType());
+        $this->assertAggregationBucket($object->getField('buckets')->getType()->getWrappedType());
+    }
+
+    private function assertAggregationBucket(ObjectType $object): void
+    {
+        static::assertEquals('AggregationBucket', $object->name);
         static::assertInstanceOf(ListOfType::class, $object->getField('results')->getType());
         static::assertInstanceOf(ObjectType::class, $object->getField('results')->getType()->getWrappedType());
         $this->assertAggregationResult($object->getField('results')->getType()->getWrappedType());
+
+        static::assertInstanceOf(ListOfType::class, $object->getField('keys')->getType());
+        static::assertInstanceOf(ObjectType::class, $object->getField('keys')->getType()->getWrappedType());
+        $this->assertAggregationKey($object->getField('keys')->getType()->getWrappedType());
     }
 
     private function assertAggregationResult(ObjectType $object): void
@@ -73,6 +85,13 @@ trait SchemaTestTrait
         static::assertEquals('AggregationResult', $object->name);
         static::assertInstanceOf(StringType::class, $object->getField('type')->getType());
         static::assertInstanceOf(StringType::class, $object->getField('result')->getType());
+    }
+
+    private function assertAggregationKey(ObjectType $object): void
+    {
+        static::assertEquals('AggregationKey', $object->name);
+        static::assertInstanceOf(StringType::class, $object->getField('field')->getType());
+        static::assertInstanceOf(StringType::class, $object->getField('value')->getType());
     }
 
     private function assertEdges(array $expectedFields, ObjectType $object): void

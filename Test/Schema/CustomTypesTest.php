@@ -14,7 +14,7 @@ class CustomTypesTest extends TestCase
 {
     private $customTypes;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->customTypes = new CustomTypes();
     }

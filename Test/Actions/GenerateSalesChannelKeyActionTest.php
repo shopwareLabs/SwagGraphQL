@@ -5,9 +5,6 @@ namespace SwagGraphQL\Test\Actions;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
-use Shopware\Core\Framework\Struct\Uuid;
 use SwagGraphQL\Api\ApiController;
 use SwagGraphQL\Resolver\QueryResolver;
 use SwagGraphQL\Schema\SchemaFactory;
@@ -26,7 +23,7 @@ class GenerateSalesChannelKeyActionTest extends TestCase
      */
     private $context;
 
-    public function setUp()
+    public function setUp(): void
     {
         $registry = $this->getContainer()->get(DefinitionRegistry::class);
         $schema = SchemaFactory::createSchema($this->getContainer()->get(TypeRegistry::class));

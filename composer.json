@@ -12,7 +12,7 @@
     }
   ],
   "require": {
-    "webonyx/graphql-php": "dev-master",
+    "webonyx/graphql-php": "dev-add-queryplan",
     "doctrine/inflector": "1.3.0"
   },
   "extra": {
@@ -21,6 +21,11 @@
     "label": {
       "de_DE": "GraphQL",
       "en_GB": "GraphQL"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "SwagGraphQL\\": ""
     }
   }
 }

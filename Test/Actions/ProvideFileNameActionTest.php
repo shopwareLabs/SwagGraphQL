@@ -3,14 +3,10 @@
 namespace SwagGraphQL\Test\Actions;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Media\MediaEntity;
-use Shopware\Core\Content\Media\MediaProtectionFlags;
-use Shopware\Core\Content\Media\Pathname\UrlGeneratorInterface;
 use Shopware\Core\Content\Test\Media\MediaFixtures;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use SwagGraphQL\Api\ApiController;
 use SwagGraphQL\Resolver\QueryResolver;
 use SwagGraphQL\Schema\SchemaFactory;
@@ -27,17 +23,16 @@ class ProvideFileNameActionTest extends TestCase
     /** @var Context */
     private $context;
 
-    /** @var RepositoryInterface */
+    /** @var EntityRepositoryInterface */
     private $repository;
 
-    public function setUp()
+    public function setUp(): void
     {
         $registry = $this->getContainer()->get(DefinitionRegistry::class);
         $schema = SchemaFactory::createSchema($this->getContainer()->get(TypeRegistry::class));
 
         $this->apiController = new ApiController($schema, new QueryResolver($this->getContainer(), $registry));
         $this->context = Context::createDefaultContext();
-        $this->context->getWriteProtection()->allow(MediaProtectionFlags::WRITE_META_INFO);
         $this->setFixtureContext($this->context);
 
         $this->repository = $this->getContainer()->get('media.repository');

@@ -30,11 +30,17 @@ class ConnectionStruct extends Struct
         return $this->pageInfo;
     }
 
+    /**
+     * @return EdgeStruct[]
+     */
     public function getEdges(): array
     {
         return $this->edges;
     }
 
+    /**
+     * @return AggregationStruct[]
+     */
     public function getAggregations(): array
     {
         return $this->aggregations;
