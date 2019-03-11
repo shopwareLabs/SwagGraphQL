@@ -463,6 +463,7 @@ type CmsBlock {
   id: ID!
   position: Int!
   type: String!
+  config: Json
   pageId: ID!
   page: CmsPage
   slots(
@@ -524,6 +525,7 @@ type CmsPage {
   name: String
   type: String!
   entity: String
+  config: Json
   attributes: String
   blocks(
     """The count of items to be returned"""
@@ -2167,6 +2169,7 @@ input InputCmsBlock {
   id: ID
   position: Int
   type: String
+  config: Json
   pageId: ID
   page: InputCmsPage
   slots: [InputCmsSlot]
@@ -2180,6 +2183,7 @@ input InputCmsPage {
   name: String
   type: String
   entity: String
+  config: Json
   attributes: String
   blocks: [InputCmsBlock]
   translations: [InputCmsPageTranslation]
@@ -2587,6 +2591,8 @@ input InputLanguage {
   cmsPageTranslations: [InputCmsPageTranslation]
   cmsSlotTranslations: [InputCmsSlotTranslation]
   navigationTranslations: [InputNavigationTranslation]
+  mailTemplateTranslations: [InputMailTemplateTranslation]
+  mailHeaderFooterTranslations: [InputMailHeaderFooterTranslation]
 }
 
 input InputListingFacet {
@@ -2661,6 +2667,66 @@ input InputLocaleTranslation {
   createdAt: Date
   updatedAt: Date
   locale: InputLocale
+  language: InputLanguage
+}
+
+input InputMailHeaderFooter {
+  id: ID
+  systemDefault: Boolean
+  name: String
+  description: String
+  headerHtml: String
+  headerPlain: String
+  footerHtml: String
+  footerPlain: String
+  createdAt: Date
+  updatedAt: Date
+  translations: [InputMailHeaderFooterTranslation]
+  salesChannels: [InputSalesChannel]
+}
+
+input InputMailHeaderFooterTranslation {
+  name: String
+  description: String
+  headerHtml: String
+  headerPlain: String
+  footerHtml: String
+  footerPlain: String
+  mailHeaderFooterId: ID
+  languageId: ID
+  createdAt: Date
+  updatedAt: Date
+  mailHeaderFooter: InputMailHeaderFooter
+  language: InputLanguage
+}
+
+input InputMailTemplate {
+  id: ID
+  senderMail: String
+  mailType: String
+  systemDefault: Boolean
+  senderName: String
+  description: String
+  subject: String
+  contentHtml: String
+  contentPlain: String
+  createdAt: Date
+  updatedAt: Date
+  translations: [InputMailTemplateTranslation]
+  salesChannels: [InputSalesChannel]
+}
+
+input InputMailTemplateTranslation {
+  senderName: String
+  description: String
+  subject: String
+  contentHtml: String
+  contentPlain: String
+  mailTemplateId: ID
+  languageId: ID
+  createdAt: Date
+  updatedAt: Date
+  mailTemplate: InputMailTemplate
   language: InputLanguage
 }
 
@@ -3026,6 +3092,7 @@ input InputPlugin {
   upgradeVersion: String
   installedAt: Date
   upgradedAt: Date
+  icon: String
   label: String
   description: String
   manufacturerLink: String
@@ -3326,9 +3393,11 @@ input InputRule {
   attributes: Json
   createdAt: Date
   updatedAt: Date
+  moduleTypes: Json
   conditions: [InputRuleCondition]
   discountSurcharges: [InputDiscountSurcharge]
   productPriceRules: [InputProductPriceRule]
+  shippingMethods: [InputShippingMethod]
 }
 
 input InputRuleCondition {
@@ -3354,6 +3423,7 @@ input InputSalesChannel {
   countryId: ID
   navigationId: ID
   navigationVersionId: ID
+  mailHeaderFooterId: ID
   type: InputSalesChannelType
   name: String
   accessKey: String
@@ -3380,6 +3450,8 @@ input InputSalesChannel {
   systemConfigs: [InputSystemConfig]
   navigation: InputNavigation
   productVisibilities: [InputProductVisibility]
+  mailHeaderFooter: InputMailHeaderFooter
+  mailTemplates: [InputMailTemplate]
   seoUrls: [InputSeoUrl]
 }
 
@@ -3480,30 +3552,13 @@ input InputSeoUrl {
 
 input InputShippingMethod {
   id: ID
-  type: Int
   bindShippingfree: Boolean
-  bindLaststock: Boolean
   name: String
   active: Boolean
-  position: Int
   calculation: Int
-  surchargeCalculation: Int
-  taxCalculation: Int
   minDeliveryTime: Int
   maxDeliveryTime: Int
   shippingFree: Float
-  bindTimeFrom: Int
-  bindTimeTo: Int
-  bindInstock: Boolean
-  bindWeekdayFrom: Int
-  bindWeekdayTo: Int
-  bindWeightFrom: Float
-  bindWeightTo: Float
-  bindPriceFrom: Float
-  bindPriceTo: Float
-  bindSql: String
-  statusLink: String
-  calculationSql: String
   attributes: String
   createdAt: Date
   updatedAt: Date
@@ -3514,6 +3569,7 @@ input InputShippingMethod {
   prices: [InputShippingMethodPrice]
   translations: [InputShippingMethodTranslation]
   salesChannels: [InputSalesChannel]
+  availabilityRules: [InputRule]
 }
 
 input InputShippingMethodPrice {
@@ -4620,6 +4676,56 @@ type Language {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): NavigationTranslationConnection
+  mailTemplateTranslations(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): MailTemplateTranslationConnection
+  mailHeaderFooterTranslations(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): MailHeaderFooterTranslationConnection
 }
 
 """The Result for a search that returns multiple Items"""
@@ -4908,6 +5014,210 @@ type LocaleTranslationConnection {
 type LocaleTranslationEdge {
   """The Node of the Edge that contains the real element"""
   node: LocaleTranslation
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type MailHeaderFooter {
+  id: ID!
+  systemDefault: Boolean
+  name: String
+  description: String
+  headerHtml: String
+  headerPlain: String
+  footerHtml: String
+  footerPlain: String
+  createdAt: Date!
+  updatedAt: Date!
+  translations: MailHeaderFooterTranslationConnection!
+  salesChannels(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): SalesChannelConnection
+}
+
+"""The Result for a search that returns multiple Items"""
+type MailHeaderFooterConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [MailHeaderFooterEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type MailHeaderFooterEdge {
+  """The Node of the Edge that contains the real element"""
+  node: MailHeaderFooter
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type MailHeaderFooterTranslation {
+  name: String
+  description: String
+  headerHtml: String
+  headerPlain: String
+  footerHtml: String
+  footerPlain: String
+  mailHeaderFooterId: ID!
+  languageId: ID!
+  createdAt: Date!
+  updatedAt: Date!
+  mailHeaderFooter: MailHeaderFooter
+  language: Language
+}
+
+"""The Result for a search that returns multiple Items"""
+type MailHeaderFooterTranslationConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [MailHeaderFooterTranslationEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type MailHeaderFooterTranslationEdge {
+  """The Node of the Edge that contains the real element"""
+  node: MailHeaderFooterTranslation
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type MailTemplate {
+  id: ID!
+  senderMail: String!
+  mailType: String
+  systemDefault: Boolean
+  senderName: String
+  description: String
+  subject: String
+  contentHtml: String
+  contentPlain: String
+  createdAt: Date!
+  updatedAt: Date!
+  translations: MailTemplateTranslationConnection!
+  salesChannels(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): SalesChannelConnection
+}
+
+"""The Result for a search that returns multiple Items"""
+type MailTemplateConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [MailTemplateEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type MailTemplateEdge {
+  """The Node of the Edge that contains the real element"""
+  node: MailTemplate
+
+  """The cursor to the Item of the Edge"""
+  cursor: ID
+}
+
+type MailTemplateTranslation {
+  senderName: String
+  description: String
+  subject: String
+  contentHtml: String
+  contentPlain: String
+  mailTemplateId: ID!
+  languageId: ID!
+  createdAt: Date!
+  updatedAt: Date!
+  mailTemplate: MailTemplate
+  language: Language
+}
+
+"""The Result for a search that returns multiple Items"""
+type MailTemplateTranslationConnection {
+  """The total of Items found by the Query"""
+  total: Int
+
+  """A List of the Items"""
+  edges: [MailTemplateTranslationEdge]
+
+  """Additional information for pagination"""
+  pageInfo: PageInfo
+
+  """the result of aggregations"""
+  aggregations: [AggregationResults]
+}
+
+"""Contains the information for one Edge"""
+type MailTemplateTranslationEdge {
+  """The Node of the Edge that contains the real element"""
+  node: MailTemplateTranslation
 
   """The cursor to the Item of the Edge"""
   cursor: ID
@@ -5453,9 +5763,6 @@ type MessageQueueStatsEdge {
 }
 
 type Mutation {
-  createSeoUrl(id: ID, salesChannelId: ID, name: String!, foreignKey: ID, pathInfo: String!, seoPathInfo: String!, isCanonical: Boolean, isModified: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, url: String): SeoUrl
-  updateSeoUrl(id: ID!, salesChannelId: ID, name: String, foreignKey: ID, pathInfo: String, seoPathInfo: String, isCanonical: Boolean, isModified: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, url: String): SeoUrl
-  deleteSeoUrl(id: ID!): ID
   createAttribute(id: ID, name: String!, type: String!, config: Json, attributeSetId: ID, attributeSet: InputAttributeSet, createdAt: Date, updatedAt: Date): Attribute
   updateAttribute(id: ID!, name: String, type: String, config: Json, attributeSetId: ID, attributeSet: InputAttributeSet, createdAt: Date, updatedAt: Date): Attribute
   deleteAttribute(id: ID!): ID
@@ -5465,10 +5772,10 @@ type Mutation {
   createAttributeSetRelation(id: ID, attributeSetId: ID, entityName: String!, attributeSet: InputAttributeSet, createdAt: Date, updatedAt: Date): AttributeSetRelation
   updateAttributeSetRelation(id: ID!, attributeSetId: ID, entityName: String, attributeSet: InputAttributeSet, createdAt: Date, updatedAt: Date): AttributeSetRelation
   deleteAttributeSetRelation(id: ID!): ID
-  createVersion(id: ID, name: String! = "Draft (2019-03-01 16:12:43.000)", createdAt: Date = "2019-03-01T16:12:43+01:00", updatedAt: Date, commits: [InputVersionCommit]): Version
+  createVersion(id: ID, name: String! = "Draft (2019-03-11 13:26:30.000)", createdAt: Date = "2019-03-11T13:26:30+01:00", updatedAt: Date, commits: [InputVersionCommit]): Version
   updateVersion(id: ID!, name: String, createdAt: Date, updatedAt: Date, commits: [InputVersionCommit]): Version
   deleteVersion(id: ID!): ID
-  createVersionCommit(id: ID, versionId: ID, userId: ID, integrationId: ID, autoIncrement: Int, isMerge: Boolean, message: String, createdAt: Date = "2019-03-01T16:12:43+01:00", data: [InputVersionCommitData], version: InputVersion): VersionCommit
+  createVersionCommit(id: ID, versionId: ID, userId: ID, integrationId: ID, autoIncrement: Int, isMerge: Boolean, message: String, createdAt: Date = "2019-03-11T13:26:30+01:00", data: [InputVersionCommitData], version: InputVersion): VersionCommit
   updateVersionCommit(id: ID!, versionId: ID, userId: ID, integrationId: ID, autoIncrement: Int, isMerge: Boolean, message: String, createdAt: Date, data: [InputVersionCommitData], version: InputVersion): VersionCommit
   deleteVersionCommit(id: ID!): ID
   createVersionCommitData(id: ID, versionCommitId: ID, commit: InputVersionCommit, userId: ID, integrationId: ID, autoIncrement: Int, entityName: String!, entityId: Json!, action: String!, payload: Json!, createdAt: Date): VersionCommitData
@@ -5483,14 +5790,14 @@ type Mutation {
   createMessageQueueStats(id: ID, name: String!, size: Int! = 0): MessageQueueStats
   updateMessageQueueStats(id: ID!, name: String, size: Int): MessageQueueStats
   deleteMessageQueueStats(id: ID!): ID
-  createPlugin(id: ID, name: String!, composerName: String, active: Boolean!, path: String, author: String, copyright: String, license: String, version: String!, upgradeVersion: String, installedAt: Date, upgradedAt: Date, label: String, description: String, manufacturerLink: String, supportLink: String, changelog: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputPluginTranslation], paymentMethods: [InputPaymentMethod]): Plugin
-  updatePlugin(id: ID!, name: String, composerName: String, active: Boolean, path: String, author: String, copyright: String, license: String, version: String, upgradeVersion: String, installedAt: Date, upgradedAt: Date, label: String, description: String, manufacturerLink: String, supportLink: String, changelog: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputPluginTranslation], paymentMethods: [InputPaymentMethod]): Plugin
+  createPlugin(id: ID, name: String!, composerName: String, active: Boolean, path: String, author: String, copyright: String, license: String, version: String!, upgradeVersion: String, installedAt: Date, upgradedAt: Date, icon: String, label: String, description: String, manufacturerLink: String, supportLink: String, changelog: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputPluginTranslation], paymentMethods: [InputPaymentMethod]): Plugin
+  updatePlugin(id: ID!, name: String, composerName: String, active: Boolean, path: String, author: String, copyright: String, license: String, version: String, upgradeVersion: String, installedAt: Date, upgradedAt: Date, icon: String, label: String, description: String, manufacturerLink: String, supportLink: String, changelog: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputPluginTranslation], paymentMethods: [InputPaymentMethod]): Plugin
   deletePlugin(id: ID!): ID
-  createScheduledTask(id: ID, name: String!, scheduledTaskClass: String!, runInterval: Int!, status: String!, lastExecutionTime: Date, nextExecutionTime: Date! = "2019-03-01T16:12:43+01:00", deadMessages: [InputDeadMessage]): ScheduledTask
+  createScheduledTask(id: ID, name: String!, scheduledTaskClass: String!, runInterval: Int!, status: String!, lastExecutionTime: Date, nextExecutionTime: Date! = "2019-03-11T13:26:30+01:00", deadMessages: [InputDeadMessage]): ScheduledTask
   updateScheduledTask(id: ID!, name: String, scheduledTaskClass: String, runInterval: Int, status: String, lastExecutionTime: Date, nextExecutionTime: Date, deadMessages: [InputDeadMessage]): ScheduledTask
   deleteScheduledTask(id: ID!): ID
-  createSalesChannel(id: ID, typeId: ID, languageId: ID, currencyId: ID, paymentMethodId: ID, shippingMethodId: ID, countryId: ID, navigationId: ID, navigationVersionId: ID, type: InputSalesChannelType, name: String, accessKey: String!, configuration: Json, active: Boolean, taxCalculationType: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTranslation], currencies: [InputCurrency], languages: [InputLanguage], countries: [InputCountry], paymentMethods: [InputPaymentMethod], shippingMethods: [InputShippingMethod], language: InputLanguage, currency: InputCurrency, paymentMethod: InputPaymentMethod, shippingMethod: InputShippingMethod, country: InputCountry, orders: [InputOrder], customers: [InputCustomer], domains: [InputSalesChannelDomain], systemConfigs: [InputSystemConfig], navigation: InputNavigation, productVisibilities: [InputProductVisibility], seoUrls: [InputSeoUrl]): SalesChannel
-  updateSalesChannel(id: ID!, typeId: ID, languageId: ID, currencyId: ID, paymentMethodId: ID, shippingMethodId: ID, countryId: ID, navigationId: ID, navigationVersionId: ID, type: InputSalesChannelType, name: String, accessKey: String, configuration: Json, active: Boolean, taxCalculationType: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTranslation], currencies: [InputCurrency], languages: [InputLanguage], countries: [InputCountry], paymentMethods: [InputPaymentMethod], shippingMethods: [InputShippingMethod], language: InputLanguage, currency: InputCurrency, paymentMethod: InputPaymentMethod, shippingMethod: InputShippingMethod, country: InputCountry, orders: [InputOrder], customers: [InputCustomer], domains: [InputSalesChannelDomain], systemConfigs: [InputSystemConfig], navigation: InputNavigation, productVisibilities: [InputProductVisibility], seoUrls: [InputSeoUrl]): SalesChannel
+  createSalesChannel(id: ID, typeId: ID, languageId: ID, currencyId: ID, paymentMethodId: ID, shippingMethodId: ID, countryId: ID, navigationId: ID, navigationVersionId: ID, mailHeaderFooterId: ID, type: InputSalesChannelType, name: String, accessKey: String!, configuration: Json, active: Boolean, taxCalculationType: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTranslation], currencies: [InputCurrency], languages: [InputLanguage], countries: [InputCountry], paymentMethods: [InputPaymentMethod], shippingMethods: [InputShippingMethod], language: InputLanguage, currency: InputCurrency, paymentMethod: InputPaymentMethod, shippingMethod: InputShippingMethod, country: InputCountry, orders: [InputOrder], customers: [InputCustomer], domains: [InputSalesChannelDomain], systemConfigs: [InputSystemConfig], navigation: InputNavigation, productVisibilities: [InputProductVisibility], mailHeaderFooter: InputMailHeaderFooter, mailTemplates: [InputMailTemplate], seoUrls: [InputSeoUrl]): SalesChannel
+  updateSalesChannel(id: ID!, typeId: ID, languageId: ID, currencyId: ID, paymentMethodId: ID, shippingMethodId: ID, countryId: ID, navigationId: ID, navigationVersionId: ID, mailHeaderFooterId: ID, type: InputSalesChannelType, name: String, accessKey: String, configuration: Json, active: Boolean, taxCalculationType: String, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputSalesChannelTranslation], currencies: [InputCurrency], languages: [InputLanguage], countries: [InputCountry], paymentMethods: [InputPaymentMethod], shippingMethods: [InputShippingMethod], language: InputLanguage, currency: InputCurrency, paymentMethod: InputPaymentMethod, shippingMethod: InputShippingMethod, country: InputCountry, orders: [InputOrder], customers: [InputCustomer], domains: [InputSalesChannelDomain], systemConfigs: [InputSystemConfig], navigation: InputNavigation, productVisibilities: [InputProductVisibility], mailHeaderFooter: InputMailHeaderFooter, mailTemplates: [InputMailTemplate], seoUrls: [InputSeoUrl]): SalesChannel
   deleteSalesChannel(id: ID!): ID
   createSalesChannelDomain(id: ID, url: String!, salesChannelId: ID, languageId: ID, currencyId: ID, snippetSetId: ID, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, language: InputLanguage, currency: InputCurrency, snippetSet: InputSnippetSet, attributes: Json): SalesChannelDomain
   updateSalesChannelDomain(id: ID!, url: String, salesChannelId: ID, languageId: ID, currencyId: ID, snippetSetId: ID, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, language: InputLanguage, currency: InputCurrency, snippetSet: InputSnippetSet, attributes: Json): SalesChannelDomain
@@ -5537,8 +5844,8 @@ type Mutation {
   createUserRecovery(id: ID, hash: String!, userId: ID, createdAt: Date): UserRecovery
   updateUserRecovery(id: ID!, hash: String, userId: ID, createdAt: Date): UserRecovery
   deleteUserRecovery(id: ID!): ID
-  createLanguage(id: ID, parentId: ID, localeId: ID, translationCodeId: ID, name: String!, attributes: Json, createdAt: Date, updatedAt: Date, parent: InputLanguage, locale: InputLocale, translationCode: InputLocale, children: [InputLanguage], salesChannels: [InputSalesChannel], salesChannelDefaultAssignments: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain], customers: [InputCustomer], categoryTranslations: [InputCategoryTranslation], countryStateTranslations: [InputCountryStateTranslation], countryTranslations: [InputCountryTranslation], currencyTranslations: [InputCurrencyTranslation], customerGroupTranslations: [InputCustomerGroupTranslation], listingFacetTranslations: [InputListingFacetTranslation], listingSortingTranslations: [InputListingSortingTranslation], localeTranslations: [InputLocaleTranslation], mediaTranslations: [InputMediaTranslation], paymentMethodTranslations: [InputPaymentMethodTranslation], productManufacturerTranslations: [InputProductManufacturerTranslation], productTranslations: [InputProductTranslation], shippingMethodTranslations: [InputShippingMethodTranslation], unitTranslations: [InputUnitTranslation], configurationGroupTranslations: [InputConfigurationGroupTranslation], configurationGroupOptionTranslations: [InputConfigurationGroupOptionTranslation], discountSurchargeTranslations: [InputDiscountSurchargeTranslation], salesChannelTranslations: [InputSalesChannelTranslation], salesChannelTypeTranslations: [InputSalesChannelTypeTranslation], searchDocuments: [InputSearchDocument], pluginTranslations: [InputPluginTranslation], productStreamTranslations: [InputProductStreamTranslation], stateMachineTranslations: [InputStateMachineTranslation], stateMachineStateTranslations: [InputStateMachineStateTranslation], cmsPageTranslations: [InputCmsPageTranslation], cmsSlotTranslations: [InputCmsSlotTranslation], navigationTranslations: [InputNavigationTranslation]): Language
-  updateLanguage(id: ID!, parentId: ID, localeId: ID, translationCodeId: ID, name: String, attributes: Json, createdAt: Date, updatedAt: Date, parent: InputLanguage, locale: InputLocale, translationCode: InputLocale, children: [InputLanguage], salesChannels: [InputSalesChannel], salesChannelDefaultAssignments: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain], customers: [InputCustomer], categoryTranslations: [InputCategoryTranslation], countryStateTranslations: [InputCountryStateTranslation], countryTranslations: [InputCountryTranslation], currencyTranslations: [InputCurrencyTranslation], customerGroupTranslations: [InputCustomerGroupTranslation], listingFacetTranslations: [InputListingFacetTranslation], listingSortingTranslations: [InputListingSortingTranslation], localeTranslations: [InputLocaleTranslation], mediaTranslations: [InputMediaTranslation], paymentMethodTranslations: [InputPaymentMethodTranslation], productManufacturerTranslations: [InputProductManufacturerTranslation], productTranslations: [InputProductTranslation], shippingMethodTranslations: [InputShippingMethodTranslation], unitTranslations: [InputUnitTranslation], configurationGroupTranslations: [InputConfigurationGroupTranslation], configurationGroupOptionTranslations: [InputConfigurationGroupOptionTranslation], discountSurchargeTranslations: [InputDiscountSurchargeTranslation], salesChannelTranslations: [InputSalesChannelTranslation], salesChannelTypeTranslations: [InputSalesChannelTypeTranslation], searchDocuments: [InputSearchDocument], pluginTranslations: [InputPluginTranslation], productStreamTranslations: [InputProductStreamTranslation], stateMachineTranslations: [InputStateMachineTranslation], stateMachineStateTranslations: [InputStateMachineStateTranslation], cmsPageTranslations: [InputCmsPageTranslation], cmsSlotTranslations: [InputCmsSlotTranslation], navigationTranslations: [InputNavigationTranslation]): Language
+  createLanguage(id: ID, parentId: ID, localeId: ID, translationCodeId: ID, name: String!, attributes: Json, createdAt: Date, updatedAt: Date, parent: InputLanguage, locale: InputLocale, translationCode: InputLocale, children: [InputLanguage], salesChannels: [InputSalesChannel], salesChannelDefaultAssignments: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain], customers: [InputCustomer], categoryTranslations: [InputCategoryTranslation], countryStateTranslations: [InputCountryStateTranslation], countryTranslations: [InputCountryTranslation], currencyTranslations: [InputCurrencyTranslation], customerGroupTranslations: [InputCustomerGroupTranslation], listingFacetTranslations: [InputListingFacetTranslation], listingSortingTranslations: [InputListingSortingTranslation], localeTranslations: [InputLocaleTranslation], mediaTranslations: [InputMediaTranslation], paymentMethodTranslations: [InputPaymentMethodTranslation], productManufacturerTranslations: [InputProductManufacturerTranslation], productTranslations: [InputProductTranslation], shippingMethodTranslations: [InputShippingMethodTranslation], unitTranslations: [InputUnitTranslation], configurationGroupTranslations: [InputConfigurationGroupTranslation], configurationGroupOptionTranslations: [InputConfigurationGroupOptionTranslation], discountSurchargeTranslations: [InputDiscountSurchargeTranslation], salesChannelTranslations: [InputSalesChannelTranslation], salesChannelTypeTranslations: [InputSalesChannelTypeTranslation], searchDocuments: [InputSearchDocument], pluginTranslations: [InputPluginTranslation], productStreamTranslations: [InputProductStreamTranslation], stateMachineTranslations: [InputStateMachineTranslation], stateMachineStateTranslations: [InputStateMachineStateTranslation], cmsPageTranslations: [InputCmsPageTranslation], cmsSlotTranslations: [InputCmsSlotTranslation], navigationTranslations: [InputNavigationTranslation], mailTemplateTranslations: [InputMailTemplateTranslation], mailHeaderFooterTranslations: [InputMailHeaderFooterTranslation]): Language
+  updateLanguage(id: ID!, parentId: ID, localeId: ID, translationCodeId: ID, name: String, attributes: Json, createdAt: Date, updatedAt: Date, parent: InputLanguage, locale: InputLocale, translationCode: InputLocale, children: [InputLanguage], salesChannels: [InputSalesChannel], salesChannelDefaultAssignments: [InputSalesChannel], salesChannelDomains: [InputSalesChannelDomain], customers: [InputCustomer], categoryTranslations: [InputCategoryTranslation], countryStateTranslations: [InputCountryStateTranslation], countryTranslations: [InputCountryTranslation], currencyTranslations: [InputCurrencyTranslation], customerGroupTranslations: [InputCustomerGroupTranslation], listingFacetTranslations: [InputListingFacetTranslation], listingSortingTranslations: [InputListingSortingTranslation], localeTranslations: [InputLocaleTranslation], mediaTranslations: [InputMediaTranslation], paymentMethodTranslations: [InputPaymentMethodTranslation], productManufacturerTranslations: [InputProductManufacturerTranslation], productTranslations: [InputProductTranslation], shippingMethodTranslations: [InputShippingMethodTranslation], unitTranslations: [InputUnitTranslation], configurationGroupTranslations: [InputConfigurationGroupTranslation], configurationGroupOptionTranslations: [InputConfigurationGroupOptionTranslation], discountSurchargeTranslations: [InputDiscountSurchargeTranslation], salesChannelTranslations: [InputSalesChannelTranslation], salesChannelTypeTranslations: [InputSalesChannelTypeTranslation], searchDocuments: [InputSearchDocument], pluginTranslations: [InputPluginTranslation], productStreamTranslations: [InputProductStreamTranslation], stateMachineTranslations: [InputStateMachineTranslation], stateMachineStateTranslations: [InputStateMachineStateTranslation], cmsPageTranslations: [InputCmsPageTranslation], cmsSlotTranslations: [InputCmsSlotTranslation], navigationTranslations: [InputNavigationTranslation], mailTemplateTranslations: [InputMailTemplateTranslation], mailHeaderFooterTranslations: [InputMailHeaderFooterTranslation]): Language
   deleteLanguage(id: ID!): ID
   createIntegration(id: ID, label: String!, accessKey: String!, writeAccess: Boolean, lastUsageAt: Date, attributes: Json, createdAt: Date, updatedAt: Date): Integration
   updateIntegration(id: ID!, label: String, accessKey: String, writeAccess: Boolean, lastUsageAt: Date, attributes: Json, createdAt: Date, updatedAt: Date): Integration
@@ -5558,7 +5865,7 @@ type Mutation {
   createSystemConfig(id: ID, namespace: String!, configurationKey: String!, configurationValue: String!, createdAt: Date, updatedAt: Date, salesChannelId: ID, salesChannel: InputSalesChannel): SystemConfig
   updateSystemConfig(id: ID!, namespace: String, configurationKey: String, configurationValue: String, createdAt: Date, updatedAt: Date, salesChannelId: ID, salesChannel: InputSalesChannel): SystemConfig
   deleteSystemConfig(id: ID!): ID
-  createCategory(id: ID, versionId: ID, parentId: ID, parentVersionId: ID, afterCategoryId: ID, afterCategoryVersionId: ID, mediaId: ID, displayNestedProducts: Boolean! = true, autoIncrement: Int, path: String, level: Int, template: String, active: Boolean, isBlog: Boolean, external: String, hideFilter: Boolean, hideTop: Boolean, productBoxLayout: String, hideSortings: Boolean, sortingIds: String, facetIds: String, childCount: Int, createdAt: Date, updatedAt: Date, name: String, metaKeywords: String, metaTitle: String, metaDescription: String, cmsHeadline: String, cmsDescription: String, attributes: String, parent: InputCategory, media: InputMedia, children: [InputCategory], translations: [InputCategoryTranslation], products: [InputProduct], nestedProducts: [InputProduct], navigations: [InputNavigation], canonicalUrl: InputSeoUrl): Category
+  createCategory(id: ID, versionId: ID, parentId: ID, parentVersionId: ID, afterCategoryId: ID, afterCategoryVersionId: ID, mediaId: ID, displayNestedProducts: Boolean! = true, autoIncrement: Int, path: String, level: Int, template: String, active: Boolean = false, isBlog: Boolean, external: String, hideFilter: Boolean, hideTop: Boolean, productBoxLayout: String, hideSortings: Boolean, sortingIds: String, facetIds: String, childCount: Int, createdAt: Date, updatedAt: Date, name: String, metaKeywords: String, metaTitle: String, metaDescription: String, cmsHeadline: String, cmsDescription: String, attributes: String, parent: InputCategory, media: InputMedia, children: [InputCategory], translations: [InputCategoryTranslation], products: [InputProduct], nestedProducts: [InputProduct], navigations: [InputNavigation], canonicalUrl: InputSeoUrl): Category
   updateCategory(id: ID!, versionId: ID, parentId: ID, parentVersionId: ID, afterCategoryId: ID, afterCategoryVersionId: ID, mediaId: ID, displayNestedProducts: Boolean, autoIncrement: Int, path: String, level: Int, template: String, active: Boolean, isBlog: Boolean, external: String, hideFilter: Boolean, hideTop: Boolean, productBoxLayout: String, hideSortings: Boolean, sortingIds: String, facetIds: String, childCount: Int, createdAt: Date, updatedAt: Date, name: String, metaKeywords: String, metaTitle: String, metaDescription: String, cmsHeadline: String, cmsDescription: String, attributes: String, parent: InputCategory, media: InputMedia, children: [InputCategory], translations: [InputCategoryTranslation], products: [InputProduct], nestedProducts: [InputProduct], navigations: [InputNavigation], canonicalUrl: InputSeoUrl): Category
   deleteCategory(id: ID!, versionId: ID): ID
   createMedia(id: ID, userId: ID, mediaFolderId: ID, mimeType: String, fileExtension: String, uploadedAt: Date, fileName: String, fileSize: Int, metaData: Json, mediaType: Json, createdAt: Date, updatedAt: Date, alt: String, title: String, url: String, attributes: String, user: InputUser, categories: [InputCategory], productManufacturers: [InputProductManufacturer], productMedia: [InputProductMedia], translations: [InputMediaTranslation], thumbnails: [InputMediaThumbnail], hasFile: Boolean, mediaFolder: InputMediaFolder, configurationGroupOptions: [InputConfigurationGroupOption]): Media
@@ -5606,10 +5913,10 @@ type Mutation {
   createNavigation(id: ID, versionId: ID, parentId: ID, parentVersionId: ID, categoryId: ID, categoryVersionId: ID, category: InputCategory, cmsPageId: ID, cmsPage: InputCmsPage, name: String, slotConfig: String, level: Int, path: String, childCount: Int, createdAt: Date, updatedAt: Date, translations: [InputNavigationTranslation], children: [InputNavigation], parent: InputNavigation, salesChannelNavigations: [InputSalesChannel]): Navigation
   updateNavigation(id: ID!, versionId: ID, parentId: ID, parentVersionId: ID, categoryId: ID, categoryVersionId: ID, category: InputCategory, cmsPageId: ID, cmsPage: InputCmsPage, name: String, slotConfig: String, level: Int, path: String, childCount: Int, createdAt: Date, updatedAt: Date, translations: [InputNavigationTranslation], children: [InputNavigation], parent: InputNavigation, salesChannelNavigations: [InputSalesChannel]): Navigation
   deleteNavigation(id: ID!, versionId: ID): ID
-  createRule(id: ID, name: String!, priority: Int!, description: String, invalid: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, conditions: [InputRuleCondition], discountSurcharges: [InputDiscountSurcharge], productPriceRules: [InputProductPriceRule]): Rule
-  updateRule(id: ID!, name: String, priority: Int, description: String, invalid: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, conditions: [InputRuleCondition], discountSurcharges: [InputDiscountSurcharge], productPriceRules: [InputProductPriceRule]): Rule
+  createRule(id: ID, name: String!, priority: Int!, description: String, invalid: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, moduleTypes: Json, conditions: [InputRuleCondition], discountSurcharges: [InputDiscountSurcharge], productPriceRules: [InputProductPriceRule], shippingMethods: [InputShippingMethod]): Rule
+  updateRule(id: ID!, name: String, priority: Int, description: String, invalid: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, moduleTypes: Json, conditions: [InputRuleCondition], discountSurcharges: [InputDiscountSurcharge], productPriceRules: [InputProductPriceRule], shippingMethods: [InputShippingMethod]): Rule
   deleteRule(id: ID!): ID
-  createRuleCondition(id: ID, type: String!, ruleId: ID, parentId: ID, value: Json, position: Int, rule: InputRule, parent: InputRuleCondition, children: [InputRuleCondition], attributes: Json): RuleCondition
+  createRuleCondition(id: ID, type: String, ruleId: ID, parentId: ID, value: Json, position: Int, rule: InputRule, parent: InputRuleCondition, children: [InputRuleCondition], attributes: Json): RuleCondition
   updateRuleCondition(id: ID!, type: String, ruleId: ID, parentId: ID, value: Json, position: Int, rule: InputRule, parent: InputRuleCondition, children: [InputRuleCondition], attributes: Json): RuleCondition
   deleteRuleCondition(id: ID!): ID
   createProductStream(id: ID, apiFilter: Json, invalid: Boolean, createdAt: Date, updatedAt: Date, name: String, description: String, attributes: String, translations: [InputProductStreamTranslation], filters: [InputProductStreamFilter]): ProductStream
@@ -5624,15 +5931,21 @@ type Mutation {
   createConfigurationGroupOption(id: ID, groupId: ID, name: String, position: String, colorHexCode: String, mediaId: ID, attributes: String, createdAt: Date, updatedAt: Date, media: InputMedia, group: InputConfigurationGroup, translations: [InputConfigurationGroupOptionTranslation], productConfigurators: [InputProductConfigurator], productServices: [InputProductService], productDatasheets: [InputProduct], productVariations: [InputProduct]): ConfigurationGroupOption
   updateConfigurationGroupOption(id: ID!, groupId: ID, name: String, position: String, colorHexCode: String, mediaId: ID, attributes: String, createdAt: Date, updatedAt: Date, media: InputMedia, group: InputConfigurationGroup, translations: [InputConfigurationGroupOptionTranslation], productConfigurators: [InputProductConfigurator], productServices: [InputProductService], productDatasheets: [InputProduct], productVariations: [InputProduct]): ConfigurationGroupOption
   deleteConfigurationGroupOption(id: ID!): ID
-  createCmsPage(id: ID, name: String, type: String!, entity: String, attributes: String, blocks: [InputCmsBlock], translations: [InputCmsPageTranslation], navigations: [InputNavigation], createdAt: Date, updatedAt: Date): CmsPage
-  updateCmsPage(id: ID!, name: String, type: String, entity: String, attributes: String, blocks: [InputCmsBlock], translations: [InputCmsPageTranslation], navigations: [InputNavigation], createdAt: Date, updatedAt: Date): CmsPage
+  createCmsPage(id: ID, name: String, type: String!, entity: String, config: Json, attributes: String, blocks: [InputCmsBlock], translations: [InputCmsPageTranslation], navigations: [InputNavigation], createdAt: Date, updatedAt: Date): CmsPage
+  updateCmsPage(id: ID!, name: String, type: String, entity: String, config: Json, attributes: String, blocks: [InputCmsBlock], translations: [InputCmsPageTranslation], navigations: [InputNavigation], createdAt: Date, updatedAt: Date): CmsPage
   deleteCmsPage(id: ID!): ID
-  createCmsBlock(id: ID, position: Int!, type: String!, pageId: ID, page: InputCmsPage, slots: [InputCmsSlot], createdAt: Date, updatedAt: Date, attributes: Json): CmsBlock
-  updateCmsBlock(id: ID!, position: Int, type: String, pageId: ID, page: InputCmsPage, slots: [InputCmsSlot], createdAt: Date, updatedAt: Date, attributes: Json): CmsBlock
+  createCmsBlock(id: ID, position: Int!, type: String!, config: Json, pageId: ID, page: InputCmsPage, slots: [InputCmsSlot], createdAt: Date, updatedAt: Date, attributes: Json): CmsBlock
+  updateCmsBlock(id: ID!, position: Int, type: String, config: Json, pageId: ID, page: InputCmsPage, slots: [InputCmsSlot], createdAt: Date, updatedAt: Date, attributes: Json): CmsBlock
   deleteCmsBlock(id: ID!): ID
   createCmsSlot(id: ID, versionId: ID, type: String!, slot: String!, config: String, attributes: String, data: Json, blockId: ID, block: InputCmsBlock, translations: [InputCmsSlotTranslation], createdAt: Date, updatedAt: Date): CmsSlot
   updateCmsSlot(id: ID!, versionId: ID, type: String, slot: String, config: String, attributes: String, data: Json, blockId: ID, block: InputCmsBlock, translations: [InputCmsSlotTranslation], createdAt: Date, updatedAt: Date): CmsSlot
   deleteCmsSlot(id: ID!, versionId: ID): ID
+  createMailTemplate(id: ID, senderMail: String!, mailType: String, systemDefault: Boolean, senderName: String, description: String, subject: String, contentHtml: String, contentPlain: String, createdAt: Date, updatedAt: Date, translations: [InputMailTemplateTranslation], salesChannels: [InputSalesChannel]): MailTemplate
+  updateMailTemplate(id: ID!, senderMail: String, mailType: String, systemDefault: Boolean, senderName: String, description: String, subject: String, contentHtml: String, contentPlain: String, createdAt: Date, updatedAt: Date, translations: [InputMailTemplateTranslation], salesChannels: [InputSalesChannel]): MailTemplate
+  deleteMailTemplate(id: ID!): ID
+  createMailHeaderFooter(id: ID, systemDefault: Boolean, name: String, description: String, headerHtml: String, headerPlain: String, footerHtml: String, footerPlain: String, createdAt: Date, updatedAt: Date, translations: [InputMailHeaderFooterTranslation], salesChannels: [InputSalesChannel]): MailHeaderFooter
+  updateMailHeaderFooter(id: ID!, systemDefault: Boolean, name: String, description: String, headerHtml: String, headerPlain: String, footerHtml: String, footerPlain: String, createdAt: Date, updatedAt: Date, translations: [InputMailHeaderFooterTranslation], salesChannels: [InputSalesChannel]): MailHeaderFooter
+  deleteMailHeaderFooter(id: ID!): ID
   createCustomer(id: ID, groupId: ID, defaultPaymentMethodId: ID, salesChannelId: ID, languageId: ID, lastPaymentMethodId: ID, defaultBillingAddressId: ID, defaultShippingAddressId: ID, autoIncrement: Int, customerNumber: String!, salutation: String, firstName: String!, lastName: String!, company: String, email: String!, title: String, encoder: String, active: Boolean, guest: Boolean, confirmationKey: String, firstLogin: Date, lastLogin: Date, sessionId: String, newsletter: Boolean, validation: String, affiliate: Boolean, referer: String, internalComment: String, failedLogins: Int, lockedUntil: Date, birthday: Date, attributes: Json, createdAt: Date, updatedAt: Date, group: InputCustomerGroup, defaultPaymentMethod: InputPaymentMethod, salesChannel: InputSalesChannel, language: InputLanguage, lastPaymentMethod: InputPaymentMethod, defaultBillingAddress: InputCustomerAddress, defaultShippingAddress: InputCustomerAddress, addresses: [InputCustomerAddress], orderCustomers: [InputOrderCustomer], searchKeywords: [InputSearchDocument]): Customer
   updateCustomer(id: ID!, groupId: ID, defaultPaymentMethodId: ID, salesChannelId: ID, languageId: ID, lastPaymentMethodId: ID, defaultBillingAddressId: ID, defaultShippingAddressId: ID, autoIncrement: Int, customerNumber: String, salutation: String, firstName: String, lastName: String, company: String, email: String, title: String, encoder: String, active: Boolean, guest: Boolean, confirmationKey: String, firstLogin: Date, lastLogin: Date, sessionId: String, newsletter: Boolean, validation: String, affiliate: Boolean, referer: String, internalComment: String, failedLogins: Int, lockedUntil: Date, birthday: Date, attributes: Json, createdAt: Date, updatedAt: Date, group: InputCustomerGroup, defaultPaymentMethod: InputPaymentMethod, salesChannel: InputSalesChannel, language: InputLanguage, lastPaymentMethod: InputPaymentMethod, defaultBillingAddress: InputCustomerAddress, defaultShippingAddress: InputCustomerAddress, addresses: [InputCustomerAddress], orderCustomers: [InputOrderCustomer], searchKeywords: [InputSearchDocument]): Customer
   deleteCustomer(id: ID!): ID
@@ -5669,8 +5982,8 @@ type Mutation {
   createPaymentMethod(id: ID, pluginId: ID, technicalName: String!, name: String, additionalDescription: String, template: String, class: String, percentageSurcharge: Float, absoluteSurcharge: Float, surchargeString: String, position: Int, active: Boolean, riskRules: String, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], plugin: InputPlugin, customers: [InputCustomer], orders: [InputOrder], orderTransactions: [InputOrderTransaction], translations: [InputPaymentMethodTranslation], salesChannels: [InputSalesChannel]): PaymentMethod
   updatePaymentMethod(id: ID!, pluginId: ID, technicalName: String, name: String, additionalDescription: String, template: String, class: String, percentageSurcharge: Float, absoluteSurcharge: Float, surchargeString: String, position: Int, active: Boolean, riskRules: String, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], plugin: InputPlugin, customers: [InputCustomer], orders: [InputOrder], orderTransactions: [InputOrderTransaction], translations: [InputPaymentMethodTranslation], salesChannels: [InputSalesChannel]): PaymentMethod
   deletePaymentMethod(id: ID!): ID
-  createShippingMethod(id: ID, type: Int!, bindShippingfree: Boolean!, bindLaststock: Boolean, name: String, active: Boolean, position: Int, calculation: Int, surchargeCalculation: Int, taxCalculation: Int, minDeliveryTime: Int, maxDeliveryTime: Int, shippingFree: Float, bindTimeFrom: Int, bindTimeTo: Int, bindInstock: Boolean, bindWeekdayFrom: Int, bindWeekdayTo: Int, bindWeightFrom: Float, bindWeightTo: Float, bindPriceFrom: Float, bindPriceTo: Float, bindSql: String, statusLink: String, calculationSql: String, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], description: String, comment: String, orderDeliveries: [InputOrderDelivery], prices: [InputShippingMethodPrice], translations: [InputShippingMethodTranslation], salesChannels: [InputSalesChannel]): ShippingMethod
-  updateShippingMethod(id: ID!, type: Int, bindShippingfree: Boolean, bindLaststock: Boolean, name: String, active: Boolean, position: Int, calculation: Int, surchargeCalculation: Int, taxCalculation: Int, minDeliveryTime: Int, maxDeliveryTime: Int, shippingFree: Float, bindTimeFrom: Int, bindTimeTo: Int, bindInstock: Boolean, bindWeekdayFrom: Int, bindWeekdayTo: Int, bindWeightFrom: Float, bindWeightTo: Float, bindPriceFrom: Float, bindPriceTo: Float, bindSql: String, statusLink: String, calculationSql: String, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], description: String, comment: String, orderDeliveries: [InputOrderDelivery], prices: [InputShippingMethodPrice], translations: [InputShippingMethodTranslation], salesChannels: [InputSalesChannel]): ShippingMethod
+  createShippingMethod(id: ID, bindShippingfree: Boolean!, name: String, active: Boolean, calculation: Int, minDeliveryTime: Int, maxDeliveryTime: Int, shippingFree: Float, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], description: String, comment: String, orderDeliveries: [InputOrderDelivery], prices: [InputShippingMethodPrice], translations: [InputShippingMethodTranslation], salesChannels: [InputSalesChannel], availabilityRules: [InputRule]): ShippingMethod
+  updateShippingMethod(id: ID!, bindShippingfree: Boolean, name: String, active: Boolean, calculation: Int, minDeliveryTime: Int, maxDeliveryTime: Int, shippingFree: Float, attributes: String, createdAt: Date, updatedAt: Date, salesChannelDefaultAssignments: [InputSalesChannel], description: String, comment: String, orderDeliveries: [InputOrderDelivery], prices: [InputShippingMethodPrice], translations: [InputShippingMethodTranslation], salesChannels: [InputSalesChannel], availabilityRules: [InputRule]): ShippingMethod
   deleteShippingMethod(id: ID!): ID
   createShippingMethodPrice(id: ID, shippingMethodId: ID, quantityFrom: Float!, price: Float!, factor: Float!, attributes: Json, createdAt: Date, updatedAt: Date, shippingMethod: InputShippingMethod): ShippingMethodPrice
   updateShippingMethodPrice(id: ID!, shippingMethodId: ID, quantityFrom: Float, price: Float, factor: Float, attributes: Json, createdAt: Date, updatedAt: Date, shippingMethod: InputShippingMethod): ShippingMethodPrice
@@ -5678,6 +5991,9 @@ type Mutation {
   createDiscountSurcharge(id: ID, name: String, ruleId: ID, type: String!, amount: Float!, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputDiscountSurchargeTranslation], rule: InputRule): DiscountSurcharge
   updateDiscountSurcharge(id: ID!, name: String, ruleId: ID, type: String, amount: Float, attributes: String, createdAt: Date, updatedAt: Date, translations: [InputDiscountSurchargeTranslation], rule: InputRule): DiscountSurcharge
   deleteDiscountSurcharge(id: ID!): ID
+  createSeoUrl(id: ID, salesChannelId: ID, name: String!, foreignKey: ID, pathInfo: String!, seoPathInfo: String!, isCanonical: Boolean, isModified: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, url: String): SeoUrl
+  updateSeoUrl(id: ID!, salesChannelId: ID, name: String, foreignKey: ID, pathInfo: String, seoPathInfo: String, isCanonical: Boolean, isModified: Boolean, attributes: Json, createdAt: Date, updatedAt: Date, salesChannel: InputSalesChannel, url: String): SeoUrl
+  deleteSeoUrl(id: ID!): ID
   createNamed(id: ID, name: String!, optionalGroupId: ID, optionalGroup: InputNamedOptionalGroup): Named
   updateNamed(id: ID!, name: String, optionalGroupId: ID, optionalGroup: InputNamedOptionalGroup): Named
   deleteNamed(id: ID!): ID
@@ -6762,7 +7078,7 @@ type Plugin {
   id: ID!
   name: String!
   composerName: String
-  active: Boolean!
+  active: Boolean
   path: String
   author: String
   copyright: String
@@ -6771,6 +7087,7 @@ type Plugin {
   upgradeVersion: String
   installedAt: Date
   upgradedAt: Date
+  icon: String
   label: String
   description: String
   manufacturerLink: String
@@ -7740,32 +8057,6 @@ type ProductVisibilityEdge {
 }
 
 type Query {
-  seoUrl(id: ID!): SeoUrl
-  seoUrls(
-    """The count of items to be returned"""
-    first: Int
-
-    """The count of items to be returned"""
-    last: Int
-
-    """The cursor to the first Result to be fetched"""
-    after: String
-
-    """The cursor to the last Result to be fetched"""
-    before: String
-
-    """The field used for sorting"""
-    sortBy: String
-
-    """The direction of the sorting"""
-    sortDirection: SortDirection
-
-    """The query the DAL should perform"""
-    query: SearchQuery
-
-    """The aggregations should perform"""
-    aggregations: [Aggregation]
-  ): SeoUrlConnection
   attribute(id: ID!): Attribute
   attributes(
     """The count of items to be returned"""
@@ -9297,6 +9588,58 @@ type Query {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): CmsSlotConnection
+  mailTemplate(id: ID!): MailTemplate
+  mailTemplates(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): MailTemplateConnection
+  mailHeaderFooter(id: ID!): MailHeaderFooter
+  mailHeaderFooters(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): MailHeaderFooterConnection
   customer(id: ID!): Customer
   customers(
     """The count of items to be returned"""
@@ -9687,6 +10030,32 @@ type Query {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): DiscountSurchargeConnection
+  seoUrl(id: ID!): SeoUrl
+  seoUrls(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): SeoUrlConnection
   named(id: ID!): Named
   nameds(
     """The count of items to be returned"""
@@ -10033,6 +10402,7 @@ type Rule {
   attributes: Json
   createdAt: Date!
   updatedAt: Date!
+  moduleTypes: Json
   conditions(
     """The count of items to be returned"""
     first: Int
@@ -10108,11 +10478,36 @@ type Rule {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): ProductPriceRuleConnection
+  shippingMethods(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): ShippingMethodConnection
 }
 
 type RuleCondition {
   id: ID!
-  type: String!
+  type: String
   ruleId: ID!
   parentId: ID
   value: Json
@@ -10205,6 +10600,7 @@ type SalesChannel {
   countryId: ID!
   navigationId: ID
   navigationVersionId: ID
+  mailHeaderFooterId: ID
   type: SalesChannelType
   name: String
   accessKey: String!
@@ -10471,6 +10867,32 @@ type SalesChannel {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): ProductVisibilityConnection
+  mailHeaderFooter: MailHeaderFooter
+  mailTemplates(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): MailTemplateConnection
   seoUrls(
     """The count of items to be returned"""
     first: Int
@@ -10858,30 +11280,13 @@ type SeoUrlEdge {
 
 type ShippingMethod {
   id: ID!
-  type: Int!
   bindShippingfree: Boolean!
-  bindLaststock: Boolean
   name: String
   active: Boolean
-  position: Int
   calculation: Int
-  surchargeCalculation: Int
-  taxCalculation: Int
   minDeliveryTime: Int
   maxDeliveryTime: Int
   shippingFree: Float
-  bindTimeFrom: Int
-  bindTimeTo: Int
-  bindInstock: Boolean
-  bindWeekdayFrom: Int
-  bindWeekdayTo: Int
-  bindWeightFrom: Float
-  bindWeightTo: Float
-  bindPriceFrom: Float
-  bindPriceTo: Float
-  bindSql: String
-  statusLink: String
-  calculationSql: String
   attributes: String
   createdAt: Date!
   updatedAt: Date!
@@ -10988,6 +11393,31 @@ type ShippingMethod {
     """The aggregations should perform"""
     aggregations: [Aggregation]
   ): SalesChannelConnection
+  availabilityRules(
+    """The count of items to be returned"""
+    first: Int
+
+    """The count of items to be returned"""
+    last: Int
+
+    """The cursor to the first Result to be fetched"""
+    after: String
+
+    """The cursor to the last Result to be fetched"""
+    before: String
+
+    """The field used for sorting"""
+    sortBy: String
+
+    """The direction of the sorting"""
+    sortDirection: SortDirection
+
+    """The query the DAL should perform"""
+    query: SearchQuery
+
+    """The aggregations should perform"""
+    aggregations: [Aggregation]
+  ): RuleConnection
 }
 
 """The Result for a search that returns multiple Items"""
