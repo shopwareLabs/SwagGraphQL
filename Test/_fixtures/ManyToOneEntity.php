@@ -3,12 +3,11 @@
 namespace SwagGraphQL\Test\_fixtures;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\VersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 
 class ManyToOneEntity extends EntityDefinition
 {
@@ -25,8 +24,7 @@ class ManyToOneEntity extends EntityDefinition
             new OneToManyAssociationField(
                 'association',
                 AssociationEntity::class,
-                'many_to_one_id',
-                false
+                'many_to_one_id'
             )
         ]);
     }

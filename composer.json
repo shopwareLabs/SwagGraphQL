@@ -1,6 +1,6 @@
 {
   "name": "shopware/swag-graphql",
-  "type": "shopware-plugin",
+  "type": "shopware-platform-plugin",
   "minimum-stability": "dev",
   "description": "A Simple Plugin that exposes an GraphQL-API for the Shopware 6 Core-API.",
   "keywords": ["shopware", "shop"],
@@ -16,7 +16,7 @@
     "doctrine/inflector": "1.3.0"
   },
   "extra": {
-    "installer-name": "SwagGraphQL",
+    "shopware-plugin-class": "SwagGraphQL\\SwagGraphQL",
     "copyright": "(c) by shopware AG",
     "label": {
       "de_DE": "GraphQL",

@@ -167,6 +167,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
         ];
 
@@ -204,6 +205,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
         ];
 
@@ -252,6 +254,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'first product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
             [
                 'id' => $secondProductId,
@@ -259,6 +262,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'second product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
             [
                 'id' => $thirdProductId,
@@ -266,6 +270,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'third product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
         ];
 
@@ -324,6 +329,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'first product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
             [
                 'id' => $secondProductId,
@@ -331,6 +337,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'second product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
             [
                 'id' => $thirdProductId,
@@ -338,6 +345,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'third product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
         ];
 
@@ -393,6 +401,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'first product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
             [
                 'id' => $secondProductId,
@@ -400,6 +409,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test 2'],
                 'name' => 'second product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
             [
                 'id' => $thirdProductId,
@@ -407,6 +417,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'third product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
         ];
 
@@ -469,6 +480,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'z product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
             [
                 'id' => $secondProductId,
@@ -476,6 +488,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'b product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
             [
                 'id' => $thirdProductId,
@@ -483,6 +496,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'c product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
             [
                 'id' => $fourthProductId,
@@ -490,6 +504,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'a product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
         ];
 
@@ -557,6 +572,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'z product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
             [
                 'id' => $secondProductId,
@@ -564,6 +580,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'b product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
             [
                 'id' => $thirdProductId,
@@ -571,6 +588,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'c product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
             [
                 'id' => $fourthProductId,
@@ -578,6 +596,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'a product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
         ];
 
@@ -660,6 +679,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'manufacturer1'],
                 'name' => 'z product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
             [
                 'id' => $secondProductId,
@@ -667,6 +687,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'manufacturer2'],
                 'name' => 'b product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
             [
                 'id' => $thirdProductId,
@@ -674,6 +695,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'manufacturer1'],
                 'name' => 'c product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
             [
                 'id' => $fourthProductId,
@@ -681,6 +703,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'manufacturer2'],
                 'name' => 'a product',
                 'tax' => ['id' => $taxId],
+                'stock' => 25,
             ],
         ];
 
@@ -753,6 +776,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
         ];
 
@@ -808,7 +832,8 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
-                'priceRules' => [
+                'stock' => 25,
+                'prices' => [
                     [
                         'id' => $firstId,
                         'currencyId' => Defaults::CURRENCY,
@@ -816,7 +841,6 @@ class ApiControllerTest extends TestCase
                         'rule' => [
                             'id' => $ruleId,
                             'name' => 'test',
-                            'payload' => new AndRule(),
                             'priority' => 1,
                         ],
                         'price' => ['gross' => 15, 'net' => 10],
@@ -828,7 +852,6 @@ class ApiControllerTest extends TestCase
                         'rule' => [
                             'id' => $ruleId,
                             'name' => 'test',
-                            'payload' => new AndRule(),
                             'priority' => 1,
                         ],
                         'price' => ['gross' => 10, 'net' => 5],
@@ -846,7 +869,7 @@ class ApiControllerTest extends TestCase
 	                    node {
 	                        id
 		                    name
-		                    priceRules {
+		                    prices {
 		                        edges {
 		                            node {
 		                            	quantityStart
@@ -870,13 +893,13 @@ class ApiControllerTest extends TestCase
         static::assertCount(3, $productResult);
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($productId, $productResult['id']);
-        static::assertCount(2, $productResult['priceRules']['edges']);
+        static::assertCount(2, $productResult['prices']['edges']);
 
-        $firstPriceRule =  $productResult['priceRules']['edges'][0]['node'];
+        $firstPriceRule =  $productResult['prices']['edges'][0]['node'];
         static::assertCount(1, $firstPriceRule);
         static::assertEquals(1,  $firstPriceRule['quantityStart']);
 
-        $secondPriceRule =  $productResult['priceRules']['edges'][1]['node'];
+        $secondPriceRule =  $productResult['prices']['edges'][1]['node'];
         static::assertCount(1, $secondPriceRule);
         static::assertEquals(5,  $secondPriceRule['quantityStart']);
 
@@ -900,7 +923,8 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
-                'priceRules' => [
+                'stock' => 25,
+                'prices' => [
                     [
                         'id' => $firstId,
                         'currencyId' => Defaults::CURRENCY,
@@ -908,7 +932,6 @@ class ApiControllerTest extends TestCase
                         'rule' => [
                             'id' => $ruleId,
                             'name' => 'test',
-                            'payload' => new AndRule(),
                             'priority' => 1,
                         ],
                         'price' => ['gross' => 15, 'net' => 10],
@@ -920,7 +943,6 @@ class ApiControllerTest extends TestCase
                         'rule' => [
                             'id' => $ruleId,
                             'name' => 'test',
-                            'payload' => new AndRule(),
                             'priority' => 1,
                         ],
                         'price' => ['gross' => 10, 'net' => 5],
@@ -938,7 +960,7 @@ class ApiControllerTest extends TestCase
 	                    node {
 	                        id
 		                    name
-		                    priceRules(
+		                    prices(
 		                        query: {
 	                                type: equals
 	                                field: "quantityStart"
@@ -968,9 +990,9 @@ class ApiControllerTest extends TestCase
         static::assertCount(3, $productResult);
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($productId, $productResult['id']);
-        static::assertCount(1, $productResult['priceRules']['edges']);
+        static::assertCount(1, $productResult['prices']['edges']);
 
-        $priceRule =  $productResult['priceRules']['edges'][0]['node'];
+        $priceRule =  $productResult['prices']['edges'][0]['node'];
         static::assertCount(1, $priceRule);
         static::assertEquals(5,  $priceRule['quantityStart']);
 
@@ -995,7 +1017,8 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
-                'priceRules' => [
+                'stock' => 25,
+                'prices' => [
                     [
                         'id' => $firstId,
                         'currencyId' => Defaults::CURRENCY,
@@ -1003,7 +1026,6 @@ class ApiControllerTest extends TestCase
                         'rule' => [
                             'id' => $firstRuleId,
                             'name' => 'first Rule',
-                            'payload' => new AndRule(),
                             'priority' => 1,
                         ],
                         'price' => ['gross' => 15, 'net' => 10],
@@ -1015,7 +1037,6 @@ class ApiControllerTest extends TestCase
                         'rule' => [
                             'id' => $secondRuleId,
                             'name' => 'second Rule',
-                            'payload' => new AndRule(),
                             'priority' => 1,
                         ],
                         'price' => ['gross' => 10, 'net' => 5],
@@ -1033,7 +1054,7 @@ class ApiControllerTest extends TestCase
 	                    node {
 	                        id
 		                    name
-		                    priceRules {
+		                    prices {
 		                        edges {
 		                            node {
 		                            	quantityStart
@@ -1060,15 +1081,15 @@ class ApiControllerTest extends TestCase
         static::assertCount(3, $productResult);
         static::assertEquals('product', $productResult['name']);
         static::assertEquals($productId, $productResult['id']);
-        static::assertCount(2, $productResult['priceRules']['edges']);
+        static::assertCount(2, $productResult['prices']['edges']);
 
-        $firstPriceRule =  $productResult['priceRules']['edges'][0]['node'];
+        $firstPriceRule =  $productResult['prices']['edges'][0]['node'];
         static::assertCount(2, $firstPriceRule);
         static::assertEquals(1,  $firstPriceRule['quantityStart']);
         static::assertCount(1, $firstPriceRule['rule']);
         static::assertEquals('first Rule',  $firstPriceRule['rule']['name']);
 
-        $secondPriceRule =  $productResult['priceRules']['edges'][1]['node'];
+        $secondPriceRule =  $productResult['prices']['edges'][1]['node'];
         static::assertCount(2, $secondPriceRule);
         static::assertEquals(5,  $secondPriceRule['quantityStart']);
         static::assertCount(1, $secondPriceRule['rule']);
@@ -1093,6 +1114,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'product',
                 'tax' => ['id' => $taxId, 'taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
                 'categories' => [
                     [
                         'id' => $firstId,
@@ -1163,6 +1185,7 @@ class ApiControllerTest extends TestCase
 	                }
 	                tax: {taxRate: 13, name: \"tax\"}
 	                price: \"{\\\"gross\\\": 10, \\\"net\\\": 9}\"
+	                stock: 25
 	            ) {
 		            id
 		            name
@@ -1195,6 +1218,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'product',
                 'tax' => ['taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
         ];
         $this->repository->create($products, Context::createDefaultContext());
@@ -1233,6 +1257,7 @@ class ApiControllerTest extends TestCase
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'product',
                 'tax' => ['taxRate' => 13, 'name' => 'green'],
+                'stock' => 25,
             ],
         ];
 

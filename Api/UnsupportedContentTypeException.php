@@ -20,4 +20,9 @@ class UnsupportedContentTypeException extends ShopwareHttpException
     {
         return Response::HTTP_UNSUPPORTED_MEDIA_TYPE;
     }
+
+    public function getErrorCode(): string
+    {
+        return 'GraphQl__UnsupportedContentType';
+    }
 }

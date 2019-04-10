@@ -7,7 +7,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagGraphQL\Api\ApiController;
 use SwagGraphQL\Resolver\QueryResolver;
 use SwagGraphQL\Schema\SchemaFactory;
@@ -40,7 +40,7 @@ class DissolveMediaFolderActionTest extends TestCase
 
     public function testDissolveMediaFolder()
     {
-        $folderId = Uuid::uuid4()->getHex();
+        $folderId = Uuid::randomHex();
 
         $data = [
             [
