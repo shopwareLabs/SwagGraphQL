@@ -1,10 +1,10 @@
 # SwagGraphQL
 
-A simple plugin that exposes an GraphQL-API for the Shopware 6 Core-API.
+A simple plugin that exposes an GraphQL-API for the Shopware Platform Core-API.
 
 ## Installation
 
-Clone this repo in your `custom/plugins` folder of your Shopware 6 Template.
+Clone this repo in your `custom/plugins` folder of your Shopware Platform Template.
 
 run:
 ```
