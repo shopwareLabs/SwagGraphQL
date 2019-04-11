@@ -4,6 +4,7 @@ namespace SwagGraphQL\Schema\SchemaBuilder;
 
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 
 class ObjectBuilder
 {
@@ -32,9 +33,11 @@ class ObjectBuilder
                 $this->fields = array_merge($this->fields, $fields->build());
             }
 
-
             return $this->fields;
         };
+        $this->addField(FieldBuilder::create('__typename', Type::string())->setResolver(function () use ($name) {
+            return $name;
+        }));
     }
 
     public static function create(string $name): self
