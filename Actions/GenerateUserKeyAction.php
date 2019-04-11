@@ -37,7 +37,7 @@ class GenerateUserKeyAction implements GraphQLField
         return 'Generates the access keys for a user.';
     }
 
-    public function resolve($rootValue, $args, Context $context, ResolveInfo $info)
+    public function resolve($rootValue, $args, $context, ResolveInfo $info)
     {
         return [
             'accessKey' => AccessKeyHelper::generateAccessKey('user'),

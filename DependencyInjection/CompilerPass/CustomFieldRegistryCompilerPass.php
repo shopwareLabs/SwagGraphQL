@@ -12,6 +12,8 @@ class CustomFieldRegistryCompilerPass implements CompilerPassInterface
     {
         $this->collectQueries($container);
         $this->collectMutations($container);
+        $this->collectSalesChannelQueries($container);
+        $this->collectSalesChannelMutations($container);
     }
 
     private function collectQueries(ContainerBuilder $container): void
@@ -38,6 +40,47 @@ class CustomFieldRegistryCompilerPass implements CompilerPassInterface
     {
         $services = $container->findTaggedServiceIds('swag_graphql.mutations');
         $registry = $container->getDefinition('swag_graphql.mutation_registry');
+
+        foreach ($services as $serviceId => $attributes) {
+            $mutation = null;
+            foreach ($attributes as $attr) {
+                if (array_key_exists('mutation', $attr)) {
+                    $mutation = $attr['mutation'];
+                    break;
+                }
+
+                throw new \RuntimeException(sprintf('Missing mutation attribute in service tag for class %s.', $serviceId));
+            }
+
+            $registry->addMethodCall('addField', [$mutation, new Reference($serviceId)]);
+        }
+
+    }
+
+    private function collectSalesChannelQueries(ContainerBuilder $container): void
+    {
+        $services = $container->findTaggedServiceIds('swag_graphql.sales_channel_queries');
+        $registry = $container->getDefinition('swag_graphql.sales_channel_query_registry');
+
+        foreach ($services as $serviceId => $attributes) {
+            $query = null;
+            foreach ($attributes as $attr) {
+                if (array_key_exists('query', $attr)) {
+                    $query = $attr['query'];
+                    break;
+                }
+
+                throw new \RuntimeException(sprintf('Missing query attribute in service tag for class %s.', $serviceId));
+            }
+
+            $registry->addMethodCall('addField', [$query, new Reference($serviceId)]);
+        }
+    }
+
+    private function collectSalesChannelMutations(ContainerBuilder $container): void
+    {
+        $services = $container->findTaggedServiceIds('swag_graphql.sales_channel_mutations');
+        $registry = $container->getDefinition('swag_graphql.sales_channel_mutation_registry');
 
         foreach ($services as $serviceId => $attributes) {
             $mutation = null;

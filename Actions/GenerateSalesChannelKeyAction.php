@@ -26,7 +26,7 @@ class GenerateSalesChannelKeyAction implements GraphQLField
         return 'Generates the access key for a sales channel.';
     }
 
-    public function resolve($rootValue, $args, Context $context, ResolveInfo $info)
+    public function resolve($rootValue, $args, $context, ResolveInfo $info)
     {
         return AccessKeyHelper::generateAccessKey('sales-channel');
     }

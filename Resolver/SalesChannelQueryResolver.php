@@ -5,18 +5,25 @@ namespace SwagGraphQL\Resolver;
 use Doctrine\Common\Inflector\Inflector;
 use GraphQL\Executor\Executor;
 use GraphQL\Type\Definition\ResolveInfo;
+use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagGraphQL\Resolver\Struct\ConnectionStruct;
 use SwagGraphQL\Resolver\Struct\EdgeStruct;
 use SwagGraphQL\Resolver\Struct\PageInfoStruct;
 use SwagGraphQL\Schema\Mutation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class QueryResolver
+class SalesChannelQueryResolver
 {
     /** @var ContainerInterface  */
     private $container;
@@ -62,6 +69,12 @@ class QueryResolver
      * Resolver for Query queries
      * On the Root-Level it searches for the Entity with th given Args
      * On non Root-Level it returns the get-Value of the Field
+     * @param $rootValue
+     * @param $args
+     * @param SalesChannelContext $context
+     * @param ResolveInfo $info
+     * @return 0|mixed|ConnectionStruct|null
+     * @throws \Shopware\Core\Framework\DataAbstractionLayer\Exception\DefinitionNotFoundException
      */
     private function resolveQuery($rootValue, $args, $context, ResolveInfo $info)
     {
@@ -71,9 +84,27 @@ class QueryResolver
             $repo = $this->getRepository($definition);
 
             $criteria = CriteriaParser::buildCriteria($args, $definition);
+
+            $associationFields = $definition::getFields()->filterInstance(OneToManyAssociationField::class);
             AssociationResolver::addAssociations($criteria, $info->lookahead()->queryPlan(), $definition);
 
-            $searchResult = $repo->search($criteria, $context);
+            if ($definition === CustomerDefinition::class) {
+                if ($context->getCustomer() === null) {
+                    throw new CustomerNotLoggedInException();
+                }
+
+                $criteria->addFilter(new EqualsFilter('id', $context->getCustomer()->getId()));
+            } else {
+
+                /** @var OneToManyAssociationField $associationField */
+                foreach ($associationFields->getElements() as $associationField) {
+                    if ($associationField->getReferenceClass() === SalesChannelDefinition::class) {
+                        $criteria->addFilter(new EqualsFilter($definition::getEntityName() . '.salesChannels.id', $context->getSalesChannel()->getId()));
+                    }
+                }
+            }
+
+            $searchResult = $repo->search($criteria, $context->getContext());
 
             if ($entityName !== $info->fieldName) {
                 return ConnectionStruct::fromResult($searchResult);
@@ -114,15 +145,26 @@ class QueryResolver
     private function create($args, $context, ResolveInfo $info, string $entity): Entity
     {
         $definition = $this->definitionRegistry->get($entity);
+        $billingAddressId = Uuid::randomHex();
+
+        $args = array_merge_recursive($args, [
+            'salesChannelId' => $context->getSalesChannel()->getId(),
+            'languageId' => $context->getContext()->getLanguageId(),
+            'groupId' => $context->getCurrentCustomerGroup()->getId(),
+            'defaultPaymentMethodId' => $context->getPaymentMethod()->getId(),
+            'billingAddress' => $billingAddressId,
+            'shippingMethod'
+        ]);
+
         $repo = $this->getRepository($definition);
 
-        $event = $repo->create([$args], $context);
+        $event = $repo->create([$args], $context->getContext());
         $id = $event->getEventByDefinition($definition)->getIds()[0];
 
         $criteria = new Criteria([$id]);
         AssociationResolver::addAssociations($criteria, $info->lookahead()->queryPlan(), $definition);
 
-        return $repo->search($criteria, $context)->get($id);
+        return $repo->search($criteria, $context->getContext())->get($id);
     }
 
     /**
@@ -133,13 +175,13 @@ class QueryResolver
         $definition = $this->definitionRegistry->get($entity);
         $repo = $this->getRepository($definition);
 
-        $event = $repo->update([$args], $context);
+        $event = $repo->update([$args], $context->getContext());
         $id = $event->getEventByDefinition($definition)->getIds()[0];
 
         $criteria = new Criteria([$id]);
         AssociationResolver::addAssociations($criteria, $info->lookahead()->queryPlan(), $definition);
 
-        return $repo->search($criteria, $context)->get($id);
+        return $repo->search($criteria, $context->getContext())->get($id);
     }
 
     /**
@@ -150,7 +192,7 @@ class QueryResolver
         $definition = $this->definitionRegistry->get($entity);
         $repo = $this->getRepository($definition);
 
-        $event = $repo->delete([$args], $context);
+        $event = $repo->delete([$args], $context->getContext());
         $id = $event->getEventByDefinition($definition)->getIds()[0];
 
         return $id;
@@ -182,7 +224,6 @@ class QueryResolver
     private function getSimpleValue($rootValue, ResolveInfo $info)
     {
         $result = null;
-
         $getter = 'get' . ucfirst($info->fieldName);
         if (method_exists($rootValue, $getter)) {
             $result = $rootValue->$getter();

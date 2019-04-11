@@ -12,11 +12,21 @@
             </call>
         </service>
 
+        <service id="SwagGraphQL\Api\SalesChannelApiController" public="true">
+            <argument type="service" id="swag_graphql.sales_channel_schema"></argument>
+            <argument type="service" id="SwagGraphQL\Resolver\SalesChannelQueryResolver"></argument>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="SwagGraphQL\Schema\TypeRegistry">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry"></argument>
             <argument type="service" id="SwagGraphQL\Schema\CustomTypes"></argument>
             <argument type="service" id="swag_graphql.query_registry"></argument>
             <argument type="service" id="swag_graphql.mutation_registry"></argument>
+            <argument type="service" id="swag_graphql.sales_channel_query_registry"></argument>
+            <argument type="service" id="swag_graphql.sales_channel_mutation_registry"></argument>
         </service>
 
         <service id="SwagGraphQL\Schema\SchemaFactory"></service>
@@ -26,7 +36,23 @@
             <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
         </service>
 
+        <service class="GraphQL\Type\Schema" id="swag_graphql.sales_channel_schema">
+            <factory class="SwagGraphQL\Schema\SchemaFactory" method="createSalesChannelSchema"></factory>
+            <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
+        </service>
+
         <service id="SwagGraphQL\Resolver\QueryResolver">
+            <argument type="service" id="service_container"></argument>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry"></argument>
+        </service>
+
+        <service id="SwagGraphQL\Resolver\SalesChannelQueryResolver">
+            <argument type="service" id="service_container"></argument>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry"></argument>
+        </service>
+
+
+        <service id="SwagGraphQL\Resolver\SalesChannelQueryResolver">
             <argument type="service" id="service_container"></argument>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry"></argument>
         </service>
@@ -38,6 +64,12 @@
             <argument type="collection"/>
         </service>
         <service id="swag_graphql.mutation_registry" class="SwagGraphQL\Schema\CustomFieldRegistry">
+            <argument type="collection"/>
+        </service>
+        <service id="swag_graphql.sales_channel_query_registry" class="SwagGraphQL\Schema\CustomFieldRegistry">
+            <argument type="collection"/>
+        </service>
+        <service id="swag_graphql.sales_channel_mutation_registry" class="SwagGraphQL\Schema\CustomFieldRegistry">
             <argument type="collection"/>
         </service>
 
@@ -65,6 +97,22 @@
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"></argument>
             <argument type="service" id="media.repository"></argument>
             <tag name="swag_graphql.mutations" mutation="renameMedia"></tag>
+        </service>
+
+        <service id="SwagGraphQL\SalesChannelActions\GetCartAction">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Storefront\CartService"></argument>
+            <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
+            <argument type="service" id="SwagGraphQL\Schema\CustomTypes"></argument>
+
+            <tag name="swag_graphql.sales_channel_mutations" mutation="getCart"></tag>
+        </service>
+
+        <service id="SwagGraphQL\SalesChannelActions\AddToCartAction">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Storefront\CartService"></argument>
+            <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
+            <argument type="service" id="SwagGraphQL\Schema\CustomTypes"></argument>
+
+            <tag name="swag_graphql.sales_channel_mutations" mutation="addToCart"></tag>
         </service>
     </services>
 </container>

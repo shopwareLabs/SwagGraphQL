@@ -38,7 +38,7 @@ class DissolveMediaFolderAction implements GraphQLField
         return 'Dissolves a media folder and puts the content one level higher.';
     }
 
-    public function resolve($rootValue, $args, Context $context, ResolveInfo $info)
+    public function resolve($rootValue, $args, $context, ResolveInfo $info)
     {
         $folderId = $args[self::FOLDER_ID_ARGUMENT];
         $this->mediaFolderService->dissolve($folderId, $context);

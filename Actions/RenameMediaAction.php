@@ -62,7 +62,7 @@ class RenameMediaAction implements GraphQLField
         return 'Renames the file with the given ID.';
     }
 
-    public function resolve($rootValue, $args, Context $context, ResolveInfo $info)
+    public function resolve($rootValue, $args, $context, ResolveInfo $info)
     {
         $mediaId = $args[self::MEDIA_ID_ARGUMENT];
         $fileName = $args[self::FILENAME_ARGUMENT];

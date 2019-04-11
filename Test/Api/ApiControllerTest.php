@@ -10,7 +10,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Rule\Container\AndRule;
 use SwagGraphQL\Api\ApiController;
 use SwagGraphQL\Api\UnsupportedContentTypeException;
 use SwagGraphQL\Resolver\QueryResolver;

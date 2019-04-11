@@ -37,7 +37,7 @@ class GenerateIntegrationKeyAction implements GraphQLField
         return 'Generates access keys for integrations.';
     }
 
-    public function resolve($rootValue, $args, Context $context, ResolveInfo $info)
+    public function resolve($rootValue, $args, $context, ResolveInfo $info)
     {
         return [
             'accessKey' => AccessKeyHelper::generateAccessKey('integration'),

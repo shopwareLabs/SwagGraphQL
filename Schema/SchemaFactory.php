@@ -13,4 +13,12 @@ class SchemaFactory
             'mutation' => $typeRegistry->getMutation(),
         ]);
     }
+
+    public static function createSalesChannelSchema(TypeRegistry $typeRegistry): Schema
+    {
+        return new Schema([
+            'query' => $typeRegistry->getSalesChannelQuery(),
+            'mutation' => $typeRegistry->getSalesChannelMutation(),
+        ]);
+    }
 }

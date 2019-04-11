@@ -11,6 +11,11 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
+use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
+use Shopware\Core\Content\Category\CategoryDefinition;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
@@ -29,6 +34,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextWithHtmlField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslationsAssociationField;
@@ -36,6 +42,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\VersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
+use Shopware\Core\Framework\Language\LanguageDefinition;
+use Shopware\Core\System\Country\CountryDefinition;
+use Shopware\Core\System\Currency\CurrencyDefinition;
+use Shopware\Core\System\Salutation\SalutationDefinition;
 use SwagGraphQL\CustomFields\GraphQLField;
 use SwagGraphQL\Resolver\QueryResolvingException;
 use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
@@ -74,16 +84,30 @@ class TypeRegistry
      */
     private $mutations;
 
+    /**
+     * @var CustomFieldRegistry
+     */
+    private $salesChannelQueries;
+
+    /**
+     * @var CustomFieldRegistry
+     */
+    private $salesChannelMutations;
+
     public function __construct(
         DefinitionRegistry $definitionRegistry,
         CustomTypes $customTypes,
         CustomFieldRegistry $queries,
-        CustomFieldRegistry $mutations
+        CustomFieldRegistry $mutations,
+        CustomFieldRegistry $salesChannelQueries,
+        CustomFieldRegistry $salesChannelMutations
     ) {
         $this->definitionRegistry = $definitionRegistry;
         $this->customTypes = $customTypes;
         $this->queries = $queries;
         $this->mutations = $mutations;
+        $this->salesChannelQueries = $salesChannelQueries;
+        $this->salesChannelMutations = $salesChannelMutations;
     }
 
     public function getObjectForDefinition(string $definition): ObjectType
@@ -108,26 +132,33 @@ class TypeRegistry
                 continue;
             }
 
-            $fieldName = Inflector::camelize($definition::getEntityName());
-
-            $query->addField(
-                FieldBuilder::create(
-                    $fieldName,
-                    $this->getObjectForDefinition($definition)
-                )
-                ->setArguments($this->getPrimaryKeyArgs($definition))
-            );
-
-            $query->addField(
-                FieldBuilder::create(
-                    Inflector::pluralize($fieldName),
-                    $this->getConnectionTypeForDefinition($definition)
-                )
-                ->setArguments($this->getConnectionArgs())
-            );
+            $this->addFieldsForDefinition($definition, $query);
         }
         return $query
-            ->addLazyFieldCollection(function () { return $this->customQueries(); })
+            ->addLazyFieldCollection(function () { return $this->customFields($this->queries); })
+            ->build();
+    }
+
+    public function getSalesChannelQuery(): ObjectType
+    {
+        $query = ObjectBuilder::create('Query');
+
+        $this->addFieldsForDefinition(LanguageDefinition::class, $query);
+        $this->addFieldsForDefinition(CountryDefinition::class, $query);
+        $this->addFieldsForDefinition(CurrencyDefinition::class, $query);
+        $this->addFieldsForDefinition(PaymentMethodDefinition::class, $query);
+        $this->addFieldsForDefinition(ShippingMethodDefinition::class, $query);
+        $this->addFieldsForDefinition(ProductDefinition::class, $query);
+        $this->addFieldsForDefinition(CategoryDefinition::class, $query);
+        $this->addFieldsForDefinition(SalutationDefinition::class, $query);
+        $query->addField(
+            FieldBuilder::create(
+                CustomerDefinition::getEntityName(),
+                $this->getObjectForDefinition(CustomerDefinition::class)
+            ));
+
+        return $query
+            ->addLazyFieldCollection(function () { return $this->customFields($this->salesChannelQueries); })
             ->build();
     }
 
@@ -158,7 +189,31 @@ class TypeRegistry
         }
 
         return $mutation
-            ->addLazyFieldCollection(function () { return $this->customMutations(); })
+            ->addLazyFieldCollection(function () { return $this->customFields($this->mutations); })
+            ->build();
+    }
+
+    public function getSalesChannelMutation(): ObjectType
+    {
+        $mutation = ObjectBuilder::create('Mutation');
+
+        $createName = new Mutation(Mutation::ACTION_CREATE, CustomerDefinition::getEntityName());
+        $mutation->addField(
+            FieldBuilder::create($createName->getName(), $this->getObjectForDefinition(CustomerDefinition::class))
+                ->setArguments($this->getInputFieldsForCreate(CustomerDefinition::class))
+        );
+
+        $updateName = new Mutation(Mutation::ACTION_UPDATE, CustomerDefinition::getEntityName());
+        $mutation->addField(
+            FieldBuilder::create($updateName->getName(), $this->getObjectForDefinition(CustomerDefinition::class))
+                ->setArguments(
+                    $this->getInputFieldsForDefinition(CustomerDefinition::class, function($type) {
+                        return $type;
+                    })
+                ));
+
+        return $mutation
+            ->addLazyFieldCollection(function () { return $this->customFields($this->salesChannelMutations); })
             ->build();
     }
 
@@ -365,6 +420,7 @@ class TypeRegistry
                     $this->getConnectionTypeForDefinition($field->getReferenceClass());
                 break;
             case $field instanceof ManyToOneAssociationField:
+            case $field instanceof OneToOneAssociationField:
                 $type = $input ?
                     $this->getInputForDefinition($field->getReferenceClass()) :
                     $this->getObjectForDefinition($field->getReferenceClass());
@@ -381,18 +437,18 @@ class TypeRegistry
         return $type;
     }
 
-    private function customQueries(): FieldBuilderCollection
+    private function customFields(CustomFieldRegistry $registry): FieldBuilderCollection
     {
         $fields = FieldBuilderCollection::create();
-        /** @var GraphQLField $query */
-        foreach ($this->queries->getFields() as $name => $query) {
+        /** @var GraphQLField $field */
+        foreach ($registry->getFields() as $name => $field) {
             $fields->addFieldBuilder(
-                FieldBuilder::create($name, $query->returnType())
-                ->setArguments($query->defineArgs())
-                ->setDescription($query->description())
-                ->setResolver(function($rootValue, $args, Context $context, ResolveInfo $info) use ($query) {
+                FieldBuilder::create($name, $field->returnType())
+                ->setArguments($field->defineArgs())
+                ->setDescription($field->description())
+                ->setResolver(function($rootValue, $args, $context, ResolveInfo $info) use ($field) {
                     try {
-                        return $query->resolve($rootValue, $args, $context, $info);
+                        return $field->resolve($rootValue, $args, $context, $info);
                     } catch (\Throwable $e) {
                         // default error-handler will just show "internal server error"
                         // therefore throw own Exception
@@ -405,28 +461,28 @@ class TypeRegistry
         return $fields;
     }
 
-    private function customMutations(): FieldBuilderCollection
+    /**
+     * @param $definition
+     * @param ObjectBuilder $query
+     */
+    private function addFieldsForDefinition($definition, ObjectBuilder $query): void
     {
-        $fields = FieldBuilderCollection::create();
+        $fieldName = Inflector::camelize($definition::getEntityName());
 
-        /** @var GraphQLField $mutation */
-        foreach ($this->mutations->getFields() as $name => $mutation) {
-            $fields->addFieldBuilder(
-                FieldBuilder::create($name, $mutation->returnType())
-                    ->setArguments($mutation->defineArgs())
-                    ->setDescription($mutation->description())
-                    ->setResolver(function($rootValue, $args, Context $context, ResolveInfo $info) use ($mutation) {
-                        try {
-                            return $mutation->resolve($rootValue, $args, $context, $info);
-                        } catch (\Throwable $e) {
-                            // default error-handler will just show "internal server error"
-                            // therefore throw own Exception
-                            throw new QueryResolvingException($e->getMessage(), 0, $e);
-                        }
-                    })
-            );
-        }
+        $query->addField(
+            FieldBuilder::create(
+                $fieldName,
+                $this->getObjectForDefinition($definition)
+            )
+                ->setArguments($this->getPrimaryKeyArgs($definition))
+        );
 
-        return $fields;
+        $query->addField(
+            FieldBuilder::create(
+                Inflector::pluralize($fieldName),
+                $this->getConnectionTypeForDefinition($definition)
+            )
+                ->setArguments($this->getConnectionArgs())
+        );
     }
 }

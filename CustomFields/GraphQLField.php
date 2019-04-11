@@ -33,9 +33,9 @@ interface GraphQLField
     /**
      * @param mixed $rootValue
      * @param array $args
-     * @param Context $context
+     * @param $context
      * @param ResolveInfo $resolveInfo
      * @return mixed return value must be possible to be casted to return type
      */
-    public function resolve($rootValue, array $args, Context $context, ResolveInfo $resolveInfo);
+    public function resolve($rootValue, array $args, $context, ResolveInfo $resolveInfo);
 }

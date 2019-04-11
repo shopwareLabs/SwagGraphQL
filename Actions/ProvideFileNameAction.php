@@ -43,7 +43,7 @@ class ProvideFileNameAction implements GraphQLField
         return 'Provides a unique filename based on the given one.';
     }
 
-    public function resolve($rootValue, $args, Context $context, ResolveInfo $info)
+    public function resolve($rootValue, $args, $context, ResolveInfo $info)
     {
         $fileName = $args[self::FILE_NAME_ARGUMENT];
         $fileExtension = $args[self::FILE_EXTENSION_ARGUMENT];
