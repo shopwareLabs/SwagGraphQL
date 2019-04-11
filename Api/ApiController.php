@@ -59,17 +59,16 @@ class ApiController extends AbstractController
         $query = null;
         $variables = null;
         if ($request->getMethod() === Request::METHOD_POST) {
-            if ($request->headers->get('content_type') === 'application/json') {
+            $contentType = explode(';', $request->headers->get('content_type'))[0];
+            if ($contentType === 'application/json') {
                 /** @var string $content */
                 $content = $request->getContent();
                 $body = json_decode($content, true);
                 $query = $body['query'];
                 $variables = $body['variables'] ?? null;
-            } else if ($request->headers->get('content_type') === 'application/graphql') {
+            } else if ($contentType === 'application/graphql') {
                 $query = $request->getContent();
             } else {
-                /** @var string $contentType */
-                $contentType = $request->headers->get('content_type');
                 throw new UnsupportedContentTypeException(
                     $contentType,
                     'application/json',
