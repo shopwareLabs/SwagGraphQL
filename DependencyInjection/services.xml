@@ -120,5 +120,19 @@
 
             <tag name="swag_graphql.sales_channel_mutations" mutation="addToCart"></tag>
         </service>
+
+        <service id="SwagGraphQL\SalesChannelActions\CheckoutAction">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Storefront\CartService"></argument>
+            <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
+            <argument type="service" id="order.repository"></argument>
+
+            <tag name="swag_graphql.sales_channel_mutations" mutation="checkout"></tag>
+        </service>
+
+        <service id="SwagGraphQL\SalesChannelActions\PaymentAction">
+            <argument type="service" id="Shopware\Core\Checkout\Payment\PaymentService"></argument>
+
+            <tag name="swag_graphql.sales_channel_mutations" mutation="pay"></tag>
+        </service>
     </services>
 </container>
