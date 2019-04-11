@@ -99,6 +99,12 @@
             <tag name="swag_graphql.mutations" mutation="renameMedia"></tag>
         </service>
 
+        <service id="SwagGraphQL\SalesChannelActions\LoginAction">
+            <argument type="service" id="Shopware\Core\Checkout\Customer\Storefront\AccountService"></argument>
+
+            <tag name="swag_graphql.sales_channel_mutations" mutation="login"></tag>
+        </service>
+
         <service id="SwagGraphQL\SalesChannelActions\GetCartAction">
             <argument type="service" id="Shopware\Core\Checkout\Cart\Storefront\CartService"></argument>
             <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
