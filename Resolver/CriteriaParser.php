@@ -4,6 +4,7 @@ namespace SwagGraphQL\Resolver;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\SearchRequestException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Parser\AggregationParser;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Parser\QueryStringParser;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
@@ -15,6 +16,7 @@ class CriteriaParser
         $criteria = new Criteria();
         $criteria->setTotalCountMode(Criteria::TOTAL_COUNT_MODE_EXACT);
         static::parsePagination($args, $criteria);
+        static::parseId($args, $criteria);
         static::parseSorting($args, $criteria);
         static::parseQuery($args, $criteria, $definition);
         static::parseAggregations($args, $criteria, $definition);
@@ -39,7 +41,15 @@ class CriteriaParser
 
             $criteria->setOffset((int)base64_decode($args['before']) - $criteria->getLimit());
         }
+    }
 
+    private static function parseId(array $args, Criteria $criteria): void
+    {
+        if (isset($args['id'])) {
+            $criteria->addFilter(new EqualsFilter('id', $args['id']));
+
+            return;
+        }
     }
 
     private static function parseSorting(array $args, Criteria $criteria)
