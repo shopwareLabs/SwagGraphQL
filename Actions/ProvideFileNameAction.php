@@ -11,9 +11,9 @@ use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 
 class ProvideFileNameAction implements GraphQLField
 {
-    CONST FILE_NAME_ARGUMENT = 'fileName';
-    CONST FILE_EXTENSION_ARGUMENT = 'fileExtension';
-    CONST MEDIA_ID_ARGUMENT = 'mediaId';
+    const FILE_NAME_ARGUMENT = 'fileName';
+    const FILE_EXTENSION_ARGUMENT = 'fileExtension';
+    const MEDIA_ID_ARGUMENT = 'mediaId';
 
     /**
      * @var FileNameProvider

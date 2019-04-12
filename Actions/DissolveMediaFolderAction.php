@@ -11,7 +11,8 @@ use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 
 class DissolveMediaFolderAction implements GraphQLField
 {
-    CONST FOLDER_ID_ARGUMENT = 'mediaFolderId';
+    const FOLDER_ID_ARGUMENT = 'mediaFolderId';
+
     /**
      * @var MediaFolderService
      */

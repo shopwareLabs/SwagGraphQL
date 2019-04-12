@@ -121,6 +121,23 @@
             <tag name="swag_graphql.sales_channel_mutations" mutation="addToCart"></tag>
         </service>
 
+        <service id="SwagGraphQL\SalesChannelActions\RemoveLineItemAction">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Storefront\CartService"></argument>
+            <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
+            <argument type="service" id="SwagGraphQL\Schema\CustomTypes"></argument>
+
+            <tag name="swag_graphql.sales_channel_mutations" mutation="removeLineItem"></tag>
+        </service>
+
+        <service id="SwagGraphQL\SalesChannelActions\UpdateLineItemAction">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Storefront\CartService"></argument>
+            <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
+            <argument type="service" id="SwagGraphQL\Schema\CustomTypes"></argument>
+            <argument type="service" id="media.repository"></argument>
+
+            <tag name="swag_graphql.sales_channel_mutations" mutation="updateLineItem"></tag>
+        </service>
+
         <service id="SwagGraphQL\SalesChannelActions\CheckoutAction">
             <argument type="service" id="Shopware\Core\Checkout\Cart\Storefront\CartService"></argument>
             <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>

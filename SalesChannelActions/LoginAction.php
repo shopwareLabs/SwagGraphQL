@@ -11,8 +11,8 @@ use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 
 class LoginAction implements GraphQLField
 {
-    CONST EMAIL_ARGUMENT = 'email';
-    CONST PASSWORD_ARGUMENT = 'password';
+    const EMAIL_ARGUMENT = 'email';
+    const PASSWORD_ARGUMENT = 'password';
 
     /**
      * @var AccountService

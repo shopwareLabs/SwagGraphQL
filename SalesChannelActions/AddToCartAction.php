@@ -16,9 +16,9 @@ use SwagGraphQL\Schema\TypeRegistry;
 
 class AddToCartAction implements GraphQLField
 {
-    CONST PRODUCT_ID_ARGUMENT = 'productId';
-    CONST QUANTITY_ARGUMENT = 'quantity';
-    CONST PAYLOAD_ARGUMENT = 'payload';
+    const PRODUCT_ID_ARGUMENT = 'productId';
+    const QUANTITY_ARGUMENT = 'quantity';
+    const PAYLOAD_ARGUMENT = 'payload';
 
     /**
      * @var CartService

@@ -5,16 +5,19 @@ namespace SwagGraphQL\SalesChannelActions;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Shopware\Core\Checkout\Cart\Exception\LineItemNotFoundException;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Storefront\CartService;
+use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use SwagGraphQL\CustomFields\GraphQLField;
 use SwagGraphQL\Schema\CustomTypes;
 use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
 use SwagGraphQL\Schema\TypeRegistry;
 
-class GetCartAction implements GraphQLField
+class RemoveLineItemAction implements GraphQLField
 {
-    const CART_NAME_ARGUMENT = 'name';
+    const KEY_ARGUMENT = 'key';
 
     /**
      * @var CartService
@@ -46,12 +49,12 @@ class GetCartAction implements GraphQLField
     public function defineArgs(): FieldBuilderCollection
     {
         return FieldBuilderCollection::create()
-            ->addField(self::CART_NAME_ARGUMENT, Type::nonNull(Type::string()));
+            ->addField(self::KEY_ARGUMENT, Type::nonNull(Type::id()));
     }
 
     public function description(): string
     {
-        return 'Get or Create an empty cart.';
+        return 'Remove a LineItem from the Cart.';
     }
 
     /**
@@ -63,6 +66,15 @@ class GetCartAction implements GraphQLField
             throw new CustomerNotLoggedInException();
         }
 
-        return $this->cartService->getCart($context->getToken(), $context, $args[self::CART_NAME_ARGUMENT]);
+        $cart = $this->cartService->getCart($context->getToken(), $context);
+        $id = $args[self::KEY_ARGUMENT];
+
+        if (!$cart->has($id)) {
+            throw new LineItemNotFoundException($id);
+        }
+
+        $cart = $this->cartService->remove($cart, $id, $context);
+
+        return $cart;
     }
 }
