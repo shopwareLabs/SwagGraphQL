@@ -6,11 +6,15 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
+use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
+use Shopware\Core\System\Country\CountryDefinition;
 use SwagGraphQL\Schema\SchemaBuilder\EnumBuilder;
 use SwagGraphQL\Schema\SchemaBuilder\FieldBuilder;
 use SwagGraphQL\Schema\SchemaBuilder\FieldBuilderCollection;
@@ -76,6 +80,18 @@ class CustomTypes
 
     /** @var ObjectType */
     private static $cart;
+
+    /** @var ObjectType */
+    private static $transaction;
+
+    /** @var ObjectType */
+    private static $shippingLocation;
+
+    /** @var ObjectType */
+    private static $deliveryPosition;
+
+    /** @var ObjectType */
+    private static $delivery;
 
     // Custom Scalars
     public function date(): DateType
@@ -277,7 +293,6 @@ class CustomTypes
             })
                 ->setDescription('A TaxRule inside a cart')
                 ->build();
-
         }
 
         return static::$taxRule;
@@ -295,7 +310,6 @@ class CustomTypes
                 })
                 ->setDescription('The calculated Tax for a calculated Price')
                 ->build();
-
         }
 
         return static::$calculatedTax;
@@ -316,7 +330,6 @@ class CustomTypes
                 })
                 ->setDescription('The calculated PRice for a LineItem')
                 ->build();
-
         }
 
         return static::$calculatedPrice;
@@ -333,7 +346,6 @@ class CustomTypes
             })
                 ->setDescription('A DeliveryDate for a LineItem')
                 ->build();
-
         }
 
         return static::$deliveryDate;
@@ -354,7 +366,6 @@ class CustomTypes
                 })
                 ->setDescription('The delivery Information for a LineItem')
                 ->build();
-
         }
 
         return static::$deliveryInformation;
@@ -383,7 +394,6 @@ class CustomTypes
                 })
                 ->setDescription('A LineItem in the Cart')
                 ->build();
-
         }
 
         return static::$lineItem;
@@ -404,10 +414,81 @@ class CustomTypes
                 })
                 ->setDescription('The Price of a cart')
                 ->build();
-
         }
 
         return static::$cartPrice;
+    }
+
+    public function transaction(): ObjectType
+    {
+        if (static::$transaction=== null) {
+            static::$transaction = ObjectBuilder::create('Transaction')
+                ->addLazyFieldCollection(function () {
+                    return FieldBuilderCollection::create()
+                        ->addFieldBuilder(FieldBuilder::create('amount', Type::nonNull(static::calculatedPrice())))
+                        ->addFieldBuilder(FieldBuilder::create('paymentMethodId', Type::nonNull(Type::id())));
+                })
+                ->setDescription('A transaction inside the cart')
+                ->build();
+        }
+
+        return static::$transaction;
+    }
+
+    public function shippingLocation(TypeRegistry $typeRegistry): ObjectType
+    {
+        if (static::$shippingLocation=== null) {
+            static::$shippingLocation = ObjectBuilder::create('ShippingLocation')
+                ->addLazyFieldCollection(function () use ($typeRegistry) {
+                    return FieldBuilderCollection::create()
+                        ->addFieldBuilder(FieldBuilder::create('country', Type::nonNull($typeRegistry->getObjectForDefinition(CountryDefinition::class))))
+                        ->addFieldBuilder(FieldBuilder::create('countryState', $typeRegistry->getObjectForDefinition(CountryStateDefinition::class)))
+                        ->addFieldBuilder(FieldBuilder::create('address', $typeRegistry->getObjectForDefinition(CustomerAddressDefinition::class)));
+                })
+                ->setDescription('A Location for a Shipping.')
+                ->build();
+        }
+
+        return static::$shippingLocation;
+    }
+
+    public function deliveryPosition(TypeRegistry $typeRegistry): ObjectType
+    {
+        if (static::$deliveryPosition=== null) {
+            static::$deliveryPosition = ObjectBuilder::create('DeliveryPosition')
+                ->addLazyFieldCollection(function () use ($typeRegistry) {
+                    return FieldBuilderCollection::create()
+                        ->addFieldBuilder(FieldBuilder::create('lineItem', Type::nonNull(static::lineItem($typeRegistry))))
+                        ->addFieldBuilder(FieldBuilder::create('quantity', Type::nonNull(Type::float())))
+                        ->addFieldBuilder(FieldBuilder::create('price', type::nonNull(static::calculatedPrice())))
+                        ->addFieldBuilder(FieldBuilder::create('identifier', type::nonNull(Type::string())))
+                        ->addFieldBuilder(FieldBuilder::create('deliveryDate', type::nonNull(static::deliveryDate())));
+                })
+                ->setDescription('A single position inside one Delivery.')
+                ->build();
+        }
+
+        return static::$deliveryPosition;
+    }
+
+    public function delivery(TypeRegistry $typeRegistry): ObjectType
+    {
+        if (static::$delivery=== null) {
+            static::$delivery = ObjectBuilder::create('Delivery')
+                ->addLazyFieldCollection(function () use ($typeRegistry) {
+                    return FieldBuilderCollection::create()
+                        ->addFieldBuilder(FieldBuilder::create('positions', Type::listOf(static::deliveryPosition($typeRegistry))))
+                        ->addFieldBuilder(FieldBuilder::create('location', Type::nonNull(static::shippingLocation($typeRegistry))))
+                        ->addFieldBuilder(FieldBuilder::create('deliveryDate', type::nonNull(static::deliveryDate())))
+                        ->addFieldBuilder(FieldBuilder::create('shippingMethod', type::nonNull($typeRegistry->getObjectForDefinition(ShippingMethodDefinition::class))))
+                        ->addFieldBuilder(FieldBuilder::create('shippingCosts', type::nonNull(static::calculatedPrice())))
+                        ->addFieldBuilder(FieldBuilder::create('endDeliveryDate', type::nonNull(static::deliveryDate())));
+                })
+                ->setDescription('A delivery inside a cart.')
+                ->build();
+        }
+
+        return static::$delivery;
     }
 
     public function cart(TypeRegistry $typeRegistry): ObjectType
@@ -419,11 +500,12 @@ class CustomTypes
                         ->addFieldBuilder(FieldBuilder::create('name', Type::nonNull(Type::string())))
                         ->addFieldBuilder(FieldBuilder::create('token', Type::nonNull(Type::id())))
                         ->addFieldBuilder(FieldBuilder::create('price', Type::nonNull(static::cartPrice())))
-                        ->addFieldBuilder(FieldBuilder::create('lineItems', Type::listOf(static::lineItem($typeRegistry))));
+                        ->addFieldBuilder(FieldBuilder::create('lineItems', Type::listOf(static::lineItem($typeRegistry))))
+                        ->addFieldBuilder(FieldBuilder::create('transactions', Type::listOf(static::transaction())))
+                        ->addFieldBuilder(FieldBuilder::create('deliveries', Type::listOf(static::delivery($typeRegistry))));
                 })
                 ->setDescription('The cart')
                 ->build();
-
         }
 
         return static::$cart;

@@ -138,6 +138,15 @@
             <tag name="swag_graphql.sales_channel_mutations" mutation="updateLineItem"></tag>
         </service>
 
+        <service id="SwagGraphQL\SalesChannelActions\UpdateContextAction">
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextPersister"></argument>
+            <argument type="service" id="payment_method.repository"></argument>
+            <argument type="service" id="shipping_method.repository"></argument>
+            <argument type="service" id="customer_address.repository"></argument>
+
+            <tag name="swag_graphql.sales_channel_mutations" mutation="updateContext"></tag>
+        </service>
+
         <service id="SwagGraphQL\SalesChannelActions\CheckoutAction">
             <argument type="service" id="Shopware\Core\Checkout\Cart\Storefront\CartService"></argument>
             <argument type="service" id="SwagGraphQL\Schema\TypeRegistry"></argument>
