@@ -1,3 +1,7 @@
+# Attention!
+
+**This was a POC for a GraphQL API fore a very early Shopware 6.0 state. It is unmaintained and untested for newer versions since then. Handle with care!** 
+
 # SwagGraphQL
 
 A simple plugin that exposes an GraphQL-API for the Shopware Platform Core-API.
